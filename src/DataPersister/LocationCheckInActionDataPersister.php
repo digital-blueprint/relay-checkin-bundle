@@ -47,7 +47,7 @@ final class LocationCheckInActionDataPersister implements DataPersisterInterface
         $locationCheckInAction->setAgent($this->personProvider->getCurrentPerson());
 
         try {
-            $this->api->sendCampusQRLocationRequest($location);
+            $this->api->sendCampusQRLocationRequest($locationCheckInAction);
         } catch (\Exception $e) {
             throw new ItemNotStoredException(sprintf('LocationCheckIn could not be stored: %s', Tools::filterErrorMessage($e->getMessage())));
         }

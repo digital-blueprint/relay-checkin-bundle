@@ -70,12 +70,12 @@ class LocationCheckInAction
         return $this;
     }
 
-    public function getIdentifier(): ?string
+    public function getIdentifier(): string
     {
         return $this->identifier;
     }
 
-    public function getAgent(): ?Person
+    public function getAgent(): Person
     {
         return $this->agent;
     }
@@ -99,7 +99,7 @@ class LocationCheckInAction
         return $this;
     }
 
-    public function getStartTime(): ?\DateTime
+    public function getStartTime(): \DateTime
     {
         return $this->startTime;
     }

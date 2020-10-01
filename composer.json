@@ -9,7 +9,8 @@
         "dbp/api-core-bundle": "@dev",
         "guzzlehttp/guzzle": "^6.0",
         "myclabs/php-enum": "^1.7",
-        "symfony/framework-bundle": "^4.1.12"
+        "symfony/framework-bundle": "^4.1.12",
+        "ext-json": "*"
     },
     "require-dev": {
         "composer/semver": "^1.5",

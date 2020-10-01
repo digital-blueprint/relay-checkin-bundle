@@ -77,24 +77,29 @@ class LocationCheckInApi
     }
 
     /**
-     * @param $location
+     * @param LocationCheckInAction $locationCheckInAction
      * @return bool
      * @throws GuzzleException
      * @throws ItemNotLoadedException
      * @throws \League\Uri\Contracts\UriException
      */
-    public function sendCampusQRLocationRequest($location): bool {
+    public function sendCampusQRLocationRequest(LocationCheckInAction $locationCheckInAction): bool {
+        $location = $locationCheckInAction->getLocation();
+        $person = $locationCheckInAction->getAgent();
+
         // e.g. https://campusqr-dev.tugraz.at/location/c65200af79517a925d44/visit
         $url = $this->urls->getLocationRequestUrl($this->campusQRUrl, $location);
 
         $client = $this->getClient();
+        $options = [
+            'body' => json_encode(['email' => $person->getEmail()])
+        ];
 
         try {
             // http://docs.guzzlephp.org/en/stable/quickstart.html?highlight=get#making-a-request
-            $response = $client->request('POST', $url);
+            $response = $client->request('POST', $url, $options);
 
-            $body = $response->getBody();
-            dump($body);
+            $body = $response->getBody()->getContents();
 
             return $body === "ok";
         } catch (\Exception $e) {
