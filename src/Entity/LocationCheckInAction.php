@@ -18,7 +18,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *             "method"="POST",
  *             "openapi_context"={
  *                 "parameters"={
- *                    {"name"="body", "in"="body", "description"="Location", "type"="string", "example"={"location"="c65200af79517a925d44"}, "required"="true"}
+ *                    {"name"="body", "in"="body", "description"="Location", "type"="string", "example"={"location"="c65200af79517a925d44-1"}, "required"="true"}
  *                 }
  *             },
  *         },
