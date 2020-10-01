@@ -1,0 +1,68 @@
+{
+    "name": "dbp/api-location-check-in-bundle",
+    "type": "symfony-bundle",
+    "license": "AGPL-3.0-or-later",
+    "require": {
+        "php": "^7.3",
+        "ext-soap": "*",
+        "api-platform/core": "^2.4",
+        "dbp/api-core-bundle": "@dev",
+        "guzzlehttp/guzzle": "^6.0",
+        "myclabs/php-enum": "^1.7",
+        "symfony/framework-bundle": "^4.1.12"
+    },
+    "require-dev": {
+        "composer/semver": "^1.5",
+        "friendsofphp/php-cs-fixer": "^2.16",
+        "phpstan/phpstan": "^0.12.33",
+        "phpstan/phpstan-phpunit": "^0.12.13",
+        "symfony/phpunit-bridge": "^4.4",
+        "vimeo/psalm": "^3.12"
+    },
+    "repositories": [
+        {
+            "type": "path",
+            "url": "../api-core-bundle"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "DBP\\API\\LocationCheckInBundle\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+          "DBP\\API\\LocationCheckInBundle\\Tests\\": "tests/"
+        }
+    },
+    "config": {
+        "sort-packages": true,
+        "platform": {
+          "php": "7.3"
+        }
+    },
+    "scripts": {
+        "test": [
+            "@php vendor/bin/simple-phpunit"
+        ],
+        "phpstan": [
+            "@php vendor/bin/simple-phpunit --atleast-version 0",
+            "@php vendor/bin/phpstan analyze --ansi"
+        ],
+        "psalm": [
+            "@php vendor/bin/simple-phpunit --atleast-version 0",
+            "@php vendor/bin/psalm"
+        ],
+        "lint": [
+            "@composer run cs",
+            "@composer run phpstan",
+            "@composer run psalm"
+        ],
+        "cs-fix": [
+            "@php vendor/bin/php-cs-fixer --ansi fix"
+        ],
+        "cs": [
+            "@php vendor/bin/php-cs-fixer --ansi fix --dry-run --diff --diff-format=udiff"
+        ]
+    }
+}

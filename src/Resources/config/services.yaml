@@ -1,0 +1,13 @@
+services:
+  DBP\API\LocationCheckInBundle\Service\LocationCheckInApi:
+    public: false
+    autowire: true
+
+  DBP\API\LocationCheckInBundle\DataPersister\:
+    resource: '../../DataPersister'
+    tags: ['api_platform.data_persister']
+    autowire: true
+
+  DBP\API\LocationCheckInBundle\DataProvider\CheckInLocationItemDataProvider:
+    tags: [{ name: 'api_platform.item_data_provider'}]
+    autowire: true
