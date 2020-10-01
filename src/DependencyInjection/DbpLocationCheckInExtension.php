@@ -7,15 +7,17 @@ namespace DBP\API\LocationCheckInBundle\DependencyInjection;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
-use Symfony\Component\HttpKernel\DependencyInjection\Extension;
+use Symfony\Component\HttpKernel\DependencyInjection\ConfigurableExtension;
 
-class DbpLocationCheckInExtension extends Extension
+class DbpLocationCheckInExtension extends ConfigurableExtension
 {
-    public function load(array $configs, ContainerBuilder $container)
+    public function loadInternal(array $mergedConfig, ContainerBuilder $container)
     {
         $pathsToHide = [
             '/location_check_in_actions',
             '/location_check_in_actions/{id}',
+            '/location_check_out_actions',
+            '/location_check_out_actions/{id}',
         ];
 
         $this->extendArrayParameter($container, 'dbp_api.paths_to_hide', $pathsToHide);
@@ -28,10 +30,9 @@ class DbpLocationCheckInExtension extends Extension
             new FileLocator(__DIR__.'/../Resources/config')
         );
 
-        // TODO: To get rid of error message 'Environment variables "CAMPUS_QR_URL" are never used.'
-        $container->setParameter('campus_qr_url',$configs[0]['campus_qr_url']);
-
         $loader->load('services.yaml');
+
+        $container->setParameter('dbp_api.location_check_in.config', $mergedConfig);
     }
 
     private function extendArrayParameter(ContainerBuilder $container, string $parameter, array $values)

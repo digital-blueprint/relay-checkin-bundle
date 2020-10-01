@@ -13,11 +13,21 @@ use Symfony\Component\Serializer\Annotation\Groups;
  * Note: We need a "collectionOperations" setting for "get" to get an "entryPoint" in JSONLD.
  *
  * @ApiResource(
- *     collectionOperations={"get", "post"},
+ *     collectionOperations={"get",
+ *         "post"={
+ *             "method"="POST",
+ *             "openapi_context"={
+ *                 "parameters"={
+ *                    {"name"="body", "in"="body", "description"="Location", "type"="string", "example"={"location"="c65200af79517a925d44"}, "required"="true"}
+ *                 }
+ *             },
+ *         },
+ *     },
  *     itemOperations={"get"},
  *     iri="http://schema.org/CheckInAction",
  *     description="Location check-in action",
- *     normalizationContext={"jsonld_embed_context"=true, "groups"={"LocationCheckIn:output"}}
+ *     normalizationContext={"jsonld_embed_context"=true, "groups"={"LocationCheckIn:output"}},
+ *     denormalizationContext={"groups"={"LocationCheckIn:input"}}
  * )
  */
 class LocationCheckInAction
@@ -39,7 +49,7 @@ class LocationCheckInAction
 
     /**
      * @ApiProperty(iri="http://schema.org/location")
-     * @Groups({"LocationCheckIn:output"})
+     * @Groups({"LocationCheckIn:output", "LocationCheckIn:input"})
      *
      * @var string
      */
