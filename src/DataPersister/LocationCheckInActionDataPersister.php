@@ -11,6 +11,7 @@ use DBP\API\LocationCheckInBundle\Service\LocationCheckInApi;
 use DBP\API\CoreBundle\Exception\ItemNotStoredException;
 use DBP\API\CoreBundle\Service\PersonProviderInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 final class LocationCheckInActionDataPersister implements DataPersisterInterface
 {
@@ -38,6 +39,7 @@ final class LocationCheckInActionDataPersister implements DataPersisterInterface
      * @return LocationCheckInAction
      *
      * @throws ItemNotStoredException
+     * @throws AccessDeniedHttpException
      */
     public function persist($locationCheckInAction)
     {
@@ -46,11 +48,7 @@ final class LocationCheckInActionDataPersister implements DataPersisterInterface
         $locationCheckInAction->setStartTime(new \DateTime());
         $locationCheckInAction->setAgent($this->personProvider->getCurrentPerson());
 
-        try {
-            $this->api->sendCampusQRLocationRequest($locationCheckInAction);
-        } catch (\Exception $e) {
-            throw new ItemNotStoredException(sprintf('LocationCheckIn could not be stored: %s', Tools::filterErrorMessage($e->getMessage())));
-        }
+        $this->api->sendCampusQRLocationRequest($locationCheckInAction);
 
         return $locationCheckInAction;
     }
