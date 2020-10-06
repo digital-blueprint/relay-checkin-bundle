@@ -54,9 +54,9 @@ final class LocationCheckInActionDataPersister implements DataPersisterInterface
     }
 
     /**
-     * @param LocationCheckInAction $authenticImageRequest
+     * @param LocationCheckInAction $locationCheckInAction
      */
-    public function remove($authenticImageRequest)
+    public function remove($locationCheckInAction)
     {
     }
 }
