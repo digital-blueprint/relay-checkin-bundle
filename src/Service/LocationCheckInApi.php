@@ -7,16 +7,21 @@ declare(strict_types=1);
 
 namespace DBP\API\LocationCheckInBundle\Service;
 
+use DBP\API\CoreBundle\Exception\ItemNotLoadedException;
 use DBP\API\CoreBundle\Exception\ItemNotStoredException;
+use DBP\API\CoreBundle\Helpers\JsonException;
 use DBP\API\CoreBundle\Helpers\Tools;
+use DBP\API\CoreBundle\Helpers\Tools as CoreTools;
+use DBP\API\LocationCheckInBundle\Entity\CheckInPlace;
 use DBP\API\LocationCheckInBundle\Entity\LocationCheckInAction;
-use DBP\API\LocationCheckInBundle\Entity\LocationCheckOutAction;
 use DBP\API\CoreBundle\Service\GuzzleLogger;
 use DBP\API\CoreBundle\Service\PersonProviderInterface;
+use Doctrine\Common\Collections\ArrayCollection;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\HandlerStack;
 use League\Uri\Contracts\UriException;
+use Psr\Http\Message\ResponseInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
@@ -41,6 +46,11 @@ class LocationCheckInApi
      */
     private $campusQRUrl = "";
 
+    /**
+     * @var string
+     */
+    private $campusQRToken = "";
+
 
     public function __construct(
         GuzzleLogger $guzzleLogger,
@@ -55,6 +65,7 @@ class LocationCheckInApi
 
         $config = $container->getParameter('dbp_api.location_check_in.config');
         $this->campusQRUrl = $config['campus_qr_url'] ?? '';
+        $this->campusQRToken = $config['campus_qr_token'] ?? '';
     }
 
     /**
@@ -109,7 +120,6 @@ class LocationCheckInApi
             $status = $e->getCode();
 
             if ($status == 403) {
-                dump($status);
                 throw new AccessDeniedHttpException('You are not allowed to check-in at this location!');
             }
 
@@ -120,4 +130,87 @@ class LocationCheckInApi
                 Tools::filterErrorMessage($e->getMessage())));
         }
     }
- }
+
+    /**
+     * @param array $filters
+     * @return ArrayCollection|CheckInPlace[]
+     * @throws ItemNotLoadedException
+     */
+    public function getCheckInPlaces($name = ""): ArrayCollection
+    {
+        /** @var ArrayCollection<int,CheckInPlace> $collection */
+        $collection = new ArrayCollection();
+
+        $authenticDocumentTypesJsonData = $this->getCheckInPlacesJsonData();
+
+        dump($authenticDocumentTypesJsonData);
+
+        foreach ($authenticDocumentTypesJsonData as $jsonData) {
+            $collection->add($this->checkInPlaceFromJsonItem($jsonData));
+        }
+
+        return $collection;
+    }
+
+    public function getCheckInPlacesJsonData(): array {
+        $client = $this->getClient();
+
+        $options = [
+            'headers' => [ 'Cookie' => 'SESSION_CAMPUS_QR=token%3D%25' . $this->campusQRToken ]
+        ];
+
+        try {
+            // e.g. https://campusqr-dev.tugraz.at/location/list
+            $url = $this->urls->getLocationListRequestUrl($this->campusQRUrl);
+
+            // http://docs.guzzlephp.org/en/stable/quickstart.html?highlight=get#making-a-request
+            $response = $client->request('GET', $url, $options);
+
+            return $this->decodeResponse($response);
+        } catch (GuzzleException $e) {
+            $status = $e->getCode();
+
+            if ($status == 403) {
+                throw new AccessDeniedHttpException('You are not allowed fetch places!');
+            }
+
+            throw new ItemNotLoadedException(sprintf('Places could not be loaded: %s',
+                Tools::filterErrorMessage($e->getMessage())));
+        } catch (\Exception|UriException $e) {
+            throw new ItemNotLoadedException(sprintf('Places could not be loaded: %s',
+                Tools::filterErrorMessage($e->getMessage())));
+        }
+    }
+
+    /**
+     * @param $jsonData
+     * @return CheckInPlace
+     */
+    public function checkInPlaceFromJsonItem($jsonData): CheckInPlace {
+        $checkInPlace = new CheckInPlace();
+        $checkInPlace->setIdentifier($jsonData["id"]);
+        $checkInPlace->setName($jsonData["name"]);
+
+        if ($jsonData["seatCount"] !== null) {
+            $checkInPlace->setMaximumPhysicalAttendeeCapacity($jsonData["seatCount"]);
+        }
+
+        return $checkInPlace;
+    }
+
+    /**
+     * @param ResponseInterface $response
+     * @return mixed
+     *
+     * @throws ItemNotLoadedException
+     */
+    private function decodeResponse(ResponseInterface $response)
+    {
+        $body = $response->getBody();
+        try {
+            return CoreTools::decodeJSON((string) $body, true);
+        } catch (JsonException $e) {
+            throw new ItemNotLoadedException(sprintf('Invalid json: %s', CoreTools::filterErrorMessage($e->getMessage())));
+        }
+    }
+}

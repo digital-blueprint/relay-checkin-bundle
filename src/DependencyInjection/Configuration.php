@@ -16,6 +16,7 @@ class Configuration implements ConfigurationInterface
         $treeBuilder->getRootNode()
             ->children()
             ->scalarNode('campus_qr_url')->end()
+            ->scalarNode('campus_qr_token')->end()
             ->end()
             ->end()
         ;

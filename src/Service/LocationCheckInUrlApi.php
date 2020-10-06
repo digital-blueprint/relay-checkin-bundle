@@ -28,4 +28,16 @@ class LocationCheckInUrlApi
             'seatNumber' => $seatNumber,
         ]);
     }
+
+    /**
+     * @param string $campusQRUrl
+     * @return string
+     * @throws UriException
+     */
+    public function getLocationListRequestUrl(string $campusQRUrl): string
+    {
+        $uriTemplate = new UriTemplate('/location/list');
+
+        return $campusQRUrl . $uriTemplate->expand();
+    }
 }

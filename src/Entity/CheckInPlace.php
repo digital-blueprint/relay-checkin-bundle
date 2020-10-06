@@ -41,7 +41,7 @@ class CheckInPlace
      * @ApiProperty(iri="http://schema.org/maximumPhysicalAttendeeCapacity")
      * @Groups({"CheckInPlace:output"})
      *
-     * @var int
+     * @var ?int
      */
     private $maximumPhysicalAttendeeCapacity;
 
@@ -69,7 +69,7 @@ class CheckInPlace
         return $this;
     }
 
-    public function getMaximumPhysicalAttendeeCapacity(): int
+    public function getMaximumPhysicalAttendeeCapacity(): ?int
     {
         return $this->maximumPhysicalAttendeeCapacity;
     }
