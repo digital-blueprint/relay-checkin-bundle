@@ -87,6 +87,7 @@ class LocationCheckInApi
      */
     public function sendCampusQRLocationRequest(LocationCheckInAction $locationCheckInAction): bool {
         $location = $locationCheckInAction->getLocation();
+        $seatNumber = $locationCheckInAction->getSeatNumber();
         $person = $locationCheckInAction->getAgent();
 
         $client = $this->getClient();
@@ -96,7 +97,7 @@ class LocationCheckInApi
 
         try {
             // e.g. https://campusqr-dev.tugraz.at/location/c65200af79517a925d44/visit
-            $url = $this->urls->getLocationRequestUrl($this->campusQRUrl, $location);
+            $url = $this->urls->getLocationRequestUrl($this->campusQRUrl, $location->getIdentifier(), $seatNumber);
 
             // http://docs.guzzlephp.org/en/stable/quickstart.html?highlight=get#making-a-request
             $response = $client->request('POST', $url, $options);

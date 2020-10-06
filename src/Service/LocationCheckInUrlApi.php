@@ -12,15 +12,20 @@ class LocationCheckInUrlApi
     /**
      * @param string $campusQRUrl
      * @param string $location
+     * @param string|null $seatNumber
      * @return string
      * @throws UriException
      */
-    public function getLocationRequestUrl(string $campusQRUrl, string $location): string
+    public function getLocationRequestUrl(string $campusQRUrl, string $location, ?string $seatNumber = null): string
     {
-        $uriTemplate = new UriTemplate('/location/{location}/visit');
+        $uriTemplate = new UriTemplate(
+            $seatNumber === null ?
+                '/location/{location}/visit' :
+                '/location/{location}-{seatNumber}/visit');
 
         return $campusQRUrl . $uriTemplate->expand([
             'location' => $location,
+            'seatNumber' => $seatNumber,
         ]);
     }
 }

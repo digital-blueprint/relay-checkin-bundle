@@ -6,6 +6,7 @@ namespace DBP\API\LocationCheckInBundle\Entity;
 
 use ApiPlatform\Core\Annotation\ApiProperty;
 use ApiPlatform\Core\Annotation\ApiResource;
+use DBP\API\LocationCheckInBundle\Entity\CheckInPlace;
 use DBP\API\CoreBundle\Entity\Person;
 use Symfony\Component\Serializer\Annotation\Groups;
 
@@ -18,7 +19,14 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *             "method"="POST",
  *             "openapi_context"={
  *                 "parameters"={
- *                    {"name"="body", "in"="body", "description"="Location", "type"="string", "example"={"location"="c65200af79517a925d44-1"}, "required"="true"}
+ *                    {
+ *                      "name"="body",
+ *                      "in"="body",
+ *                      "description"="Location",
+ *                      "type"="string",
+ *                      "example"={"location"="/check_in_places/c65200af79517a925d44", "seatNumber"="17"},
+ *                      "required"="true"
+ *                    }
  *                 }
  *             },
  *         },
@@ -51,9 +59,17 @@ class LocationCheckInAction
      * @ApiProperty(iri="http://schema.org/location")
      * @Groups({"LocationCheckIn:output", "LocationCheckIn:input"})
      *
-     * @var string
+     * @var CheckInPlace
      */
     private $location;
+
+    /**
+     * @ApiProperty(iri="http://schema.org/Text")
+     * @Groups({"LocationCheckIn:output", "LocationCheckIn:input"})
+     *
+     * @var ?string
+     */
+    private $seatNumber;
 
     /**
      * @ApiProperty(iri="https://schema.org/DateTime")
@@ -87,14 +103,26 @@ class LocationCheckInAction
         return $this;
     }
 
-    public function getLocation(): ?string
+    public function getLocation(): CheckInPlace
     {
         return $this->location;
     }
 
-    public function setLocation(string $location): self
+    public function setLocation(CheckInPlace $location): self
     {
         $this->location = $location;
+
+        return $this;
+    }
+
+    public function getSeatNumber(): ?string
+    {
+        return $this->seatNumber;
+    }
+
+    public function setSeatNumber(?string $seatNumber): self
+    {
+        $this->seatNumber = $seatNumber;
 
         return $this;
     }

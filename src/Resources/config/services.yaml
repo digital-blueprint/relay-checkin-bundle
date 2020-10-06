@@ -8,6 +8,6 @@ services:
     tags: ['api_platform.data_persister']
     autowire: true
 
-  DBP\API\LocationCheckInBundle\DataProvider\CheckInLocationItemDataProvider:
+  DBP\API\LocationCheckInBundle\DataProvider\CheckInPlaceItemDataProvider:
     tags: [{ name: 'api_platform.item_data_provider'}]
     autowire: true

@@ -44,7 +44,7 @@ final class LocationCheckInActionDataPersister implements DataPersisterInterface
     public function persist($locationCheckInAction)
     {
         $location = $locationCheckInAction->getLocation();
-        $locationCheckInAction->setIdentifier(md5($location . rand(0, 10000) . time()));
+        $locationCheckInAction->setIdentifier(md5($location->getIdentifier() . rand(0, 10000) . time()));
         $locationCheckInAction->setStartTime(new \DateTime());
         $locationCheckInAction->setAgent($this->personProvider->getCurrentPerson());
 
