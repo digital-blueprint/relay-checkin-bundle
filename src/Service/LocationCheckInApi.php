@@ -161,7 +161,7 @@ class LocationCheckInApi
     }
 
     /**
-     * @param array $filters
+     * @param string $name
      * @return ArrayCollection|CheckInPlace[]
      * @throws ItemNotLoadedException
      */
@@ -172,10 +172,15 @@ class LocationCheckInApi
 
         $authenticDocumentTypesJsonData = $this->getCheckInPlacesJsonData();
 
-        dump($authenticDocumentTypesJsonData);
-
         foreach ($authenticDocumentTypesJsonData as $jsonData) {
-            $collection->add($this->checkInPlaceFromJsonItem($jsonData));
+            $checkInPlace = $this->checkInPlaceFromJsonItem($jsonData);
+
+            // search for a name if it was set
+            if ($name !== "" && strpos($checkInPlace->getName(), $name) === false) {
+                continue;
+            }
+
+            $collection->add($checkInPlace);
         }
 
         return $collection;

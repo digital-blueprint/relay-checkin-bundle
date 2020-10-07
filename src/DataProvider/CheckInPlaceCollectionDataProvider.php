@@ -33,7 +33,7 @@ final class CheckInPlaceCollectionDataProvider implements CollectionDataProvider
     {
         $api = $this->api;
         $filters = $context['filters'] ?? [];
-        $name = $filters['name'] ?? '';
+        $name = $filters['search'] ?? '';
 
         $checkInPlaces = $api->getCheckInPlaces($name);
 
