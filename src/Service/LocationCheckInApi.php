@@ -200,7 +200,7 @@ class LocationCheckInApi
             $status = $e->getCode();
 
             if ($status == 403) {
-                throw new AccessDeniedHttpException('You are not allowed fetch places!');
+                throw new AccessDeniedHttpException('The access token is not allowed to fetch places!');
             }
 
             throw new ItemNotLoadedException(sprintf('Places could not be loaded: %s',
