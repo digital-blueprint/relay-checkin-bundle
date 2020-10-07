@@ -20,7 +20,11 @@ use Doctrine\Common\Collections\ArrayCollection;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\HandlerStack;
+use Kevinrob\GuzzleCache\CacheMiddleware;
+use Kevinrob\GuzzleCache\Storage\Psr6CacheStorage;
+use Kevinrob\GuzzleCache\Strategy\GreedyCacheStrategy;
 use League\Uri\Contracts\UriException;
+use Psr\Cache\CacheItemPoolInterface;
 use Psr\Http\Message\ResponseInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
@@ -30,6 +34,8 @@ class LocationCheckInApi
     private $clientHandler;
 
     private $guzzleLogger;
+
+    private $container;
 
     /**
      * @var PersonProviderInterface
@@ -51,6 +57,9 @@ class LocationCheckInApi
      */
     private $campusQRToken = "";
 
+    // Caching time of https://campusqr-dev.tugraz.at/location/list
+    const LOCATION_CACHE_TTL = 300;
+
 
     public function __construct(
         GuzzleLogger $guzzleLogger,
@@ -61,6 +70,7 @@ class LocationCheckInApi
         $this->clientHandler = null;
         $this->guzzleLogger = $guzzleLogger;
         $this->personProvider = $personProvider;
+        $this->container = $container;
         $this->urls = new LocationCheckInUrlApi();
 
         $config = $container->getParameter('dbp_api.location_check_in.config');
@@ -87,7 +97,26 @@ class LocationCheckInApi
 
         $stack->push($this->guzzleLogger->getClientHandler());
 
+        $guzzleCachePool = $this->getCachePool();
+        $cacheMiddleWare = new CacheMiddleware(
+            new GreedyCacheStrategy(
+                new Psr6CacheStorage($guzzleCachePool),
+                self::LOCATION_CACHE_TTL
+            )
+        );
+
+        $cacheMiddleWare->setHttpMethods(['GET' => true, 'HEAD' => true]);
+        $stack->push($cacheMiddleWare);
+
         return new Client($client_options);
+    }
+
+    private function getCachePool(): CacheItemPoolInterface
+    {
+        $guzzleCachePool = $this->container->get('dbp_api.cache.location_check_in.location');
+        assert($guzzleCachePool instanceof CacheItemPoolInterface);
+
+        return $guzzleCachePool;
     }
 
     /**

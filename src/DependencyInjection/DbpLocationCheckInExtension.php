@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace DBP\API\LocationCheckInBundle\DependencyInjection;
 
+use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
@@ -24,6 +25,11 @@ class DbpLocationCheckInExtension extends ConfigurableExtension
 
         $this->extendArrayParameter(
             $container, 'api_platform.resource_class_directories', [__DIR__.'/../Entity']);
+
+        $def = $container->register('dbp_api.cache.location_check_in.location', FilesystemAdapter::class);
+        $def->setArguments(['location-check-in', 60, '%kernel.cache_dir%/dbp/location-check-in']);
+        $def->setPublic(true);
+        $def->addTag('cache.pool');
 
         $loader = new YamlFileLoader(
             $container,
