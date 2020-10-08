@@ -55,7 +55,7 @@ final class LocationCheckInActionDataPersister implements DataPersisterInterface
 
         if ($seatNumber === null && $maximumPhysicalAttendeeCapacity !== null) {
             throw new ItemNotStoredException("Location has seats activated, you need to set a seatNumber!");
-        } elseif ($seatNumber === null && $maximumPhysicalAttendeeCapacity !== null) {
+        } elseif ($seatNumber !== null && $maximumPhysicalAttendeeCapacity === null) {
             throw new ItemNotStoredException("Location doesn't have any seats activated, you cannot set a seatNumber!");
         } elseif ($seatNumber > $maximumPhysicalAttendeeCapacity) {
             throw new ItemNotStoredException("seatNumber must not exceed maximumPhysicalAttendeeCapacity of location!");
