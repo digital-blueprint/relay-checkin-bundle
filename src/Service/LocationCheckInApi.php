@@ -202,7 +202,7 @@ class LocationCheckInApi
             }
         }
 
-        throw new NotFoundHttpException('Place was not found!');
+        throw new NotFoundHttpException('Location was not found!');
     }
 
     public function fetchCheckInPlacesJsonData(): array {
