@@ -35,7 +35,7 @@ final class CheckInPlaceCollectionDataProvider implements CollectionDataProvider
         $filters = $context['filters'] ?? [];
         $name = $filters['search'] ?? '';
 
-        $checkInPlaces = $api->getCheckInPlaces($name);
+        $checkInPlaces = $api->fetchCheckInPlaces($name);
 
         $perPage = self::ITEMS_PER_PAGE;
         $page = 1;

@@ -28,6 +28,7 @@ use Psr\Cache\CacheItemPoolInterface;
 use Psr\Http\Message\ResponseInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class LocationCheckInApi
 {
@@ -165,12 +166,12 @@ class LocationCheckInApi
      * @return ArrayCollection|CheckInPlace[]
      * @throws ItemNotLoadedException
      */
-    public function getCheckInPlaces($name = ""): ArrayCollection
+    public function fetchCheckInPlaces($name = ""): ArrayCollection
     {
         /** @var ArrayCollection<int,CheckInPlace> $collection */
         $collection = new ArrayCollection();
 
-        $authenticDocumentTypesJsonData = $this->getCheckInPlacesJsonData();
+        $authenticDocumentTypesJsonData = $this->fetchCheckInPlacesJsonData();
 
         foreach ($authenticDocumentTypesJsonData as $jsonData) {
             $checkInPlace = $this->checkInPlaceFromJsonItem($jsonData);
@@ -186,7 +187,25 @@ class LocationCheckInApi
         return $collection;
     }
 
-    public function getCheckInPlacesJsonData(): array {
+    /**
+     * @param string $id
+     * @return CheckInPlace
+     * @throws ItemNotLoadedException
+     * @throws NotFoundHttpException
+     */
+    public function fetchCheckInPlace(string $id): CheckInPlace {
+        $checkInPlaces = $this->fetchCheckInPlaces();
+
+        foreach($checkInPlaces as $checkInPlace) {
+            if ($checkInPlace->getIdentifier() === $id) {
+                return $checkInPlace;
+            }
+        }
+
+        throw new NotFoundHttpException('Place was not found!');
+    }
+
+    public function fetchCheckInPlacesJsonData(): array {
         $client = $this->getClient();
 
         $options = [

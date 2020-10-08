@@ -12,9 +12,11 @@ namespace DBP\API\LocationCheckInBundle\DataProvider;
 
 use ApiPlatform\Core\DataProvider\ItemDataProviderInterface;
 use ApiPlatform\Core\DataProvider\RestrictedDataProviderInterface;
+use DBP\API\CoreBundle\Exception\ItemNotLoadedException;
 use DBP\API\LocationCheckInBundle\Entity\CheckInPlace;
 use DBP\API\LocationCheckInBundle\Service\LocationCheckInApi;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 final class CheckInPlaceItemDataProvider implements ItemDataProviderInterface, RestrictedDataProviderInterface
 {
@@ -39,12 +41,11 @@ final class CheckInPlaceItemDataProvider implements ItemDataProviderInterface, R
      * @param string|null $operationName
      * @param array $context
      * @return CheckInPlace|null
+     * @throws ItemNotLoadedException
+     * @throws NotFoundHttpException
      */
     public function getItem(string $resourceClass, $id, string $operationName = null, array $context = []): ?CheckInPlace
     {
-        $checkInPlace = new CheckInPlace();
-        $checkInPlace->setIdentifier($id);
-
-        return $checkInPlace;
+        return $this->api->fetchCheckInPlace($id);
     }
 }
