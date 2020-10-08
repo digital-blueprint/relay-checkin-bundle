@@ -18,7 +18,17 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *         "get"={
  *             "normalization_context"={"groups"={"LocationCheckIn:output", "LocationCheckIn:outputList"}},
  *             "openapi_context"={
- *                 "summary"="Retrieves all LocationCheckInActions of the current user."
+ *                 "summary"="Retrieves all LocationCheckInActions of the current user.",
+ *                 "parameters"={
+ *                    {
+ *                      "name"="location",
+ *                      "in"="query",
+ *                      "description"="Location",
+ *                      "type"="string",
+ *                      "example"="c65200af79517a925d44",
+ *                      "required"="false"
+ *                    }
+ *                 }
  *             },
  *         },
  *         "post"={

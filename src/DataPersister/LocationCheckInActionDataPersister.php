@@ -63,6 +63,12 @@ final class LocationCheckInActionDataPersister implements DataPersisterInterface
             throw new ItemNotStoredException("seatNumber too low!");
         }
 
+        $existingCheckIns = $this->api->fetchLocationCheckInActionsOfCurrentPerson($location->getIdentifier());
+
+        if (count($existingCheckIns) > 0) {
+            throw new ItemNotStoredException("There are already check-ins at the location for the current user!");
+        }
+
         $this->api->sendCampusQRLocationRequest($locationCheckInAction);
 
         return $locationCheckInAction;

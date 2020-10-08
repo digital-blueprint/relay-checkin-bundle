@@ -33,8 +33,10 @@ final class LocationCheckInActionCollectionDataProvider implements CollectionDat
     public function getCollection(string $resourceClass, string $operationName = null, array $context = []): ArrayFullPaginator
     {
         $api = $this->api;
+        $filters = $context['filters'] ?? [];
+        $location = $filters['location'] ?? '';
 
-        $locationCheckInActions = $api->fetchLocationCheckInActionsOfCurrentPerson();
+        $locationCheckInActions = $api->fetchLocationCheckInActionsOfCurrentPerson($location);
 
         $perPage = self::ITEMS_PER_PAGE;
         $page = 1;
