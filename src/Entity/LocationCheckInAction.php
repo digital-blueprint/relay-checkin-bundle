@@ -14,7 +14,13 @@ use Symfony\Component\Serializer\Annotation\Groups;
  * Note: We need a "collectionOperations" setting for "get" to get an "entryPoint" in JSONLD.
  *
  * @ApiResource(
- *     collectionOperations={"get",
+ *     collectionOperations={
+ *         "get"={
+ *             "normalization_context"={"groups"={"LocationCheckIn:output", "LocationCheckIn:outputList"}},
+ *             "openapi_context"={
+ *                 "summary"="Retrieves all LocationCheckInActions of the current user."
+ *             },
+ *         },
  *         "post"={
  *             "method"="POST",
  *             "openapi_context"={

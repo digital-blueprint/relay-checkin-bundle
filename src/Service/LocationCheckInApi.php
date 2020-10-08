@@ -98,6 +98,19 @@ class LocationCheckInApi
 
         $stack->push($this->guzzleLogger->getClientHandler());
 
+        return new Client($client_options);
+    }
+
+    private function getLocationClient(): Client
+    {
+        $stack = HandlerStack::create($this->clientHandler);
+
+        $client_options = [
+            'handler' => $stack,
+        ];
+
+        $stack->push($this->guzzleLogger->getClientHandler());
+
         $guzzleCachePool = $this->getCachePool();
         $cacheMiddleWare = new CacheMiddleware(
             new GreedyCacheStrategy(
@@ -206,7 +219,7 @@ class LocationCheckInApi
     }
 
     public function fetchCheckInPlacesJsonData(): array {
-        $client = $this->getClient();
+        $client = $this->getLocationClient();
 
         $options = [
             'headers' => [ 'X-Authorization' => $this->campusQRToken ]
@@ -265,5 +278,91 @@ class LocationCheckInApi
         } catch (JsonException $e) {
             throw new ItemNotLoadedException(sprintf('Invalid json: %s', CoreTools::filterErrorMessage($e->getMessage())));
         }
+    }
+
+    /**
+     * @return ArrayCollection
+     * @throws ItemNotLoadedException
+     */
+    public function fetchLocationCheckInActionsOfCurrentPerson(): ArrayCollection {
+        /** @var ArrayCollection<int,LocationCheckInAction> $collection */
+        $collection = new ArrayCollection();
+
+        $authenticDocumentTypesJsonData = $this->fetchLocationCheckInActionsOfCurrentPersonJsonData();
+
+        foreach ($authenticDocumentTypesJsonData as $jsonData) {
+            $checkInPlace = $this->locationCheckInActionFromJsonItem($jsonData);
+
+            $collection->add($checkInPlace);
+        }
+
+        return $collection;
+    }
+
+    /**
+     * @return array
+     * @throws ItemNotLoadedException
+     */
+    public function fetchLocationCheckInActionsOfCurrentPersonJsonData(): array {
+        $client = $this->getClient();
+        $person = $this->personProvider->getCurrentPerson();
+
+        $options = [
+            'headers' => [ 'X-Authorization' => $this->campusQRToken ],
+            'body' => json_encode(['emailAddress' => $person->getEmail()])
+        ];
+
+        try {
+            // e.g. https://campusqr-dev.tugraz.at/location/list
+            $url = $this->urls->getLocationCheckInActionListOfCurrentPersonRequestUrl($this->campusQRUrl);
+
+            // http://docs.guzzlephp.org/en/stable/quickstart.html?highlight=get#making-a-request
+            $response = $client->request('POST', $url, $options);
+
+            return $this->decodeResponse($response);
+        } catch (GuzzleException $e) {
+            $status = $e->getCode();
+
+            if ($status == 403) {
+                throw new AccessDeniedHttpException('The access token is not allowed to fetch LocationCheckInActions!');
+            }
+
+            throw new ItemNotLoadedException(sprintf('LocationCheckInActions could not be loaded: %s',
+                Tools::filterErrorMessage($e->getMessage())));
+        } catch (\Exception|UriException $e) {
+            throw new ItemNotLoadedException(sprintf('LocationCheckInActions could not be loaded: %s',
+                Tools::filterErrorMessage($e->getMessage())));
+        }
+    }
+
+    /**
+     * @param $jsonData
+     * @param PersonProviderInterface|null $person
+     * @return LocationCheckInAction
+     * @throws ItemNotLoadedException
+     */
+    public function locationCheckInActionFromJsonItem($jsonData, ?PersonProviderInterface $person = null): LocationCheckInAction {
+        if ($person === null) {
+            $person = $this->personProvider->getCurrentPerson();
+        }
+
+        // We don't get any maximumPhysicalAttendeeCapacity, so we are hiding it in the result when fetching the
+        // LocationCheckInAction list via normalization context group "LocationCheckIn:outputList"
+        $checkInPlace = new CheckInPlace();
+        $checkInPlace->setIdentifier($jsonData["locationId"]);
+        $checkInPlace->setName($jsonData["locationName"]);
+
+        // TODO: the api currently returns the "checkInDate" as float, like 1.60214467586E12, see https://github.com/studo-app/campus-qr/issues/53
+        $dateTime = new \DateTime();
+        $dateTime->setTimestamp((int) $jsonData["checkInDate"]);
+
+        $locationCheckInAction = new LocationCheckInAction();
+        $locationCheckInAction->setIdentifier($jsonData["id"]);
+        $locationCheckInAction->setSeatNumber($jsonData["seat"]);
+        $locationCheckInAction->setStartTime($dateTime);
+        $locationCheckInAction->setAgent($person);
+        $locationCheckInAction->setLocation($checkInPlace);
+
+        return $locationCheckInAction;
     }
 }

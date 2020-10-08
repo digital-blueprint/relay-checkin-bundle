@@ -15,7 +15,6 @@ class DbpLocationCheckInExtension extends ConfigurableExtension
     public function loadInternal(array $mergedConfig, ContainerBuilder $container)
     {
         $pathsToHide = [
-            '/location_check_in_actions',
             '/location_check_in_actions/{id}',
             '/location_check_out_actions',
             '/location_check_out_actions/{id}',

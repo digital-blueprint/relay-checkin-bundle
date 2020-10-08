@@ -20,14 +20,14 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *     itemOperations={"get"},
  *     iri="http://schema.org/Place",
  *     description="Check-in place",
- *     normalizationContext={"jsonld_embed_context"=true, "groups"={"CheckInPlace:output"}},
+ *     normalizationContext={"jsonld_embed_context"=true, "groups"={"CheckInPlace:output", "LocationCheckIn:outputList"}},
  *     denormalizationContext={"groups"={"CheckInPlace:input"}}
  * )
  */
 class CheckInPlace
 {
     /**
-     * @Groups({"CheckInPlace:output"})
+     * @Groups({"CheckInPlace:output", "LocationCheckIn:outputList"})
      * @ApiProperty(identifier=true,iri="http://schema.org/identifier")
      * Note: Every entity needs an identifier!
      */
@@ -35,7 +35,7 @@ class CheckInPlace
 
     /**
      * @ApiProperty(iri="http://schema.org/name")
-     * @Groups({"CheckInPlace:output"})
+     * @Groups({"CheckInPlace:output", "LocationCheckIn:outputList"})
      *
      * @var string
      */

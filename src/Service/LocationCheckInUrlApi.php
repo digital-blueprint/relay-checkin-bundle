@@ -40,4 +40,16 @@ class LocationCheckInUrlApi
 
         return $campusQRUrl . $uriTemplate->expand();
     }
+
+    /**
+     * @param string $campusQRUrl
+     * @return string
+     * @throws UriException
+     */
+    public function getLocationCheckInActionListOfCurrentPersonRequestUrl(string $campusQRUrl): string
+    {
+        $uriTemplate = new UriTemplate('/report/listActiveCheckIns');
+
+        return $campusQRUrl . $uriTemplate->expand();
+    }
 }
