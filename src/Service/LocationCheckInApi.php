@@ -190,7 +190,7 @@ class LocationCheckInApi
         $client = $this->getClient();
 
         $options = [
-            'headers' => [ 'Cookie' => 'SESSION_CAMPUS_QR=token%3D%25' . $this->campusQRToken ]
+            'headers' => [ 'X-Authorization' => $this->campusQRToken ]
         ];
 
         try {
