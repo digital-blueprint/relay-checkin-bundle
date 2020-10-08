@@ -64,10 +64,10 @@ class LocationCheckInAction
     private $location;
 
     /**
-     * @ApiProperty(iri="http://schema.org/Text")
+     * @ApiProperty(iri="http://schema.org/Number")
      * @Groups({"LocationCheckIn:output", "LocationCheckIn:input"})
      *
-     * @var ?string
+     * @var ?int
      */
     private $seatNumber;
 
@@ -115,12 +115,12 @@ class LocationCheckInAction
         return $this;
     }
 
-    public function getSeatNumber(): ?string
+    public function getSeatNumber(): ?int
     {
         return $this->seatNumber;
     }
 
-    public function setSeatNumber(?string $seatNumber): self
+    public function setSeatNumber(?int $seatNumber): self
     {
         $this->seatNumber = $seatNumber;
 
