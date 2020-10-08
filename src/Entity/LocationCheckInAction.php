@@ -34,7 +34,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *     itemOperations={"get"},
  *     iri="http://schema.org/CheckInAction",
  *     description="Location check-in action",
- *     normalizationContext={"jsonld_embed_context"=true, "groups"={"LocationCheckIn:output"}},
+ *     normalizationContext={"jsonld_embed_context"=true, "groups"={"LocationCheckIn:output", "CheckInPlace:output"}},
  *     denormalizationContext={"groups"={"LocationCheckIn:input"}}
  * )
  */
