@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace DBP\API\LocationCheckInBundle\DataPersister;
 
 use ApiPlatform\Core\DataPersister\DataPersisterInterface;
+use DBP\API\CoreBundle\Exception\ItemNotLoadedException;
 use DBP\API\CoreBundle\Helpers\Tools;
 use DBP\API\LocationCheckInBundle\Entity\LocationCheckInAction;
 use DBP\API\LocationCheckInBundle\Service\LocationCheckInApi;
@@ -38,6 +39,7 @@ final class LocationCheckInActionDataPersister implements DataPersisterInterface
      *
      * @return LocationCheckInAction
      *
+     * @throws ItemNotLoadedException
      * @throws ItemNotStoredException
      * @throws AccessDeniedHttpException
      */
@@ -47,6 +49,19 @@ final class LocationCheckInActionDataPersister implements DataPersisterInterface
         $locationCheckInAction->setIdentifier(md5($location->getIdentifier() . rand(0, 10000) . time()));
         $locationCheckInAction->setStartTime(new \DateTime());
         $locationCheckInAction->setAgent($this->personProvider->getCurrentPerson());
+
+        $seatNumber = $locationCheckInAction->getSeatNumber();
+        $maximumPhysicalAttendeeCapacity = $location->getMaximumPhysicalAttendeeCapacity();
+
+        if ($seatNumber === null && $maximumPhysicalAttendeeCapacity !== null) {
+            throw new ItemNotStoredException("Location has seats activated, you need to set a seatNumber!");
+        } elseif ($seatNumber === null && $maximumPhysicalAttendeeCapacity !== null) {
+            throw new ItemNotStoredException("Location doesn't have any seats activated, you cannot set a seatNumber!");
+        } elseif ($seatNumber > $maximumPhysicalAttendeeCapacity) {
+            throw new ItemNotStoredException("seatNumber must not exceed maximumPhysicalAttendeeCapacity of location!");
+        } elseif ($seatNumber < 1) {
+            throw new ItemNotStoredException("seatNumber too low!");
+        }
 
         $this->api->sendCampusQRLocationRequest($locationCheckInAction);
 
