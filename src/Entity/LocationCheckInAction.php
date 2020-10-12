@@ -6,7 +6,6 @@ namespace DBP\API\LocationCheckInBundle\Entity;
 
 use ApiPlatform\Core\Annotation\ApiProperty;
 use ApiPlatform\Core\Annotation\ApiResource;
-use DBP\API\LocationCheckInBundle\Entity\CheckInPlace;
 use DBP\API\CoreBundle\Entity\Person;
 use Symfony\Component\Serializer\Annotation\Groups;
 
@@ -25,8 +24,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *                      "in"="query",
  *                      "description"="Location",
  *                      "type"="string",
- *                      "example"="c65200af79517a925d44",
- *                      "required"="false"
+ *                      "example"="c65200af79517a925d44"
  *                    }
  *                 }
  *             },
