@@ -358,9 +358,9 @@ class LocationCheckInApi
         $checkInPlace->setIdentifier($jsonData["locationId"]);
         $checkInPlace->setName($jsonData["locationName"]);
 
-        // TODO: the api currently returns the "checkInDate" as float, like 1.60214467586E12, see https://github.com/studo-app/campus-qr/issues/53
+        // The api returns the "checkInDate" as float, like 1.60214467586E12, see https://github.com/studo-app/campus-qr/issues/53
         $dateTime = new \DateTime();
-        $dateTime->setTimestamp((int) $jsonData["checkInDate"]);
+        $dateTime->setTimestamp((int) ($jsonData["checkInDate"] / 1000));
 
         $locationCheckInAction = new LocationCheckInAction();
         $locationCheckInAction->setIdentifier($jsonData["id"]);
