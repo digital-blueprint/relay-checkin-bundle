@@ -330,24 +330,29 @@ class LocationCheckInApi
 
     /**
      * @param string $location
+     * @param ?int $seatNumber
      * @return ArrayCollection
      * @throws ItemNotLoadedException
      */
-    public function fetchLocationCheckInActionsOfCurrentPerson($location = ""): ArrayCollection {
+    public function fetchLocationCheckInActionsOfCurrentPerson($location = "", $seatNumber = null): ArrayCollection {
         /** @var ArrayCollection<int,LocationCheckInAction> $collection */
         $collection = new ArrayCollection();
 
         $authenticDocumentTypesJsonData = $this->fetchLocationCheckInActionsOfCurrentPersonJsonData();
 
-        foreach ($authenticDocumentTypesJsonData as $jsonData) {
-            // search for a location if it was set
-            if ($location !== "" && $jsonData["locationId"] !== $location) {
-                continue;
+        foreach ($authenticDocumentTypesJsonData as $jsonData)
+        {
+            // Search for a location and seat if they were set
+            // Search for the location alone if no seat was set
+            if (($location !== "" && $jsonData["locationId"] === $location &&
+                $seatNumber !== null && $jsonData["seat"] === $seatNumber) ||
+                ($location !== "" && $jsonData["locationId"] === $location && $seatNumber === null) ||
+                ($location === "" && $seatNumber === null))
+            {
+                $checkInPlace = $this->locationCheckInActionFromJsonItem($jsonData);
+
+                $collection->add($checkInPlace);
             }
-
-            $checkInPlace = $this->locationCheckInActionFromJsonItem($jsonData);
-
-            $collection->add($checkInPlace);
         }
 
         return $collection;

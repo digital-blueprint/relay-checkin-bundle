@@ -57,16 +57,18 @@ final class LocationCheckInActionDataPersister implements DataPersisterInterface
             throw new ItemNotStoredException("Location has seats activated, you need to set a seatNumber!");
         } elseif ($seatNumber !== null && $maximumPhysicalAttendeeCapacity === null) {
             throw new ItemNotStoredException("Location doesn't have any seats activated, you cannot set a seatNumber!");
-        } elseif ($seatNumber > $maximumPhysicalAttendeeCapacity) {
+        } elseif ($seatNumber !== null && $seatNumber > $maximumPhysicalAttendeeCapacity) {
             throw new ItemNotStoredException("seatNumber must not exceed maximumPhysicalAttendeeCapacity of location!");
-        } elseif ($seatNumber < 1) {
+        } elseif ($seatNumber !== null && $seatNumber < 1) {
             throw new ItemNotStoredException("seatNumber too low!");
         }
 
-        $existingCheckIns = $this->api->fetchLocationCheckInActionsOfCurrentPerson($location->getIdentifier());
+        $existingCheckIns = $this->api->fetchLocationCheckInActionsOfCurrentPerson(
+            $location->getIdentifier(),
+            $locationCheckInAction->getSeatNumber());
 
         if (count($existingCheckIns) > 0) {
-            throw new ItemNotStoredException("There are already check-ins at the location for the current user!");
+            throw new ItemNotStoredException("There are already check-ins at the location with provided seat for the current user!");
         }
 
         $this->api->sendCampusQRLocationRequest($locationCheckInAction);
