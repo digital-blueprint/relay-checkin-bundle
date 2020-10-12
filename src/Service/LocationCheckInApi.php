@@ -190,7 +190,7 @@ class LocationCheckInApi
             $checkInPlace = $this->checkInPlaceFromJsonItem($jsonData);
 
             // search for a name if it was set
-            if ($name !== "" && strpos($checkInPlace->getName(), $name) === false) {
+            if ($name !== "" && stripos($checkInPlace->getName(), $name) === false) {
                 continue;
             }
 
