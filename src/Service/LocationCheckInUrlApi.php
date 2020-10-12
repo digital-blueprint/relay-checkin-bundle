@@ -31,6 +31,21 @@ class LocationCheckInUrlApi
 
     /**
      * @param string $campusQRUrl
+     * @param string $location
+     * @return string
+     * @throws UriException
+     */
+    public function getCheckOutRequestUrl(string $campusQRUrl, string $location): string
+    {
+        $uriTemplate = new UriTemplate('/location/{location}/checkout');
+
+        return $campusQRUrl . $uriTemplate->expand([
+            'location' => $location,
+        ]);
+    }
+
+    /**
+     * @param string $campusQRUrl
      * @return string
      * @throws UriException
      */

@@ -14,6 +14,7 @@ use DBP\API\CoreBundle\Helpers\Tools;
 use DBP\API\CoreBundle\Helpers\Tools as CoreTools;
 use DBP\API\LocationCheckInBundle\Entity\CheckInPlace;
 use DBP\API\LocationCheckInBundle\Entity\LocationCheckInAction;
+use DBP\API\LocationCheckInBundle\Entity\LocationCheckOutAction;
 use DBP\API\CoreBundle\Service\GuzzleLogger;
 use DBP\API\CoreBundle\Service\PersonProviderInterface;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -166,10 +167,57 @@ class LocationCheckInApi
                 throw new AccessDeniedHttpException('You are not allowed to check-in at this location!');
             }
 
-            throw new ItemNotStoredException(sprintf('LocationCheckIn could not be stored: %s',
+            throw new ItemNotStoredException(sprintf('LocationCheckInAction could not be stored: %s',
                 Tools::filterErrorMessage($e->getMessage())));
         } catch (\Exception|UriException $e) {
-            throw new ItemNotStoredException(sprintf('LocationCheckIn could not be stored: %s',
+            throw new ItemNotStoredException(sprintf('LocationCheckInAction could not be stored: %s',
+                Tools::filterErrorMessage($e->getMessage())));
+        }
+    }
+
+    /**
+     * @param LocationCheckOutAction $locationCheckInAction
+     * @return bool
+     * @throws ItemNotStoredException
+     * @throws AccessDeniedHttpException
+     */
+    public function sendCampusQRCheckOutRequest(LocationCheckOutAction $locationCheckOutAction): bool {
+        $person = $locationCheckOutAction->getAgent();
+        $currentPerson = $this->personProvider->getCurrentPerson();
+
+        if ($person->getIdentifier() !== $currentPerson->getIdentifier()) {
+            throw new AccessDeniedHttpException('You are not allowed to check-out this check-in!');
+        }
+
+        $location = $locationCheckOutAction->getLocation();
+
+        $client = $this->getClient();
+        $options = [
+            'headers' => [ 'X-Authorization' => $this->campusQRToken ],
+            'body' => json_encode(['email' => $person->getEmail()])
+        ];
+
+        try {
+            // e.g. https://campusqr-dev.tugraz.at/location/c65200af79517a925d44/visit
+            $url = $this->urls->getCheckOutRequestUrl($this->campusQRUrl, $location->getIdentifier());
+
+            // http://docs.guzzlephp.org/en/stable/quickstart.html?highlight=get#making-a-request
+            $response = $client->request('POST', $url, $options);
+
+            $body = $response->getBody()->getContents();
+
+            return $body === "ok";
+        } catch (GuzzleException $e) {
+            $status = $e->getCode();
+
+            if ($status == 403) {
+                throw new AccessDeniedHttpException('You are not allowed to check-out at this location!');
+            }
+
+            throw new ItemNotStoredException(sprintf('LocationCheckOutAction could not be stored: %s',
+                Tools::filterErrorMessage($e->getMessage())));
+        } catch (\Exception|UriException $e) {
+            throw new ItemNotStoredException(sprintf('LocationCheckOutAction could not be stored: %s',
                 Tools::filterErrorMessage($e->getMessage())));
         }
     }

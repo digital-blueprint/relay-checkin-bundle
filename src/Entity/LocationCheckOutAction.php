@@ -13,17 +13,35 @@ use Symfony\Component\Serializer\Annotation\Groups;
  * Note: We need a "collectionOperations" setting for "get" to get an "entryPoint" in JSONLD.
  *
  * @ApiResource(
- *     collectionOperations={"get", "post"},
+ *     collectionOperations={
+ *         "get",
+ *         "post"={
+ *             "method"="POST",
+ *             "openapi_context"={
+ *                 "parameters"={
+ *                    {
+ *                      "name"="body",
+ *                      "in"="body",
+ *                      "description"="Location",
+ *                      "type"="string",
+ *                      "example"={"location"="/check_in_places/c65200af79517a925d44"},
+ *                      "required"="true"
+ *                    }
+ *                 }
+ *             },
+ *         },
+ *     },
  *     itemOperations={"get"},
  *     iri="http://schema.org/CheckOutAction",
  *     description="Location check-out action",
- *     normalizationContext={"jsonld_embed_context"=true, "groups"={"LocationCheckIn:output"}}
+ *     normalizationContext={"jsonld_embed_context"=true, "groups"={"LocationCheckOut:output", "CheckInPlace:output"}},
+ *     denormalizationContext={"groups"={"LocationCheckOut:input"}}
  * )
  */
 class LocationCheckOutAction
 {
     /**
-     * @Groups({"LocationCheckIn:output"})
+     * @Groups({"LocationCheckOut:output"})
      * @ApiProperty(identifier=true,iri="http://schema.org/identifier")
      * Note: Every entity needs an identifier!
      */
@@ -31,7 +49,7 @@ class LocationCheckOutAction
 
     /**
      * @ApiProperty(iri="http://schema.org/Person")
-     * @Groups({"LocationCheckIn:output"})
+     * @Groups({"LocationCheckOut:output"})
      *
      * @var Person
      */
@@ -39,19 +57,11 @@ class LocationCheckOutAction
 
     /**
      * @ApiProperty(iri="http://schema.org/location")
-     * @Groups({"LocationCheckIn:output"})
+     * @Groups({"LocationCheckOut:output", "LocationCheckOut:input"})
      *
-     * @var string
+     * @var CheckInPlace
      */
     private $location;
-
-    /**
-     * @ApiProperty(iri="https://schema.org/DateTime")
-     * @Groups({"LocationCheckIn:output"})
-     *
-     * @var \DateTime
-     */
-    private $endTime;
 
     public function setIdentifier(string $identifier): self
     {
@@ -60,12 +70,12 @@ class LocationCheckOutAction
         return $this;
     }
 
-    public function getIdentifier(): ?string
+    public function getIdentifier(): string
     {
         return $this->identifier;
     }
 
-    public function getAgent(): ?Person
+    public function getAgent(): Person
     {
         return $this->agent;
     }
@@ -77,26 +87,14 @@ class LocationCheckOutAction
         return $this;
     }
 
-    public function getLocation(): ?string
+    public function getLocation(): CheckInPlace
     {
         return $this->location;
     }
 
-    public function setLocation(string $location): self
+    public function setLocation(CheckInPlace $location): self
     {
         $this->location = $location;
-
-        return $this;
-    }
-
-    public function getEndTime(): ?\DateTime
-    {
-        return $this->endTime;
-    }
-
-    public function setEndTime(\DateTime $endTime): self
-    {
-        $this->endTime = $endTime;
 
         return $this;
     }
