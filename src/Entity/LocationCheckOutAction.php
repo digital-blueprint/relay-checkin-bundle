@@ -24,7 +24,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *                      "in"="body",
  *                      "description"="Location",
  *                      "type"="string",
- *                      "example"={"location"="/check_in_places/c65200af79517a925d44"},
+ *                      "example"={"location"="/check_in_places/00e5de0fc311d30575ea"},
  *                      "required"="true"
  *                    }
  *                 }

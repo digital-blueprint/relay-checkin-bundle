@@ -24,7 +24,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *                      "in"="query",
  *                      "description"="Location",
  *                      "type"="string",
- *                      "example"="c65200af79517a925d44"
+ *                      "example"="00e5de0fc311d30575ea"
  *                    }
  *                 }
  *             },
@@ -38,7 +38,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *                      "in"="body",
  *                      "description"="Location",
  *                      "type"="string",
- *                      "example"={"location"="/check_in_places/c65200af79517a925d44", "seatNumber"=17},
+ *                      "example"={"location"="/check_in_places/00e5de0fc311d30575ea", "seatNumber"=17},
  *                      "required"="true"
  *                    }
  *                 }

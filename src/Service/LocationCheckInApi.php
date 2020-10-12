@@ -151,7 +151,7 @@ class LocationCheckInApi
         ];
 
         try {
-            // e.g. https://campusqr-dev.tugraz.at/location/c65200af79517a925d44/visit
+            // e.g. https://campusqr-dev.tugraz.at/location/00e5de0fc311d30575ea/visit
             $url = $this->urls->getLocationRequestUrl($this->campusQRUrl, $location->getIdentifier(), $seatNumber);
 
             // http://docs.guzzlephp.org/en/stable/quickstart.html?highlight=get#making-a-request
@@ -198,7 +198,7 @@ class LocationCheckInApi
         ];
 
         try {
-            // e.g. https://campusqr-dev.tugraz.at/location/c65200af79517a925d44/visit
+            // e.g. https://campusqr-dev.tugraz.at/location/00e5de0fc311d30575ea/visit
             $url = $this->urls->getCheckOutRequestUrl($this->campusQRUrl, $location->getIdentifier());
 
             // http://docs.guzzlephp.org/en/stable/quickstart.html?highlight=get#making-a-request
