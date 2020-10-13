@@ -190,6 +190,7 @@ class LocationCheckInApi
         }
 
         $location = $locationCheckOutAction->getLocation();
+        $seatNumber = $locationCheckOutAction->getSeatNumber();
 
         $client = $this->getClient();
         $options = [
@@ -199,7 +200,7 @@ class LocationCheckInApi
 
         try {
             // e.g. https://campusqr-dev.tugraz.at/location/00e5de0fc311d30575ea/visit
-            $url = $this->urls->getCheckOutRequestUrl($this->campusQRUrl, $location->getIdentifier());
+            $url = $this->urls->getCheckOutRequestUrl($this->campusQRUrl, $location->getIdentifier(), $seatNumber);
 
             // http://docs.guzzlephp.org/en/stable/quickstart.html?highlight=get#making-a-request
             $response = $client->request('POST', $url, $options);

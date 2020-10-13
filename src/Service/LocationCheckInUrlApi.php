@@ -32,15 +32,20 @@ class LocationCheckInUrlApi
     /**
      * @param string $campusQRUrl
      * @param string $location
+     * @param int|null $seatNumber
      * @return string
      * @throws UriException
      */
-    public function getCheckOutRequestUrl(string $campusQRUrl, string $location): string
+    public function getCheckOutRequestUrl(string $campusQRUrl, string $location, ?int $seatNumber = null): string
     {
-        $uriTemplate = new UriTemplate('/location/{location}/checkout');
+        $uriTemplate = new UriTemplate(
+            $seatNumber === null ?
+                '/location/{location}/checkout' :
+                '/location/{location}-{seatNumber}/checkout');
 
         return $campusQRUrl . $uriTemplate->expand([
             'location' => $location,
+            'seatNumber' => $seatNumber,
         ]);
     }
 

@@ -24,7 +24,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *                      "in"="body",
  *                      "description"="Location",
  *                      "type"="string",
- *                      "example"={"location"="/check_in_places/00e5de0fc311d30575ea"},
+ *                      "example"={"location"="/check_in_places/00e5de0fc311d30575ea", "seatNumber"=17},
  *                      "required"="true"
  *                    }
  *                 }
@@ -63,6 +63,14 @@ class LocationCheckOutAction
      */
     private $location;
 
+    /**
+     * @ApiProperty(iri="http://schema.org/Number")
+     * @Groups({"LocationCheckOut:output", "LocationCheckOut:input"})
+     *
+     * @var ?int
+     */
+    private $seatNumber;
+
     public function setIdentifier(string $identifier): self
     {
         $this->identifier = $identifier;
@@ -95,6 +103,18 @@ class LocationCheckOutAction
     public function setLocation(CheckInPlace $location): self
     {
         $this->location = $location;
+
+        return $this;
+    }
+
+    public function getSeatNumber(): ?int
+    {
+        return $this->seatNumber;
+    }
+
+    public function setSeatNumber(?int $seatNumber): self
+    {
+        $this->seatNumber = $seatNumber;
 
         return $this;
     }
