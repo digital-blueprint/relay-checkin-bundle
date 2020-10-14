@@ -40,8 +40,8 @@ class LocationCheckInUrlApi
     {
         $uriTemplate = new UriTemplate(
             $seatNumber === null ?
-                '/location/{location}/checkout' :
-                '/location/{location}-{seatNumber}/checkout');
+                '/location/{location}/checkoutSeat' :
+                '/location/{location}-{seatNumber}/checkoutSeat');
 
         return $campusQRUrl . $uriTemplate->expand([
             'location' => $location,
