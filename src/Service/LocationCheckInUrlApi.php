@@ -16,7 +16,7 @@ class LocationCheckInUrlApi
      * @return string
      * @throws UriException
      */
-    public function getLocationRequestUrl(string $campusQRUrl, string $location, ?int $seatNumber = null): string
+    public function getCheckInRequestUrl(string $campusQRUrl, string $location, ?int $seatNumber = null): string
     {
         $uriTemplate = new UriTemplate(
             $seatNumber === null ?

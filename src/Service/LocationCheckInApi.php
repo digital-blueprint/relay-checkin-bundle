@@ -140,7 +140,7 @@ class LocationCheckInApi
      * @throws ItemNotStoredException
      * @throws AccessDeniedHttpException
      */
-    public function sendCampusQRLocationRequest(LocationCheckInAction $locationCheckInAction): bool {
+    public function sendCampusQRCheckInRequest(LocationCheckInAction $locationCheckInAction): bool {
         $location = $locationCheckInAction->getLocation();
         $seatNumber = $locationCheckInAction->getSeatNumber();
         $person = $locationCheckInAction->getAgent();
@@ -152,7 +152,7 @@ class LocationCheckInApi
 
         try {
             // e.g. https://campusqr-dev.tugraz.at/location/00e5de0fc311d30575ea/visit
-            $url = $this->urls->getLocationRequestUrl($this->campusQRUrl, $location->getIdentifier(), $seatNumber);
+            $url = $this->urls->getCheckInRequestUrl($this->campusQRUrl, $location->getIdentifier(), $seatNumber);
 
             // http://docs.guzzlephp.org/en/stable/quickstart.html?highlight=get#making-a-request
             $response = $client->request('POST', $url, $options);
@@ -434,5 +434,27 @@ class LocationCheckInApi
         $locationCheckInAction->setLocation($checkInPlace);
 
         return $locationCheckInAction;
+    }
+
+    /**
+     * @param string $campusQRUrl
+     * @return LocationCheckInApi
+     */
+    public function setCampusQRUrl(string $campusQRUrl): LocationCheckInApi
+    {
+        $this->campusQRUrl = $campusQRUrl;
+
+        return $this;
+    }
+
+    /**
+     * @param string $campusQRToken
+     * @return LocationCheckInApi
+     */
+    public function setCampusQRToken(string $campusQRToken): LocationCheckInApi
+    {
+        $this->campusQRToken = $campusQRToken;
+
+        return $this;
     }
 }
