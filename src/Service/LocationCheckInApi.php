@@ -224,6 +224,8 @@ class LocationCheckInApi
     }
 
     /**
+     * Fetches all places or searches for all name parts in $name
+     *
      * @param string $name
      * @return ArrayCollection|CheckInPlace[]
      * @throws ItemNotLoadedException
@@ -234,13 +236,21 @@ class LocationCheckInApi
         $collection = new ArrayCollection();
 
         $authenticDocumentTypesJsonData = $this->fetchCheckInPlacesJsonData();
+        $name = trim($name);
+        $nameParts = explode(" ", $name);
+        $hasName = $name !== "";
 
         foreach ($authenticDocumentTypesJsonData as $jsonData) {
             $checkInPlace = $this->checkInPlaceFromJsonItem($jsonData);
 
-            // search for a name if it was set
-            if ($name !== "" && stripos($checkInPlace->getName(), $name) === false) {
-                continue;
+            // search for name parts if a name was set
+            if ($hasName) {
+                foreach ($nameParts as $namePart) {
+                    // skip as soon a name part wasn't found
+                    if (stripos($checkInPlace->getName(), $namePart) === false) {
+                        continue 2;
+                    }
+                }
             }
 
             $collection->add($checkInPlace);
