@@ -9,14 +9,16 @@ use DBP\API\CoreBundle\Service\GuzzleLogger;
 use DBP\API\CoreBundle\TestUtils\DummyPersonProvider;
 use DBP\API\LocationCheckInBundle\Entity\CheckInPlace;
 use DBP\API\LocationCheckInBundle\Entity\LocationCheckInAction;
+use DBP\API\LocationCheckInBundle\Entity\LocationCheckOutAction;
 use DBP\API\LocationCheckInBundle\Service\LocationCheckInApi;
-use DBP\API\LocationCheckInBundle\Service\LocationCheckInUrlApi;
+use Doctrine\Common\Collections\ArrayCollection;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Response;
 use Monolog\Handler\NullHandler;
 use Monolog\Logger;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class LocationCheckInApiTest extends WebTestCase
 {
@@ -24,6 +26,9 @@ class LocationCheckInApiTest extends WebTestCase
      * @var LocationCheckInApi
      */
     private $api;
+
+    private const placesResponse = '[{"id":"testLocation","name":"Test Location","checkInCount":50,"accessType":"FREE","seatCount":null},{"id":"00e5de0fc311d30575ea","name":"Brockmanngasse 84 Coworkingspace","checkInCount":280,"accessType":"FREE","seatCount":70}]';
+    private const listActiveCheckInsResponse = '[{"id":"280ceccd269f5527603c3acbfc416dbb","locationId":"00e5de0fc311d30575ea","locationName":"Brockmanngasse 84 Coworkingspace","seat":17,"checkInDate":1.602763809372E12,"email":"test@test.com"}]';
 
     protected function setUp(): void
     {
@@ -62,5 +67,172 @@ class LocationCheckInApiTest extends WebTestCase
         $result = $this->api->sendCampusQRCheckInRequest($action);
 
         $this->assertTrue($result);
+    }
+
+    public function test_sendCampusQRCheckOutRequest()
+    {
+        $action = new LocationCheckOutAction();
+        $action->setAgent(new Person());
+
+        $location = new CheckInPlace();
+        $location->setIdentifier("dummy");
+        $action->setLocation($location);
+
+        $this->mockResponses([
+            new Response(200, [], 'ok'),
+        ]);
+
+        $result = $this->api->sendCampusQRCheckOutRequest($action);
+
+        $this->assertTrue($result);
+    }
+
+    public function test_fetchCheckInPlaces()
+    {
+        $this->mockResponses([
+            new Response(200, [], self::placesResponse),
+        ]);
+
+        $result = $this->api->fetchCheckInPlaces();
+
+        $this->assertTrue($result instanceof ArrayCollection);
+        $this->assertCount(2, $result);
+        $this->assertTrue($result[0] instanceof CheckInPlace);
+    }
+
+    public function test_fetchCheckInPlacesByName()
+    {
+        $this->mockResponses([
+            new Response(200, [], self::placesResponse),
+        ]);
+
+        $result = $this->api->fetchCheckInPlaces("Brock 84");
+
+        $this->assertCount(1, $result);
+        $this->assertTrue($result[0] instanceof CheckInPlace);
+        $this->assertEquals($result[0]->getName(), "Brockmanngasse 84 Coworkingspace");
+        $this->assertEquals($result[0]->getMaximumPhysicalAttendeeCapacity(), 70);
+    }
+
+    public function test_fetchCheckInPlacesNameNotFound()
+    {
+        $this->mockResponses([
+            new Response(200, [], self::placesResponse),
+        ]);
+
+        $result = $this->api->fetchCheckInPlaces("Brock 100");
+
+        $this->assertCount(0, $result);
+    }
+
+    public function test_fetchCheckInPlacesEmptyCapacity()
+    {
+        $this->mockResponses([
+            new Response(200, [], self::placesResponse),
+        ]);
+
+        $result = $this->api->fetchCheckInPlaces("test");
+
+        $this->assertCount(1, $result);
+        $this->assertTrue($result[0] instanceof CheckInPlace);
+        $this->assertEquals($result[0]->getName(), "Test Location");
+        $this->assertNull($result[0]->getMaximumPhysicalAttendeeCapacity());
+    }
+
+    public function test_fetchCheckInPlace()
+    {
+        $this->mockResponses([
+            new Response(200, [], self::placesResponse),
+        ]);
+
+        $result = $this->api->fetchCheckInPlace("00e5de0fc311d30575ea");
+
+        $this->assertTrue($result instanceof CheckInPlace);
+        $this->assertEquals($result->getName(), "Brockmanngasse 84 Coworkingspace");
+        $this->assertEquals($result->getMaximumPhysicalAttendeeCapacity(), 70);
+    }
+
+    public function test_fetchCheckInPlaceNotFound()
+    {
+        $this->mockResponses([
+            new Response(200, [], self::placesResponse),
+        ]);
+
+        try {
+            $this->api->fetchCheckInPlace("wrong");
+        } catch (NotFoundHttpException $e) {
+            $this->assertStringContainsString('Location was not found!', $e->getMessage());
+        } catch (\Exception $e) {
+            $this->fail();
+        }
+    }
+
+    public function test_fetchLocationCheckInActionsOfCurrentPerson()
+    {
+        $this->mockResponses([
+            new Response(200, [], self::listActiveCheckInsResponse),
+        ]);
+
+        $result = $this->api->fetchLocationCheckInActionsOfCurrentPerson();
+
+        $this->assertTrue($result instanceof ArrayCollection);
+        $this->assertCount(1, $result);
+        $this->assertTrue($result[0] instanceof LocationCheckInAction);
+        $this->assertEquals($result[0]->getStartTime(), new \DateTime("2020-10-15 14:10:09"));
+        $this->assertEquals($result[0]->getSeatNumber(), 17);
+    }
+
+    public function test_fetchLocationCheckInActionsOfCurrentPersonWithLocation()
+    {
+        $this->mockResponses([
+            new Response(200, [], self::listActiveCheckInsResponse),
+        ]);
+
+        $result = $this->api->fetchLocationCheckInActionsOfCurrentPerson("00e5de0fc311d30575ea");
+
+        $this->assertTrue($result instanceof ArrayCollection);
+        $this->assertCount(1, $result);
+        $this->assertTrue($result[0] instanceof LocationCheckInAction);
+        $this->assertEquals($result[0]->getStartTime(), new \DateTime("2020-10-15 14:10:09"));
+        $this->assertEquals($result[0]->getSeatNumber(), 17);
+    }
+
+    public function test_fetchLocationCheckInActionsOfCurrentPersonWithLocationNotFound()
+    {
+        $this->mockResponses([
+            new Response(200, [], self::listActiveCheckInsResponse),
+        ]);
+
+        $result = $this->api->fetchLocationCheckInActionsOfCurrentPerson("wrong");
+
+        $this->assertTrue($result instanceof ArrayCollection);
+        $this->assertCount(0, $result);
+    }
+
+    public function test_fetchLocationCheckInActionsOfCurrentPersonWithLocationAndSeat()
+    {
+        $this->mockResponses([
+            new Response(200, [], self::listActiveCheckInsResponse),
+        ]);
+
+        $result = $this->api->fetchLocationCheckInActionsOfCurrentPerson("00e5de0fc311d30575ea", 17);
+
+        $this->assertTrue($result instanceof ArrayCollection);
+        $this->assertCount(1, $result);
+        $this->assertTrue($result[0] instanceof LocationCheckInAction);
+        $this->assertEquals($result[0]->getStartTime(), new \DateTime("2020-10-15 14:10:09"));
+        $this->assertEquals($result[0]->getSeatNumber(), 17);
+    }
+
+    public function test_fetchLocationCheckInActionsOfCurrentPersonWithLocationAndSeatNotFound()
+    {
+        $this->mockResponses([
+            new Response(200, [], self::listActiveCheckInsResponse),
+        ]);
+
+        $result = $this->api->fetchLocationCheckInActionsOfCurrentPerson("00e5de0fc311d30575ea", 18);
+
+        $this->assertTrue($result instanceof ArrayCollection);
+        $this->assertCount(0, $result);
     }
 }
