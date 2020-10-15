@@ -14,7 +14,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
  * @ApiResource(
  *     collectionOperations={
  *       "get"={"openapi_context"={
- *         "parameters"={{"name"="search", "in"="query", "description"="Search for a place name", "type"="string", "example"="Besprechungsraum"}
+ *         "parameters"={{"name"="search", "in"="query", "description"="Search for a place name", "type"="string", "example"="Coworkingspace"}
  *       }}},
  *     },
  *     itemOperations={"get"},
