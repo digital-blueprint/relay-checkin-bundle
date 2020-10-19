@@ -16,7 +16,7 @@ use DBP\API\CoreBundle\Helpers\Tools as CoreTools;
 use DBP\API\LocationCheckInBundle\Entity\CheckInPlace;
 use DBP\API\LocationCheckInBundle\Entity\LocationCheckInAction;
 use DBP\API\LocationCheckInBundle\Entity\LocationCheckOutAction;
-use DBP\API\CoreBundle\Service\GuzzleLogger;
+use DBP\API\CoreBundle\Service\DBPLogger;
 use DBP\API\CoreBundle\Service\PersonProviderInterface;
 use DBP\API\LocationCheckInBundle\Entity\LocationGuestCheckInAction;
 use DBP\API\LocationCheckInBundle\Message\LocationGuestCheckOutMessage;
@@ -40,7 +40,7 @@ class LocationCheckInApi
 {
     private $clientHandler;
 
-    private $guzzleLogger;
+    private $logger;
 
     private $container;
 
@@ -82,20 +82,20 @@ class LocationCheckInApi
 
     /**
      * LocationCheckInApi constructor.
-     * @param GuzzleLogger $guzzleLogger
+     * @param DBPLogger $logger
      * @param PersonProviderInterface $personProvider
      * @param ContainerInterface $container
      * @param MessageBusInterface $bus
      */
     public function __construct(
-        GuzzleLogger $guzzleLogger,
+        DBPLogger $logger,
         PersonProviderInterface $personProvider,
         ContainerInterface $container,
         MessageBusInterface $bus
     )
     {
         $this->clientHandler = null;
-        $this->guzzleLogger = $guzzleLogger;
+        $this->logger = $logger;
         $this->personProvider = $personProvider;
         $this->container = $container;
         $this->bus = $bus;
@@ -123,7 +123,7 @@ class LocationCheckInApi
             'handler' => $stack,
         ];
 
-        $stack->push(GuzzleTools::createLoggerMiddleware($this->guzzleLogger));
+        $stack->push(GuzzleTools::createLoggerMiddleware($this->logger));
 
         return new Client($client_options);
     }
@@ -136,7 +136,7 @@ class LocationCheckInApi
             'handler' => $stack,
         ];
 
-        $stack->push(GuzzleTools::createLoggerMiddleware($this->guzzleLogger));
+        $stack->push(GuzzleTools::createLoggerMiddleware($this->logger));
 
         $guzzleCachePool = $this->getCachePool();
         $cacheMiddleWare = new CacheMiddleware(
