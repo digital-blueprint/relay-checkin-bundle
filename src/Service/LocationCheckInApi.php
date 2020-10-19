@@ -9,6 +9,7 @@ namespace DBP\API\LocationCheckInBundle\Service;
 
 use DBP\API\CoreBundle\Exception\ItemNotLoadedException;
 use DBP\API\CoreBundle\Exception\ItemNotStoredException;
+use DBP\API\CoreBundle\Helpers\GuzzleTools;
 use DBP\API\CoreBundle\Helpers\JsonException;
 use DBP\API\CoreBundle\Helpers\Tools;
 use DBP\API\CoreBundle\Helpers\Tools as CoreTools;
@@ -122,7 +123,7 @@ class LocationCheckInApi
             'handler' => $stack,
         ];
 
-        $stack->push($this->guzzleLogger->getClientHandler());
+        $stack->push(GuzzleTools::createLoggerMiddleware($this->guzzleLogger));
 
         return new Client($client_options);
     }
@@ -135,7 +136,7 @@ class LocationCheckInApi
             'handler' => $stack,
         ];
 
-        $stack->push($this->guzzleLogger->getClientHandler());
+        $stack->push(GuzzleTools::createLoggerMiddleware($this->guzzleLogger));
 
         $guzzleCachePool = $this->getCachePool();
         $cacheMiddleWare = new CacheMiddleware(
