@@ -23,7 +23,7 @@ final class LocationCheckInActionDataPersister implements DataPersisterInterface
      */
     private $personProvider;
 
-    public function __construct(LocationCheckInApi $api,  PersonProviderInterface $personProvider)
+    public function __construct(LocationCheckInApi $api, PersonProviderInterface $personProvider)
     {
         $this->api = $api;
         $this->personProvider = $personProvider;
