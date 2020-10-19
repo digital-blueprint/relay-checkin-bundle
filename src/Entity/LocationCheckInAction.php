@@ -78,7 +78,7 @@ class LocationCheckInAction
     private $location;
 
     /**
-     * @ApiProperty(iri="http://schema.org/Number")
+     * @ApiProperty(iri="http://schema.org/seatNumber")
      * @Groups({"LocationCheckIn:output", "LocationCheckIn:input"})
      *
      * @var ?int
