@@ -36,6 +36,26 @@ class LocationCheckInUrlApi
      * @return string
      * @throws UriException
      */
+    public function getGuestCheckInRequestUrl(string $campusQRUrl, string $location, ?int $seatNumber = null): string
+    {
+        $uriTemplate = new UriTemplate(
+            $seatNumber === null ?
+                '/location/{location}/guestCheckIn' :
+                '/location/{location}-{seatNumber}/guestCheckIn');
+
+        return $campusQRUrl . $uriTemplate->expand([
+            'location' => $location,
+            'seatNumber' => $seatNumber,
+        ]);
+    }
+
+    /**
+     * @param string $campusQRUrl
+     * @param string $location
+     * @param int|null $seatNumber
+     * @return string
+     * @throws UriException
+     */
     public function getCheckOutRequestUrl(string $campusQRUrl, string $location, ?int $seatNumber = null): string
     {
         $uriTemplate = new UriTemplate(

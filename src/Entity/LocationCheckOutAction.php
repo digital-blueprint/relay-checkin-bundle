@@ -8,6 +8,7 @@ use ApiPlatform\Core\Annotation\ApiProperty;
 use ApiPlatform\Core\Annotation\ApiResource;
 use DBP\API\CoreBundle\Entity\Person;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Note: We need a "collectionOperations" setting for "get" to get an "entryPoint" in JSONLD.
@@ -58,6 +59,7 @@ class LocationCheckOutAction
     /**
      * @ApiProperty(iri="http://schema.org/location")
      * @Groups({"LocationCheckOut:output", "LocationCheckOut:input"})
+     * @Assert\NotBlank
      *
      * @var CheckInPlace
      */

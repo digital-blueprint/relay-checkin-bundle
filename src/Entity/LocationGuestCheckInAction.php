@@ -8,6 +8,7 @@ use ApiPlatform\Core\Annotation\ApiProperty;
 use ApiPlatform\Core\Annotation\ApiResource;
 use DBP\API\CoreBundle\Entity\Person;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Note: We need a "collectionOperations" setting for "get" to get an "entryPoint" in JSONLD.
@@ -38,7 +39,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *                      "in"="body",
  *                      "description"="Location",
  *                      "type"="string",
- *                      "example"={"location"="/check_in_places/00e5de0fc311d30575ea", "seatNumber"=17},
+ *                      "example"={"location"="/check_in_places/00e5de0fc311d30575ea", "seatNumber"=17, "email"="test@test.com", "endTime"="2021-10-19T08:03:11.336Z"},
  *                      "required"="true"
  *                    }
  *                 }
@@ -72,6 +73,7 @@ class LocationGuestCheckInAction
     /**
      * @ApiProperty(iri="http://schema.org/location")
      * @Groups({"LocationCheckIn:output", "LocationCheckIn:input"})
+     * @Assert\NotBlank
      *
      * @var CheckInPlace
      */
@@ -96,6 +98,8 @@ class LocationGuestCheckInAction
     /**
      * @ApiProperty(iri="https://schema.org/DateTime")
      * @Groups({"LocationCheckIn:output", "LocationCheckIn:input"})
+     * @Assert\DateTime
+     * @Assert\NotBlank
      *
      * @var \DateTime
      */
@@ -104,6 +108,8 @@ class LocationGuestCheckInAction
     /**
      * @ApiProperty(iri="http://schema.org/email")
      * @Groups({"LocationCheckIn:output", "LocationCheckIn:input"})
+     * @Assert\Email
+     * @Assert\NotBlank
      *
      * @var string
      */

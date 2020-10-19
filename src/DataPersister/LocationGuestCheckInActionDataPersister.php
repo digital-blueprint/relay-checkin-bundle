@@ -7,14 +7,14 @@ namespace DBP\API\LocationCheckInBundle\DataPersister;
 use ApiPlatform\Core\DataPersister\DataPersisterInterface;
 use DBP\API\CoreBundle\Exception\ItemNotLoadedException;
 use DBP\API\CoreBundle\Helpers\Tools;
-use DBP\API\LocationCheckInBundle\Entity\LocationCheckInAction;
+use DBP\API\LocationCheckInBundle\Entity\LocationGuestCheckInAction;
 use DBP\API\LocationCheckInBundle\Service\LocationCheckInApi;
 use DBP\API\CoreBundle\Exception\ItemNotStoredException;
 use DBP\API\CoreBundle\Service\PersonProviderInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
-final class LocationCheckInActionDataPersister implements DataPersisterInterface
+final class LocationGuestCheckInActionDataPersister implements DataPersisterInterface
 {
     private $api;
 
@@ -31,44 +31,50 @@ final class LocationCheckInActionDataPersister implements DataPersisterInterface
 
     public function supports($data): bool
     {
-        return $data instanceof LocationCheckInAction;
+        return $data instanceof LocationGuestCheckInAction;
     }
 
     /**
-     * @param LocationCheckInAction $locationCheckInAction
+     * @param LocationGuestCheckInAction $locationGuestCheckInAction
      *
-     * @return LocationCheckInAction
+     * @return LocationGuestCheckInAction
      *
      * @throws ItemNotLoadedException
      * @throws ItemNotStoredException
      * @throws AccessDeniedHttpException
      */
-    public function persist($locationCheckInAction)
+    public function persist($locationGuestCheckInAction)
     {
-        $location = $locationCheckInAction->getLocation();
-        $locationCheckInAction->setIdentifier(md5($location->getIdentifier() . rand(0, 10000) . time()));
-        $locationCheckInAction->setStartTime(new \DateTime());
-        $locationCheckInAction->setAgent($this->personProvider->getCurrentPerson());
+        $location = $locationGuestCheckInAction->getLocation();
+        $locationGuestCheckInAction->setIdentifier(md5($location->getIdentifier() . rand(0, 10000) . time()));
+        $locationGuestCheckInAction->setStartTime(new \DateTime());
+        $locationGuestCheckInAction->setAgent($this->personProvider->getCurrentPerson());
 
-        $this->api->seatCheck($location, $locationCheckInAction->getSeatNumber());
+        $this->api->seatCheck($location, $locationGuestCheckInAction->getSeatNumber());
+
+        if ((new \DateTime()) > $locationGuestCheckInAction->getEndTime()) {
+            throw new ItemNotStoredException("The endDate must be in the future!");
+        }
 
         $existingCheckIns = $this->api->fetchLocationCheckInActionsOfCurrentPerson(
             $location->getIdentifier(),
-            $locationCheckInAction->getSeatNumber());
+            $locationGuestCheckInAction->getSeatNumber());
 
         if (count($existingCheckIns) > 0) {
             throw new ItemNotStoredException("There are already check-ins at the location with provided seat for the current user!");
         }
 
-        $this->api->sendCampusQRCheckInRequest($locationCheckInAction);
+        $this->api->sendCampusQRGuestCheckInRequest($locationGuestCheckInAction);
 
-        return $locationCheckInAction;
+        // TODO: Write checkout in message queue
+
+        return $locationGuestCheckInAction;
     }
 
     /**
-     * @param LocationCheckInAction $locationCheckInAction
+     * @param LocationGuestCheckInAction $locationGuestCheckInAction
      */
-    public function remove($locationCheckInAction)
+    public function remove($locationGuestCheckInAction)
     {
     }
 }

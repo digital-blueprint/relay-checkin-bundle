@@ -17,6 +17,7 @@ use DBP\API\LocationCheckInBundle\Entity\LocationCheckInAction;
 use DBP\API\LocationCheckInBundle\Entity\LocationCheckOutAction;
 use DBP\API\CoreBundle\Service\GuzzleLogger;
 use DBP\API\CoreBundle\Service\PersonProviderInterface;
+use DBP\API\LocationCheckInBundle\Entity\LocationGuestCheckInAction;
 use Doctrine\Common\Collections\ArrayCollection;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
@@ -171,6 +172,48 @@ class LocationCheckInApi
                 Tools::filterErrorMessage($e->getMessage())));
         } catch (\Exception|UriException $e) {
             throw new ItemNotStoredException(sprintf('LocationCheckInAction could not be stored: %s',
+                Tools::filterErrorMessage($e->getMessage())));
+        }
+    }
+
+    /**
+     * @param LocationGuestCheckInAction $locationGuestCheckInAction
+     * @return bool
+     * @throws ItemNotStoredException
+     * @throws AccessDeniedHttpException
+     */
+    public function sendCampusQRGuestCheckInRequest(LocationGuestCheckInAction $locationGuestCheckInAction): bool {
+        $location = $locationGuestCheckInAction->getLocation();
+        $seatNumber = $locationGuestCheckInAction->getSeatNumber();
+        $email = $locationGuestCheckInAction->getEmail();
+
+        $client = $this->getClient();
+        $options = [
+            'headers' => [ 'X-Authorization' => $this->campusQRToken ],
+            'body' => json_encode(['email' => $email])
+        ];
+
+        try {
+            // e.g. https://campusqr-dev.tugraz.at/location/00e5de0fc311d30575ea/visit
+            $url = $this->urls->getGuestCheckInRequestUrl($this->campusQRUrl, $location->getIdentifier(), $seatNumber);
+
+            // http://docs.guzzlephp.org/en/stable/quickstart.html?highlight=get#making-a-request
+            $response = $client->request('POST', $url, $options);
+
+            $body = $response->getBody()->getContents();
+
+            return $body === "ok";
+        } catch (GuzzleException $e) {
+            $status = $e->getCode();
+
+            if ($status == 403) {
+                throw new AccessDeniedHttpException('You are not allowed to check-in at this location!');
+            }
+
+            throw new ItemNotStoredException(sprintf('LocationGuestCheckInAction could not be stored: %s',
+                Tools::filterErrorMessage($e->getMessage())));
+        } catch (\Exception|UriException $e) {
+            throw new ItemNotStoredException(sprintf('LocationGuestCheckInAction could not be stored: %s',
                 Tools::filterErrorMessage($e->getMessage())));
         }
     }
@@ -456,5 +499,25 @@ class LocationCheckInApi
         $this->campusQRToken = $campusQRToken;
 
         return $this;
+    }
+
+    /**
+     * @param \DBP\API\LocationCheckInBundle\Entity\CheckInPlace $location
+     * @param int|null $seatNumber
+     * @throws ItemNotStoredException
+     */
+    public function seatCheck(CheckInPlace $location, ?int $seatNumber): void
+    {
+        $maximumPhysicalAttendeeCapacity = $location->getMaximumPhysicalAttendeeCapacity();
+
+        if ($seatNumber === null && $maximumPhysicalAttendeeCapacity !== null) {
+            throw new ItemNotStoredException("Location has seats activated, you need to set a seatNumber!");
+        } elseif ($seatNumber !== null && $maximumPhysicalAttendeeCapacity === null) {
+            throw new ItemNotStoredException("Location doesn't have any seats activated, you cannot set a seatNumber!");
+        } elseif ($seatNumber !== null && $seatNumber > $maximumPhysicalAttendeeCapacity) {
+            throw new ItemNotStoredException("seatNumber must not exceed maximumPhysicalAttendeeCapacity of location!");
+        } elseif ($seatNumber !== null && $seatNumber < 1) {
+            throw new ItemNotStoredException("seatNumber too low!");
+        }
     }
 }

@@ -16,6 +16,8 @@ class DbpLocationCheckInExtension extends ConfigurableExtension
     {
         $pathsToHide = [
             '/location_check_in_actions/{id}',
+            '/location_guest_check_in_actions',
+            '/location_guest_check_in_actions/{id}',
             '/location_check_out_actions',
             '/location_check_out_actions/{id}',
         ];
