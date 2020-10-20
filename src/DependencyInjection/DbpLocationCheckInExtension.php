@@ -7,22 +7,29 @@ namespace DBP\API\LocationCheckInBundle\DependencyInjection;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Extension\PrependExtensionInterface;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 use Symfony\Component\HttpKernel\DependencyInjection\ConfigurableExtension;
 
-class DbpLocationCheckInExtension extends ConfigurableExtension
+class DbpLocationCheckInExtension extends ConfigurableExtension implements PrependExtensionInterface
 {
+    public function prepend(ContainerBuilder $container)
+    {
+        // https://symfony.com/doc/4.4/messenger.html#transports-async-queued-messages
+        $this->extendArrayParameter($container, 'dbp_api.messenger_routing', [
+            'DBP\API\LocationCheckInBundle\Message\LocationGuestCheckOutMessage' => 'async'
+        ]);
+    }
+
     public function loadInternal(array $mergedConfig, ContainerBuilder $container)
     {
-        $pathsToHide = [
+        $this->extendArrayParameter($container, 'dbp_api.paths_to_hide', [
             '/location_check_in_actions/{id}',
             '/location_guest_check_in_actions',
             '/location_guest_check_in_actions/{id}',
             '/location_check_out_actions',
             '/location_check_out_actions/{id}',
-        ];
-
-        $this->extendArrayParameter($container, 'dbp_api.paths_to_hide', $pathsToHide);
+        ]);
 
         $this->extendArrayParameter(
             $container, 'api_platform.resource_class_directories', [__DIR__.'/../Entity']);
