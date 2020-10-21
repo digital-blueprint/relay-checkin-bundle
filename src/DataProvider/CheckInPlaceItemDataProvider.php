@@ -3,7 +3,7 @@
  * CheckInPlace item data provider
  *
  * We need to provide a CheckInPlace item data provider to be able to post a "location" like
- * "/check_in_places/00e5de0fc311d30575ea" in a LocationCheckInAction
+ * "/check_in_places/a1ef83b6f42a5aa3b77f" in a LocationCheckInAction
  */
 
 declare(strict_types=1);

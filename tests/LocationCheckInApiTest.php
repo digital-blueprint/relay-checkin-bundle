@@ -27,8 +27,8 @@ class LocationCheckInApiTest extends WebTestCase
      */
     private $api;
 
-    private const placesResponse = '[{"id":"testLocation","name":"Test Location","checkInCount":50,"accessType":"FREE","seatCount":null},{"id":"00e5de0fc311d30575ea","name":"Brockmanngasse 84 Coworkingspace","checkInCount":280,"accessType":"FREE","seatCount":70}]';
-    private const listActiveCheckInsResponse = '[{"id":"280ceccd269f5527603c3acbfc416dbb","locationId":"00e5de0fc311d30575ea","locationName":"Brockmanngasse 84 Coworkingspace","seat":17,"checkInDate":1.602763809372E12,"email":"test@test.com"}]';
+    private const placesResponse = '[{"id":"testLocation","name":"Test Location","checkInCount":50,"accessType":"FREE","seatCount":null},{"id":"a1ef83b6f42a5aa3b77f","name":"Brockmanngasse 84 Coworkingspace","checkInCount":280,"accessType":"FREE","seatCount":70}]';
+    private const listActiveCheckInsResponse = '[{"id":"280ceccd269f5527603c3acbfc416dbb","locationId":"a1ef83b6f42a5aa3b77f","locationName":"Brockmanngasse 84 Coworkingspace","seat":17,"checkInDate":1.602763809372E12,"email":"test@test.com"}]';
 
     protected function setUp(): void
     {
@@ -145,7 +145,7 @@ class LocationCheckInApiTest extends WebTestCase
             new Response(200, [], self::placesResponse),
         ]);
 
-        $result = $this->api->fetchCheckInPlace("00e5de0fc311d30575ea");
+        $result = $this->api->fetchCheckInPlace("a1ef83b6f42a5aa3b77f");
 
         $this->assertTrue($result instanceof CheckInPlace);
         $this->assertEquals($result->getName(), "Brockmanngasse 84 Coworkingspace");
@@ -188,7 +188,7 @@ class LocationCheckInApiTest extends WebTestCase
             new Response(200, [], self::listActiveCheckInsResponse),
         ]);
 
-        $result = $this->api->fetchLocationCheckInActionsOfCurrentPerson("00e5de0fc311d30575ea");
+        $result = $this->api->fetchLocationCheckInActionsOfCurrentPerson("a1ef83b6f42a5aa3b77f");
 
         $this->assertTrue($result instanceof ArrayCollection);
         $this->assertCount(1, $result);
@@ -215,7 +215,7 @@ class LocationCheckInApiTest extends WebTestCase
             new Response(200, [], self::listActiveCheckInsResponse),
         ]);
 
-        $result = $this->api->fetchLocationCheckInActionsOfCurrentPerson("00e5de0fc311d30575ea", 17);
+        $result = $this->api->fetchLocationCheckInActionsOfCurrentPerson("a1ef83b6f42a5aa3b77f", 17);
 
         $this->assertTrue($result instanceof ArrayCollection);
         $this->assertCount(1, $result);
@@ -230,7 +230,7 @@ class LocationCheckInApiTest extends WebTestCase
             new Response(200, [], self::listActiveCheckInsResponse),
         ]);
 
-        $result = $this->api->fetchLocationCheckInActionsOfCurrentPerson("00e5de0fc311d30575ea", 18);
+        $result = $this->api->fetchLocationCheckInActionsOfCurrentPerson("a1ef83b6f42a5aa3b77f", 18);
 
         $this->assertTrue($result instanceof ArrayCollection);
         $this->assertCount(0, $result);

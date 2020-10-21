@@ -25,7 +25,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *                      "in"="query",
  *                      "description"="Location",
  *                      "type"="string",
- *                      "example"="00e5de0fc311d30575ea"
+ *                      "example"="a1ef83b6f42a5aa3b77f"
  *                    }
  *                 }
  *             },
@@ -39,7 +39,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *                      "in"="body",
  *                      "description"="Location",
  *                      "type"="string",
- *                      "example"={"location"="/check_in_places/00e5de0fc311d30575ea", "seatNumber"=17},
+ *                      "example"={"location"="/check_in_places/a1ef83b6f42a5aa3b77f", "seatNumber"=17},
  *                      "required"="true"
  *                    }
  *                 }
