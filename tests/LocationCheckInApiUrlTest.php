@@ -28,8 +28,8 @@ class LocationCheckInApiUrlTest extends WebTestCase
 
     public function test_getGuestCheckInRequestUrl()
     {
-        $this->assertEquals($this->campusQRUrl . '/location/foob%3Far/guestCheckIn', $this->urls->getGuestCheckInRequestUrl($this->campusQRUrl, 'foob?ar'));
-        $this->assertEquals($this->campusQRUrl . '/location/foob%3Far-22/guestCheckIn', $this->urls->getGuestCheckInRequestUrl($this->campusQRUrl, 'foob?ar', 22));
+        $this->assertEquals($this->campusQRUrl . '/location/foob%3Far/guestCheckInBy', $this->urls->getGuestCheckInRequestUrl($this->campusQRUrl, 'foob?ar'));
+        $this->assertEquals($this->campusQRUrl . '/location/foob%3Far-22/guestCheckInBy', $this->urls->getGuestCheckInRequestUrl($this->campusQRUrl, 'foob?ar', 22));
     }
 
     public function test_getCheckOutRequestUrl()
