@@ -63,6 +63,8 @@ class LocationCheckInApi
     // Caching time of https://campusqr-dev.tugraz.at/location/list
     const LOCATION_CACHE_TTL = 300;
 
+    const CONFIG_KEY_AUTO_CHECK_OUT_MINUTES = "autoCheckOutMinutes";
+
 
     public function __construct(
         GuzzleLogger $guzzleLogger,
@@ -186,6 +188,7 @@ class LocationCheckInApi
         $location = $locationGuestCheckInAction->getLocation();
         $seatNumber = $locationGuestCheckInAction->getSeatNumber();
         $email = $locationGuestCheckInAction->getEmail();
+        $currentPerson = $this->personProvider->getCurrentPerson();
 
         $client = $this->getClient();
         $options = [
@@ -195,7 +198,12 @@ class LocationCheckInApi
 
         try {
             // e.g. https://campusqr-dev.tugraz.at/location/f0ad66aaaf1debabb44a/visit
-            $url = $this->urls->getGuestCheckInRequestUrl($this->campusQRUrl, $location->getIdentifier(), $seatNumber);
+            $url = $this->urls->getGuestCheckInRequestUrl(
+                $this->campusQRUrl,
+                $currentPerson->getEmail(),
+                $location->getIdentifier(),
+                $seatNumber
+            );
 
             // http://docs.guzzlephp.org/en/stable/quickstart.html?highlight=get#making-a-request
             $response = $client->request('POST', $url, $options);
@@ -383,16 +391,17 @@ class LocationCheckInApi
     }
 
     /**
+     * @param string $email
      * @param string $location
      * @param ?int $seatNumber
      * @return ArrayCollection
      * @throws ItemNotLoadedException
      */
-    public function fetchLocationCheckInActionsOfCurrentPerson($location = "", $seatNumber = null): ArrayCollection {
+    public function fetchLocationCheckInActionsOfEmail(string $email, $location = "", $seatNumber = null): ArrayCollection {
         /** @var ArrayCollection<int,LocationCheckInAction> $collection */
         $collection = new ArrayCollection();
 
-        $authenticDocumentTypesJsonData = $this->fetchLocationCheckInActionsOfCurrentPersonJsonData();
+        $authenticDocumentTypesJsonData = $this->fetchLocationCheckInActionsOfEMailJsonData($email);
 
         foreach ($authenticDocumentTypesJsonData as $jsonData)
         {
@@ -413,16 +422,28 @@ class LocationCheckInApi
     }
 
     /**
+     * @param string $location
+     * @param ?int $seatNumber
+     * @return ArrayCollection
+     * @throws ItemNotLoadedException
+     */
+    public function fetchLocationCheckInActionsOfCurrentPerson($location = "", $seatNumber = null): ArrayCollection {
+        $person = $this->personProvider->getCurrentPerson();
+
+        return $this->fetchLocationCheckInActionsOfEmail($person->getEmail(), $location, $seatNumber);
+    }
+
+    /**
+     * @param string $email
      * @return array
      * @throws ItemNotLoadedException
      */
-    public function fetchLocationCheckInActionsOfCurrentPersonJsonData(): array {
+    public function fetchLocationCheckInActionsOfEMailJsonData(string $email): array {
         $client = $this->getClient();
-        $person = $this->personProvider->getCurrentPerson();
 
         $options = [
             'headers' => [ 'X-Authorization' => $this->campusQRToken ],
-            'body' => json_encode(['emailAddress' => $person->getEmail()])
+            'body' => json_encode(['emailAddress' => $email])
         ];
 
         try {
@@ -519,5 +540,53 @@ class LocationCheckInApi
         } elseif ($seatNumber !== null && $seatNumber < 1) {
             throw new ItemNotStoredException("seatNumber too low!");
         }
+    }
+
+    /**
+     * @param string $configKey
+     * @return mixed
+     * @throws ItemNotLoadedException
+     * @throws AccessDeniedHttpException
+     */
+    public function fetchConfig(string $configKey) {
+        $client = $this->getLocationClient();
+
+        $options = [
+            'headers' => [ 'X-Authorization' => $this->campusQRToken ],
+        ];
+
+        try {
+            $url = $this->urls->getConfigUrl($this->campusQRUrl, $configKey);
+
+            // http://docs.guzzlephp.org/en/stable/quickstart.html?highlight=get#making-a-request
+            $response = $client->request('GET', $url, $options);
+
+            return $this->decodeResponse($response);
+        } catch (GuzzleException $e) {
+            $status = $e->getCode();
+
+            if ($status == 403) {
+                throw new AccessDeniedHttpException('The access token is not allowed to fetch config!');
+            }
+
+            throw new ItemNotLoadedException(sprintf('Config could not be loaded: %s',
+                Tools::filterErrorMessage($e->getMessage())));
+        } catch (\Exception|UriException $e) {
+            throw new ItemNotLoadedException(sprintf('Config could not be loaded: %s',
+                Tools::filterErrorMessage($e->getMessage())));
+        }
+    }
+
+    /**
+     * @return \DateTime
+     * @throws ItemNotLoadedException
+     */
+    public function fetchMaxCheckInEndTime(): \DateTime {
+        $autoCheckOutMinutes = (int) $this->fetchConfig(self::CONFIG_KEY_AUTO_CHECK_OUT_MINUTES);
+
+        $date = new \DateTime();
+        $date->add(new \DateInterval("PT${autoCheckOutMinutes}M"));
+
+        return $date;
     }
 }

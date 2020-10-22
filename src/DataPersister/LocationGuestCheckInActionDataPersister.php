@@ -52,16 +52,26 @@ final class LocationGuestCheckInActionDataPersister implements DataPersisterInte
 
         $this->api->seatCheck($location, $locationGuestCheckInAction->getSeatNumber());
 
+        // check if endDate is in the past
         if ((new \DateTime()) > $locationGuestCheckInAction->getEndTime()) {
             throw new ItemNotStoredException("The endDate must be in the future!");
         }
 
-        $existingCheckIns = $this->api->fetchLocationCheckInActionsOfCurrentPerson(
+        // check if endDate is too far in the future
+        $maxCheckInEndTime = $this->api->fetchMaxCheckInEndTime();
+        if ($maxCheckInEndTime < $locationGuestCheckInAction->getEndTime()) {
+            $maxCheckInEndTimeString = $maxCheckInEndTime->format("c");
+            throw new ItemNotStoredException("The endDate can't be after ${maxCheckInEndTimeString}!");
+        }
+
+        // check if there are check-ins for with guest email
+        $existingCheckIns = $this->api->fetchLocationCheckInActionsOfEmail(
+            $locationGuestCheckInAction->getEmail(),
             $location->getIdentifier(),
             $locationGuestCheckInAction->getSeatNumber());
 
         if (count($existingCheckIns) > 0) {
-            throw new ItemNotStoredException("There are already check-ins at the location with provided seat for the current user!");
+            throw new ItemNotStoredException("There are already check-ins at the location with provided seat for the email address!");
         }
 
         $this->api->sendCampusQRGuestCheckInRequest($locationGuestCheckInAction);

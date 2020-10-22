@@ -28,8 +28,10 @@ class LocationCheckInApiUrlTest extends WebTestCase
 
     public function test_getGuestCheckInRequestUrl()
     {
-        $this->assertEquals($this->campusQRUrl . '/location/foob%3Far/guestCheckInBy', $this->urls->getGuestCheckInRequestUrl($this->campusQRUrl, 'foob?ar'));
-        $this->assertEquals($this->campusQRUrl . '/location/foob%3Far-22/guestCheckInBy', $this->urls->getGuestCheckInRequestUrl($this->campusQRUrl, 'foob?ar', 22));
+        $this->assertEquals($this->campusQRUrl . '/location/foob%3Far/guestCheckInBy?email=test%40test.com',
+            $this->urls->getGuestCheckInRequestUrl($this->campusQRUrl, 'test@test.com', 'foob?ar'));
+        $this->assertEquals($this->campusQRUrl . '/location/foob%3Far-22/guestCheckInBy?email=test%40test.com',
+            $this->urls->getGuestCheckInRequestUrl($this->campusQRUrl, 'test@test.com', 'foob?ar', 22));
     }
 
     public function test_getCheckOutRequestUrl()
@@ -46,5 +48,10 @@ class LocationCheckInApiUrlTest extends WebTestCase
     public function test_getLocationCheckInActionListOfCurrentPersonRequestUrl()
     {
         $this->assertEquals($this->campusQRUrl . '/report/listActiveCheckIns', $this->urls->getLocationCheckInActionListOfCurrentPersonRequestUrl($this->campusQRUrl));
+    }
+
+    public function test_getConfigUrl()
+    {
+        $this->assertEquals($this->campusQRUrl . '/config/get?id=foob%3Far', $this->urls->getConfigUrl($this->campusQRUrl, 'foob?ar'));
     }
 }
