@@ -76,10 +76,13 @@ class LocationCheckInApiTest extends WebTestCase
         $this->assertTrue($result);
     }
 
-    public function test_sendCampusQRCheckOutRequest()
+    public function test_sendCampusQRCheckOutRequestForLocationCheckOutAction()
     {
         $action = new LocationCheckOutAction();
-        $action->setAgent(new Person());
+
+        $person = new Person();
+        $person->setEmail("dummy@email.com");
+        $action->setAgent($person);
 
         $location = new CheckInPlace();
         $location->setIdentifier("dummy");
@@ -89,7 +92,7 @@ class LocationCheckInApiTest extends WebTestCase
             new Response(200, [], 'ok'),
         ]);
 
-        $result = $this->api->sendCampusQRCheckOutRequest($action);
+        $result = $this->api->sendCampusQRCheckOutRequestForLocationCheckOutAction($action);
 
         $this->assertTrue($result);
     }

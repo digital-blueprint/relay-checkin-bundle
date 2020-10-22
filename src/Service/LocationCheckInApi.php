@@ -244,26 +244,18 @@ class LocationCheckInApi
     }
 
     /**
-     * @param LocationCheckOutAction $locationCheckInAction
+     * @param string $email
+     * @param CheckInPlace $location
+     * @param int|null $seatNumber
      * @return bool
+     * @throws ItemNotLoadedException
      * @throws ItemNotStoredException
-     * @throws AccessDeniedHttpException
      */
-    public function sendCampusQRCheckOutRequest(LocationCheckOutAction $locationCheckOutAction): bool {
-        $person = $locationCheckOutAction->getAgent();
-        $currentPerson = $this->personProvider->getCurrentPerson();
-
-        if ($person->getIdentifier() !== $currentPerson->getIdentifier()) {
-            throw new AccessDeniedHttpException('You are not allowed to check-out this check-in!');
-        }
-
-        $location = $locationCheckOutAction->getLocation();
-        $seatNumber = $locationCheckOutAction->getSeatNumber();
-
+    public function sendCampusQRCheckOutRequest(string $email, CheckInPlace $location, ?int $seatNumber): bool {
         $client = $this->getClient();
         $options = [
             'headers' => [ 'X-Authorization' => $this->campusQRToken ],
-            'body' => json_encode(['email' => $person->getEmail()])
+            'body' => json_encode(['email' => $email])
         ];
 
         try {
@@ -283,12 +275,32 @@ class LocationCheckInApi
                 throw new AccessDeniedHttpException('You are not allowed to check-out at this location!');
             }
 
-            throw new ItemNotStoredException(sprintf('LocationCheckOutAction could not be stored: %s',
+            throw new ItemNotStoredException(sprintf('Check out was not be possible: %s',
                 Tools::filterErrorMessage($e->getMessage())));
         } catch (\Exception|UriException $e) {
-            throw new ItemNotStoredException(sprintf('LocationCheckOutAction could not be stored: %s',
+            throw new ItemNotStoredException(sprintf('Check out was not be possible: %s',
                 Tools::filterErrorMessage($e->getMessage())));
         }
+    }
+
+    /**
+     * @param LocationCheckOutAction $locationCheckOutAction
+     * @return bool
+     * @throws ItemNotLoadedException
+     * @throws ItemNotStoredException
+     */
+    public function sendCampusQRCheckOutRequestForLocationCheckOutAction(LocationCheckOutAction $locationCheckOutAction): bool {
+        $person = $locationCheckOutAction->getAgent();
+        $currentPerson = $this->personProvider->getCurrentPerson();
+
+        if ($person->getIdentifier() !== $currentPerson->getIdentifier()) {
+            throw new AccessDeniedHttpException('You are not allowed to check-out this check-in!');
+        }
+
+        $location = $locationCheckOutAction->getLocation();
+        $seatNumber = $locationCheckOutAction->getSeatNumber();
+
+        return $this->sendCampusQRCheckOutRequest($person->getEmail(), $location, $seatNumber);
     }
 
     /**
@@ -636,5 +648,22 @@ class LocationCheckInApi
         }
 
         return new DelayStamp($seconds * 1000);
+    }
+
+    /**
+     * Handles the delayed checkout of guests
+     *
+     * @param LocationGuestCheckOutMessage $message
+     */
+    public function handleLocationGuestCheckOutMessage(LocationGuestCheckOutMessage $message) {
+        try {
+            $this->sendCampusQRCheckOutRequest(
+                $message->getEmail(),
+                $message->getLocation(),
+                $message->getSeatNumber()
+            );
+        } catch (ItemNotLoadedException $e) {
+        } catch (ItemNotStoredException $e) {
+        }
     }
 }

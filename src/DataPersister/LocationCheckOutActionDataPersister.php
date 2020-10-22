@@ -70,7 +70,7 @@ final class LocationCheckOutActionDataPersister implements DataPersisterInterfac
             throw new ItemNotStoredException("There is no check-ins at the location with provided seat for the current user!");
         }
 
-        $this->api->sendCampusQRCheckOutRequest($locationCheckOutAction);
+        $this->api->sendCampusQRCheckOutRequestForLocationCheckOutAction($locationCheckOutAction);
 
         return $locationCheckOutAction;
     }
