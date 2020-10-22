@@ -37,6 +37,7 @@ class LocationCheckInApiTest extends WebTestCase
         $guzzleLogger = new GuzzleLogger($nullLogger);
 
         $person = new Person();
+        $person->setEmail("dummy@email.com");
         $personProvider = new DummyPersonProvider($person);
 
         $this->api = new LocationCheckInApi($guzzleLogger, $personProvider, $client->getContainer());
@@ -221,7 +222,7 @@ class LocationCheckInApiTest extends WebTestCase
         $this->assertCount(1, $result);
         $this->assertTrue($result[0] instanceof LocationCheckInAction);
         $this->assertEquals($result[0]->getStartTime(), new \DateTime("2020-10-15 14:10:09"));
-        $this->assertEquals($result[0]->getSeatNumber(), 17);
+        $this->assertEquals(17, $result[0]->getSeatNumber());
     }
 
     public function test_fetchLocationCheckInActionsOfCurrentPersonWithLocationAndSeatNotFound()
