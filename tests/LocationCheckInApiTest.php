@@ -19,6 +19,7 @@ use Monolog\Handler\NullHandler;
 use Monolog\Logger;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Messenger\MessageBusInterface;
 
 class LocationCheckInApiTest extends WebTestCase
 {
@@ -40,7 +41,12 @@ class LocationCheckInApiTest extends WebTestCase
         $person->setEmail("dummy@email.com");
         $personProvider = new DummyPersonProvider($person);
 
-        $this->api = new LocationCheckInApi($guzzleLogger, $personProvider, $client->getContainer());
+        /** @var MessageBusInterface $messageBus */
+        $messageBus = $this->getMockBuilder(MessageBusInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $this->api = new LocationCheckInApi($guzzleLogger, $personProvider, $client->getContainer(), $messageBus);
         $this->api->setCampusQRUrl("http://dummy");
         $this->api->setCampusQRToken("dummy");
         $this->mockResponses([]);
