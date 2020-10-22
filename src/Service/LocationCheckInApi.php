@@ -18,6 +18,7 @@ use DBP\API\LocationCheckInBundle\Entity\LocationCheckOutAction;
 use DBP\API\CoreBundle\Service\GuzzleLogger;
 use DBP\API\CoreBundle\Service\PersonProviderInterface;
 use DBP\API\LocationCheckInBundle\Entity\LocationGuestCheckInAction;
+use DBP\API\LocationCheckInBundle\Message\LocationGuestCheckOutMessage;
 use Doctrine\Common\Collections\ArrayCollection;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
@@ -31,6 +32,8 @@ use Psr\Http\Message\ResponseInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Messenger\MessageBusInterface;
+use Symfony\Component\Messenger\Stamp\DelayStamp;
 
 class LocationCheckInApi
 {
@@ -39,6 +42,11 @@ class LocationCheckInApi
     private $guzzleLogger;
 
     private $container;
+
+    /**
+     * @var MessageBusInterface
+     */
+    private $bus;
 
     /**
      * @var PersonProviderInterface
@@ -66,16 +74,25 @@ class LocationCheckInApi
     const CONFIG_KEY_AUTO_CHECK_OUT_MINUTES = "autoCheckOutMinutes";
 
 
+    /**
+     * LocationCheckInApi constructor.
+     * @param GuzzleLogger $guzzleLogger
+     * @param PersonProviderInterface $personProvider
+     * @param ContainerInterface $container
+     * @param MessageBusInterface $bus
+     */
     public function __construct(
         GuzzleLogger $guzzleLogger,
         PersonProviderInterface $personProvider,
-        ContainerInterface $container
+        ContainerInterface $container,
+        MessageBusInterface $bus
     )
     {
         $this->clientHandler = null;
         $this->guzzleLogger = $guzzleLogger;
         $this->personProvider = $personProvider;
         $this->container = $container;
+        $this->bus = $bus;
         $this->urls = new LocationCheckInUrlApi();
 
         $config = $container->getParameter('dbp_api.location_check_in.config');
@@ -588,5 +605,36 @@ class LocationCheckInApi
         $date->add(new \DateInterval("PT${autoCheckOutMinutes}M"));
 
         return $date;
+    }
+
+    public function createAndDispatchLocationGuestCheckOutMessage(LocationGuestCheckInAction $locationGuestCheckInAction)
+    {
+        $message = new LocationGuestCheckOutMessage(
+            $locationGuestCheckInAction->getEmail(),
+            $locationGuestCheckInAction->getLocation(),
+            $locationGuestCheckInAction->getSeatNumber()
+        );
+
+        $this->bus->dispatch(
+            $message, [
+            $this->getDelayStampFromLocationGuestCheckInAction($locationGuestCheckInAction),
+        ]);
+
+        return $message;
+    }
+
+    /**
+     * @param LocationGuestCheckInAction $locationGuestCheckInAction
+     * @return DelayStamp
+     */
+    public function getDelayStampFromLocationGuestCheckInAction(LocationGuestCheckInAction $locationGuestCheckInAction): DelayStamp {
+        $endTime = $locationGuestCheckInAction->getEndTime();
+        $seconds = $endTime->getTimestamp() - time();
+
+        if ($seconds < 0) {
+            $seconds = 0;
+        }
+
+        return new DelayStamp($seconds * 1000);
     }
 }
