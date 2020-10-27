@@ -163,7 +163,7 @@ class LocationCheckInAction
         return $this;
     }
 
-    public function getEndTime(): \DateTime
+    public function getEndTime(): ?\DateTime
     {
         return $this->endTime;
     }
