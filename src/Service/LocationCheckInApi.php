@@ -210,14 +210,13 @@ class LocationCheckInApi
         $client = $this->getClient();
         $options = [
             'headers' => [ 'X-Authorization' => $this->campusQRToken ],
-            'body' => json_encode(['email' => $email])
+            'body' => json_encode(['email' => $email, 'host' => $currentPerson->getEmail()])
         ];
 
         try {
             // e.g. https://campusqr-dev.tugraz.at/location/f0ad66aaaf1debabb44a/visit
             $url = $this->urls->getGuestCheckInRequestUrl(
                 $this->campusQRUrl,
-                $currentPerson->getEmail(),
                 $location->getIdentifier(),
                 $seatNumber
             );

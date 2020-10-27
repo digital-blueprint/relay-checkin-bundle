@@ -74,8 +74,8 @@ final class LocationGuestCheckInActionDataPersister implements DataPersisterInte
             throw new ItemNotStoredException("There are already check-ins at the location with provided seat for the email address!");
         }
 
-        // TODO: we still get an exception "no host was provided"
-//        $this->api->sendCampusQRGuestCheckInRequest($locationGuestCheckInAction);
+        // send the guest check-in request
+        $this->api->sendCampusQRGuestCheckInRequest($locationGuestCheckInAction);
 
         // dispatch guest check out message
         $this->api->createAndDispatchLocationGuestCheckOutMessage($locationGuestCheckInAction);

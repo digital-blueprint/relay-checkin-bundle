@@ -37,17 +37,16 @@ class LocationCheckInUrlApi
      * @return string
      * @throws UriException
      */
-    public function getGuestCheckInRequestUrl(string $campusQRUrl, string $hostEmail, string $location, ?int $seatNumber = null): string
+    public function getGuestCheckInRequestUrl(string $campusQRUrl, string $location, ?int $seatNumber = null): string
     {
         $uriTemplate = new UriTemplate(
             $seatNumber === null ?
-                '/location/{location}/guestCheckInBy?email={hostEmail}' :
-                '/location/{location}-{seatNumber}/guestCheckInBy?email={hostEmail}');
+                '/location/{location}/guestCheckInBy' :
+                '/location/{location}-{seatNumber}/guestCheckInBy');
 
         return $campusQRUrl . $uriTemplate->expand([
             'location' => $location,
             'seatNumber' => $seatNumber,
-            'hostEmail' => $hostEmail,
         ]);
     }
 
