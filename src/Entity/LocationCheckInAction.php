@@ -95,6 +95,14 @@ class LocationCheckInAction
      */
     private $startTime;
 
+    /**
+     * @ApiProperty(iri="https://schema.org/DateTime")
+     * @Groups({"LocationCheckIn:output"})
+     *
+     * @var \DateTime
+     */
+    private $endTime;
+
     public function setIdentifier(string $identifier): self
     {
         $this->identifier = $identifier;
@@ -151,6 +159,18 @@ class LocationCheckInAction
     public function setStartTime(\DateTime $startTime): self
     {
         $this->startTime = $startTime;
+
+        return $this;
+    }
+
+    public function getEndTime(): \DateTime
+    {
+        return $this->endTime;
+    }
+
+    public function setEndTime(\DateTime $endTime): self
+    {
+        $this->endTime = $endTime;
 
         return $this;
     }

@@ -48,6 +48,7 @@ final class LocationCheckInActionDataPersister implements DataPersisterInterface
         $location = $locationCheckInAction->getLocation();
         $locationCheckInAction->setIdentifier(md5($location->getIdentifier() . rand(0, 10000) . time()));
         $locationCheckInAction->setStartTime(new \DateTime());
+        $locationCheckInAction->setEndTime($this->api->fetchMaxCheckInEndTime());
         $locationCheckInAction->setAgent($this->personProvider->getCurrentPerson());
 
         $this->api->seatCheck($location, $locationCheckInAction->getSeatNumber());
