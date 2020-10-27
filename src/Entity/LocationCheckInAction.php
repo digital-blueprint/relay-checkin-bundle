@@ -88,7 +88,7 @@ class LocationCheckInAction
     private $seatNumber;
 
     /**
-     * @ApiProperty(iri="https://schema.org/DateTime")
+     * @ApiProperty(iri="https://schema.org/startTime")
      * @Groups({"LocationCheckIn:output"})
      *
      * @var \DateTime
@@ -96,7 +96,7 @@ class LocationCheckInAction
     private $startTime;
 
     /**
-     * @ApiProperty(iri="https://schema.org/DateTime")
+     * @ApiProperty(iri="https://schema.org/endTime")
      * @Groups({"LocationCheckIn:output"})
      *
      * @var \DateTime
