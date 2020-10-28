@@ -68,6 +68,11 @@ class LocationCheckInApi
      */
     private $campusQRToken = "";
 
+    /**
+     * @var int
+     */
+    private $autoCheckOutMinutes = 0;
+
     // Caching time of https://campusqr-dev.tugraz.at/location/list
     const LOCATION_CACHE_TTL = 300;
 
@@ -440,9 +445,9 @@ class LocationCheckInApi
                 ($location !== "" && $jsonData["locationId"] === $location && $seatNumber === null) ||
                 ($location === "" && $seatNumber === null))
             {
-                $checkInPlace = $this->locationCheckInActionFromJsonItem($jsonData);
-
-                $collection->add($checkInPlace);
+                $checkInAction = $this->locationCheckInActionFromJsonItem($jsonData);
+                $checkInAction->setEndTime($this->fetchMaxCheckInEndTime($checkInAction->getStartTime()));
+                $collection->add($checkInAction);
             }
         }
 
@@ -606,16 +611,27 @@ class LocationCheckInApi
     }
 
     /**
+     * @param \DateTime|null $date
      * @return \DateTime
      * @throws ItemNotLoadedException
      */
-    public function fetchMaxCheckInEndTime(): \DateTime {
-        $autoCheckOutMinutes = (int) $this->fetchConfig(self::CONFIG_KEY_AUTO_CHECK_OUT_MINUTES);
+    public function fetchMaxCheckInEndTime(\DateTime $date = null): \DateTime {
+        if ($date === null) {
+            $date = new \DateTime();
+        }
 
-        $date = new \DateTime();
-        $date->add(new \DateInterval("PT${autoCheckOutMinutes}M"));
+        // only fetch if not already fetched
+        if ($this->autoCheckOutMinutes === 0) {
+            $this->autoCheckOutMinutes = (int) $this->fetchConfig(self::CONFIG_KEY_AUTO_CHECK_OUT_MINUTES);
+        }
 
-        return $date;
+        $autoCheckOutMinutes = $this->autoCheckOutMinutes;
+
+        // needs a clone or else $date will be modified outside the function!
+        $newDate = clone $date;
+        $newDate->add(new \DateInterval("PT${autoCheckOutMinutes}M"));
+
+        return $newDate;
     }
 
     public function createAndDispatchLocationGuestCheckOutMessage(LocationGuestCheckInAction $locationGuestCheckInAction)
