@@ -181,6 +181,7 @@ class LocationCheckInApiTest extends WebTestCase
     {
         $this->mockResponses([
             new Response(200, [], self::listActiveCheckInsResponse),
+            new Response(200, [], 180), // for LocationCheckInApi::fetchMaxCheckInEndTime
         ]);
 
         $result = $this->api->fetchLocationCheckInActionsOfCurrentPerson();
