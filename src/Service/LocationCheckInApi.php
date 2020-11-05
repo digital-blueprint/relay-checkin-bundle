@@ -16,7 +16,6 @@ use DBP\API\CoreBundle\Helpers\Tools as CoreTools;
 use DBP\API\LocationCheckInBundle\Entity\CheckInPlace;
 use DBP\API\LocationCheckInBundle\Entity\LocationCheckInAction;
 use DBP\API\LocationCheckInBundle\Entity\LocationCheckOutAction;
-use DBP\API\CoreBundle\Service\DBPLogger;
 use DBP\API\CoreBundle\Service\PersonProviderInterface;
 use DBP\API\LocationCheckInBundle\Entity\LocationGuestCheckInAction;
 use DBP\API\LocationCheckInBundle\Message\LocationGuestCheckOutMessage;
@@ -30,6 +29,7 @@ use Kevinrob\GuzzleCache\Strategy\GreedyCacheStrategy;
 use League\Uri\Contracts\UriException;
 use Psr\Cache\CacheItemPoolInterface;
 use Psr\Http\Message\ResponseInterface;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -82,13 +82,13 @@ class LocationCheckInApi
 
     /**
      * LocationCheckInApi constructor.
-     * @param DBPLogger $logger
+     * @param LoggerInterface $logger
      * @param PersonProviderInterface $personProvider
      * @param ContainerInterface $container
      * @param MessageBusInterface $bus
      */
     public function __construct(
-        DBPLogger $logger,
+        LoggerInterface $logger,
         PersonProviderInterface $personProvider,
         ContainerInterface $container,
         MessageBusInterface $bus

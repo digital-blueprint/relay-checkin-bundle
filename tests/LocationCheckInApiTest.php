@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace DBP\API\LocationCheckInBundle\Tests;
 
 use DBP\API\CoreBundle\Entity\Person;
-use DBP\API\CoreBundle\Service\DBPLogger;
 use DBP\API\CoreBundle\TestUtils\DummyPersonProvider;
 use DBP\API\LocationCheckInBundle\Entity\CheckInPlace;
 use DBP\API\LocationCheckInBundle\Entity\LocationCheckInAction;
@@ -35,7 +34,6 @@ class LocationCheckInApiTest extends WebTestCase
     {
         $client = static::createClient();
         $nullLogger = new Logger('dummy', [new NullHandler()]);
-        $logger = new DBPLogger($nullLogger);
 
         $person = new Person();
         $person->setEmail("dummy@email.com");
@@ -46,7 +44,7 @@ class LocationCheckInApiTest extends WebTestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->api = new LocationCheckInApi($logger, $personProvider, $client->getContainer(), $messageBus);
+        $this->api = new LocationCheckInApi($nullLogger, $personProvider, $client->getContainer(), $messageBus);
         $this->api->setCampusQRUrl("http://dummy");
         $this->api->setCampusQRToken("dummy");
         $this->mockResponses([]);
