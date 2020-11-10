@@ -4,13 +4,14 @@
     "license": "AGPL-3.0-or-later",
     "require": {
         "php": "^7.3",
+        "ext-json": "*",
         "ext-soap": "*",
         "api-platform/core": "^2.4",
         "dbp/api-core-bundle": "@dev",
         "guzzlehttp/guzzle": "^6.0",
         "myclabs/php-enum": "^1.7",
         "symfony/framework-bundle": "^4.1.12",
-        "ext-json": "*"
+        "symfony/messenger": "^4.4"
     },
     "require-dev": {
         "composer/semver": "^1.5",
