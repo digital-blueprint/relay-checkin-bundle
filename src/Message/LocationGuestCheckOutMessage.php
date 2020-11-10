@@ -19,7 +19,7 @@ class LocationGuestCheckOutMessage
     private $location;
 
     /**
-     * @var string
+     * @var int
      */
     private $seatNumber;
 
