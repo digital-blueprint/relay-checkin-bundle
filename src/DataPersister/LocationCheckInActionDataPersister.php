@@ -56,7 +56,7 @@ final class LocationCheckInActionDataPersister implements DataPersisterInterface
 
         $this->api->seatCheck($location, $locationCheckInAction->getSeatNumber());
 
-        // We want to wait until we have checked if the current person hasn't taken the same seat already
+        // We want to wait until we have checked if the current person already took the same seat
         // This lock will be auto-released
         // https://gitlab.tugraz.at/dbp/middleware/api/-/issues/64
         $lock = $this->api->acquireBlockingLock(

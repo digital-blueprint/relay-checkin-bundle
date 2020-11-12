@@ -6,6 +6,7 @@ namespace DBP\API\LocationCheckInBundle\DataPersister;
 
 use ApiPlatform\Core\DataPersister\DataPersisterInterface;
 use DBP\API\CoreBundle\Exception\ItemNotLoadedException;
+use DBP\API\CoreBundle\Exception\ItemNotUsableException;
 use DBP\API\CoreBundle\Helpers\Tools;
 use DBP\API\LocationCheckInBundle\Entity\LocationCheckOutAction;
 use DBP\API\LocationCheckInBundle\Service\LocationCheckInApi;
@@ -42,12 +43,14 @@ final class LocationCheckOutActionDataPersister implements DataPersisterInterfac
      * @throws ItemNotLoadedException
      * @throws ItemNotStoredException
      * @throws AccessDeniedHttpException
+     * @throws ItemNotUsableException
      */
     public function persist($locationCheckOutAction)
     {
+        $person = $this->personProvider->getCurrentPerson();
         $location = $locationCheckOutAction->getLocation();
         $locationCheckOutAction->setIdentifier(md5($location->getIdentifier() . rand(0, 10000) . time()));
-        $locationCheckOutAction->setAgent($this->personProvider->getCurrentPerson());
+        $locationCheckOutAction->setAgent($person);
 
         $seatNumber = $locationCheckOutAction->getSeatNumber();
         $maximumPhysicalAttendeeCapacity = $location->getMaximumPhysicalAttendeeCapacity();
@@ -62,6 +65,18 @@ final class LocationCheckOutActionDataPersister implements DataPersisterInterfac
             throw new ItemNotStoredException("seatNumber too low!");
         }
 
+        // We want to wait until we have checked if the current person really has taken the seat
+        // This lock will be auto-released
+        // https://gitlab.tugraz.at/dbp/middleware/api/-/issues/64
+        $lock = $this->api->acquireBlockingLock(
+            sprintf(
+                "check-out-%s-%s-%s",
+                $location->getIdentifier(),
+                $locationCheckOutAction->getSeatNumber(),
+                $person->getEmail()
+            )
+        );
+
         $existingCheckIns = $this->api->fetchLocationCheckInActionsOfCurrentPerson(
             $location->getIdentifier(),
             $locationCheckOutAction->getSeatNumber());
@@ -71,6 +86,7 @@ final class LocationCheckOutActionDataPersister implements DataPersisterInterfac
         }
 
         $this->api->sendCampusQRCheckOutRequestForLocationCheckOutAction($locationCheckOutAction);
+        $lock->release();
 
         return $locationCheckOutAction;
     }

@@ -6,6 +6,7 @@ namespace DBP\API\LocationCheckInBundle\DataPersister;
 
 use ApiPlatform\Core\DataPersister\DataPersisterInterface;
 use DBP\API\CoreBundle\Exception\ItemNotLoadedException;
+use DBP\API\CoreBundle\Exception\ItemNotUsableException;
 use DBP\API\CoreBundle\Helpers\Tools;
 use DBP\API\LocationCheckInBundle\Entity\LocationGuestCheckInAction;
 use DBP\API\LocationCheckInBundle\Service\LocationCheckInApi;
@@ -42,6 +43,7 @@ final class LocationGuestCheckInActionDataPersister implements DataPersisterInte
      * @throws ItemNotLoadedException
      * @throws ItemNotStoredException
      * @throws AccessDeniedHttpException
+     * @throws ItemNotUsableException
      */
     public function persist($locationGuestCheckInAction)
     {
@@ -64,6 +66,18 @@ final class LocationGuestCheckInActionDataPersister implements DataPersisterInte
             throw new ItemNotStoredException("The endDate can't be after ${maxCheckInEndTimeString}!");
         }
 
+        // We want to wait until we have checked if the guest already took the same seat
+        // This lock will be auto-released
+        // https://gitlab.tugraz.at/dbp/middleware/api/-/issues/64
+        $lock = $this->api->acquireBlockingLock(
+            sprintf(
+                "guest-check-in-%s-%s-%s",
+                $location->getIdentifier(),
+                $locationGuestCheckInAction->getSeatNumber(),
+                $locationGuestCheckInAction->getEmail()
+            )
+        );
+
         // check if there are check-ins for with guest email
         $existingCheckIns = $this->api->fetchLocationCheckInActionsOfEmail(
             $locationGuestCheckInAction->getEmail(),
@@ -76,6 +90,7 @@ final class LocationGuestCheckInActionDataPersister implements DataPersisterInte
 
         // send the guest check-in request
         $this->api->sendCampusQRGuestCheckInRequest($locationGuestCheckInAction);
+        $lock->release();
 
         // dispatch guest check out message
         $this->api->createAndDispatchLocationGuestCheckOutMessage($locationGuestCheckInAction);
