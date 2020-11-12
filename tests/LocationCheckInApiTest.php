@@ -18,6 +18,7 @@ use Monolog\Handler\NullHandler;
 use Monolog\Logger;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Lock\LockFactory;
 use Symfony\Component\Messenger\MessageBusInterface;
 
 class LocationCheckInApiTest extends WebTestCase
@@ -44,7 +45,12 @@ class LocationCheckInApiTest extends WebTestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->api = new LocationCheckInApi($nullLogger, $personProvider, $client->getContainer(), $messageBus);
+        /** @var LockFactory $lockFactory */
+        $lockFactory = $this->getMockBuilder(LockFactory::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $this->api = new LocationCheckInApi($nullLogger, $personProvider, $client->getContainer(), $messageBus, $lockFactory);
         $this->api->setCampusQRUrl("http://dummy");
         $this->api->setCampusQRToken("dummy");
         $this->mockResponses([]);
