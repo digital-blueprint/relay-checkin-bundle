@@ -9,6 +9,7 @@ namespace DBP\API\LocationCheckInBundle\Service;
 
 use DBP\API\CoreBundle\Exception\ItemNotLoadedException;
 use DBP\API\CoreBundle\Exception\ItemNotStoredException;
+use DBP\API\CoreBundle\Exception\ItemNotUsableException;
 use DBP\API\CoreBundle\Helpers\GuzzleTools;
 use DBP\API\CoreBundle\Helpers\JsonException;
 use DBP\API\CoreBundle\Helpers\Tools;
@@ -33,6 +34,8 @@ use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Lock\LockFactory;
+use Symfony\Component\Lock\LockInterface;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Messenger\Stamp\DelayStamp;
 
@@ -48,6 +51,11 @@ class LocationCheckInApi
      * @var MessageBusInterface
      */
     private $bus;
+
+    /**
+     * @var LockFactory
+     */
+    private $lockFactory;
 
     /**
      * @var PersonProviderInterface
@@ -86,12 +94,14 @@ class LocationCheckInApi
      * @param PersonProviderInterface $personProvider
      * @param ContainerInterface $container
      * @param MessageBusInterface $bus
+     * @param LockFactory $lockFactory
      */
     public function __construct(
         LoggerInterface $logger,
         PersonProviderInterface $personProvider,
         ContainerInterface $container,
-        MessageBusInterface $bus
+        MessageBusInterface $bus,
+        LockFactory $lockFactory
     )
     {
         $this->clientHandler = null;
@@ -99,6 +109,7 @@ class LocationCheckInApi
         $this->personProvider = $personProvider;
         $this->container = $container;
         $this->bus = $bus;
+        $this->lockFactory = $lockFactory;
         $this->urls = new LocationCheckInUrlApi();
 
         $config = $container->getParameter('dbp_api.location_check_in.config');
@@ -681,5 +692,32 @@ class LocationCheckInApi
         } catch (ItemNotLoadedException $e) {
         } catch (ItemNotStoredException $e) {
         }
+    }
+
+    /**
+     * @param string $resource
+     * @param int $maxRetry
+     * @return LockInterface
+     * @throws ItemNotUsableException
+     */
+    public function acquireBlockingLock(string $resource, $maxRetry = 30): LockInterface {
+        $resourceKey = "location-check-in-" . $resource;
+        $lock = $this->lockFactory->createLock($resourceKey);
+        $counter = 0;
+
+        do {
+            // Redis can't have blocking locks, so we will simulate it
+            $gotLock = $lock->acquire();
+
+            if (!$gotLock) {
+                sleep(1);
+            }
+        } while (!$gotLock && (++$counter <= $maxRetry));
+
+        if (!$gotLock) {
+            throw new ItemNotUsableException(sprintf('System was not able to get lock on ressource: %s', $resource));
+        }
+
+        return $lock;
     }
 }

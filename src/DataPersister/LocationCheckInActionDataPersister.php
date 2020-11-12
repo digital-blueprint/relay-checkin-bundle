@@ -6,6 +6,7 @@ namespace DBP\API\LocationCheckInBundle\DataPersister;
 
 use ApiPlatform\Core\DataPersister\DataPersisterInterface;
 use DBP\API\CoreBundle\Exception\ItemNotLoadedException;
+use DBP\API\CoreBundle\Exception\ItemNotUsableException;
 use DBP\API\CoreBundle\Helpers\Tools;
 use DBP\API\LocationCheckInBundle\Entity\LocationCheckInAction;
 use DBP\API\LocationCheckInBundle\Service\LocationCheckInApi;
@@ -42,16 +43,30 @@ final class LocationCheckInActionDataPersister implements DataPersisterInterface
      * @throws ItemNotLoadedException
      * @throws ItemNotStoredException
      * @throws AccessDeniedHttpException
+     * @throws ItemNotUsableException
      */
     public function persist($locationCheckInAction)
     {
+        $person = $this->personProvider->getCurrentPerson();
         $location = $locationCheckInAction->getLocation();
         $locationCheckInAction->setIdentifier(md5($location->getIdentifier() . rand(0, 10000) . time()));
         $locationCheckInAction->setStartTime(new \DateTime());
         $locationCheckInAction->setEndTime($this->api->fetchMaxCheckInEndTime());
-        $locationCheckInAction->setAgent($this->personProvider->getCurrentPerson());
+        $locationCheckInAction->setAgent($person);
 
         $this->api->seatCheck($location, $locationCheckInAction->getSeatNumber());
+
+        // We want to wait until we have checked if the current person hasn't taken the same seat already
+        // This lock will be auto-released
+        // https://gitlab.tugraz.at/dbp/middleware/api/-/issues/64
+        $lock = $this->api->acquireBlockingLock(
+            sprintf(
+                "check-in-%s-%s-%s",
+                $location->getIdentifier(),
+                $locationCheckInAction->getSeatNumber(),
+                $person->getEmail()
+            )
+        );
 
         $existingCheckIns = $this->api->fetchLocationCheckInActionsOfCurrentPerson(
             $location->getIdentifier(),
@@ -62,6 +77,7 @@ final class LocationCheckInActionDataPersister implements DataPersisterInterface
         }
 
         $this->api->sendCampusQRCheckInRequest($locationCheckInAction);
+        $lock->release();
 
         return $locationCheckInAction;
     }
