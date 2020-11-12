@@ -78,19 +78,22 @@ final class LocationGuestCheckInActionDataPersister implements DataPersisterInte
             )
         );
 
-        // check if there are check-ins for with guest email
-        $existingCheckIns = $this->api->fetchLocationCheckInActionsOfEmail(
-            $locationGuestCheckInAction->getEmail(),
-            $location->getIdentifier(),
-            $locationGuestCheckInAction->getSeatNumber());
+        try {
+            // check if there are check-ins for with guest email
+            $existingCheckIns = $this->api->fetchLocationCheckInActionsOfEmail(
+                $locationGuestCheckInAction->getEmail(),
+                $location->getIdentifier(),
+                $locationGuestCheckInAction->getSeatNumber());
 
-        if (count($existingCheckIns) > 0) {
-            throw new ItemNotStoredException("There are already check-ins at the location with provided seat for the email address!");
+            if (count($existingCheckIns) > 0) {
+                throw new ItemNotStoredException("There are already check-ins at the location with provided seat for the email address!");
+            }
+
+            // send the guest check-in request
+            $this->api->sendCampusQRGuestCheckInRequest($locationGuestCheckInAction);
+        } finally {
+            $lock->release();
         }
-
-        // send the guest check-in request
-        $this->api->sendCampusQRGuestCheckInRequest($locationGuestCheckInAction);
-        $lock->release();
 
         // dispatch guest check out message
         $this->api->createAndDispatchLocationGuestCheckOutMessage($locationGuestCheckInAction);
