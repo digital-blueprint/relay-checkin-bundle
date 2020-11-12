@@ -696,11 +696,11 @@ class LocationCheckInApi
 
     /**
      * @param string $resource
-     * @param int $maxRetry
+     * @param int $maxRetry retry this amount of times ever 100ms
      * @return LockInterface
      * @throws ItemNotUsableException
      */
-    public function acquireBlockingLock(string $resource, $maxRetry = 30): LockInterface {
+    public function acquireBlockingLock(string $resource, $maxRetry = 300): LockInterface {
         $resourceKey = "location-check-in-" . $resource;
         $lock = $this->lockFactory->createLock($resourceKey);
         $counter = 0;
@@ -710,7 +710,7 @@ class LocationCheckInApi
             $gotLock = $lock->acquire();
 
             if (!$gotLock) {
-                sleep(1);
+                usleep(100000);
             }
         } while (!$gotLock && (++$counter <= $maxRetry));
 
