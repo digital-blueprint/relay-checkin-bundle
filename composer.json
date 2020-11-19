@@ -26,8 +26,8 @@
     },
     "repositories": [
         {
-            "type": "path",
-            "url": "../api-core-bundle"
+            "type": "vcs",
+            "url": "git@gitlab.tugraz.at:dbp/middleware/dbp-api/api-core-bundle.git"
         }
     ],
     "autoload": {
