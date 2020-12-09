@@ -82,7 +82,7 @@ final class LocationCheckOutActionDataPersister implements DataPersisterInterfac
                 $locationCheckOutAction->getSeatNumber());
 
             if (count($existingCheckIns) == 0) {
-                throw new ItemNotStoredException("There is no check-ins at the location with provided seat for the current user!");
+                throw new ItemNotStoredException("There are no check-ins at the location with provided seat for the current user!");
             }
 
             $this->api->sendCampusQRCheckOutRequestForLocationCheckOutAction($locationCheckOutAction);
