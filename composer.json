@@ -6,7 +6,7 @@
         "php": "^7.3",
         "ext-json": "*",
         "ext-soap": "*",
-        "api-platform/core": "^2.4",
+        "api-platform/core": "^2.5",
         "dbp/api-core-bundle": "@dev",
         "guzzlehttp/guzzle": "^7.0",
         "myclabs/php-enum": "^1.7",
@@ -15,7 +15,7 @@
         "symfony/messenger": "^4.4"
     },
     "require-dev": {
-        "composer/semver": "^1.5",
+        "composer/semver": "^1.7",
         "friendsofphp/php-cs-fixer": "^2.16",
         "phpstan/phpstan": "^0.12.33",
         "phpstan/phpstan-phpunit": "^0.12.13",
