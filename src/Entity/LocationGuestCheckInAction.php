@@ -40,7 +40,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *                      "description"="Location",
  *                      "type"="string",
  *                      "example"={"location"="/check_in_places/f0ad66aaaf1debabb44a", "seatNumber"=17, "email"="test@test.com", "endTime"="2021-10-19T08:03:11.336Z"},
- *                      "required"="true"
+ *                      "required"=true
  *                    }
  *                 }
  *             },
