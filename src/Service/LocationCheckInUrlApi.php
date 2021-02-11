@@ -13,7 +13,9 @@ class LocationCheckInUrlApi
      * @param string $campusQRUrl
      * @param string $location
      * @param int|null $seatNumber
+     *
      * @return string
+     *
      * @throws UriException
      */
     public function getCheckInRequestUrl(string $campusQRUrl, string $location, ?int $seatNumber = null): string
@@ -23,7 +25,7 @@ class LocationCheckInUrlApi
                 '/location/{location}/visit' :
                 '/location/{location}-{seatNumber}/visit');
 
-        return $campusQRUrl . $uriTemplate->expand([
+        return $campusQRUrl.$uriTemplate->expand([
             'location' => $location,
             'seatNumber' => $seatNumber,
         ]);
@@ -34,7 +36,9 @@ class LocationCheckInUrlApi
      * @param string $hostEmail
      * @param string $location
      * @param int|null $seatNumber
+     *
      * @return string
+     *
      * @throws UriException
      */
     public function getGuestCheckInRequestUrl(string $campusQRUrl, string $location, ?int $seatNumber = null): string
@@ -44,7 +48,7 @@ class LocationCheckInUrlApi
                 '/location/{location}/guestCheckInBy' :
                 '/location/{location}-{seatNumber}/guestCheckInBy');
 
-        return $campusQRUrl . $uriTemplate->expand([
+        return $campusQRUrl.$uriTemplate->expand([
             'location' => $location,
             'seatNumber' => $seatNumber,
         ]);
@@ -54,7 +58,9 @@ class LocationCheckInUrlApi
      * @param string $campusQRUrl
      * @param string $location
      * @param int|null $seatNumber
+     *
      * @return string
+     *
      * @throws UriException
      */
     public function getCheckOutRequestUrl(string $campusQRUrl, string $location, ?int $seatNumber = null): string
@@ -64,7 +70,7 @@ class LocationCheckInUrlApi
                 '/location/{location}/checkoutSeat' :
                 '/location/{location}-{seatNumber}/checkoutSeat');
 
-        return $campusQRUrl . $uriTemplate->expand([
+        return $campusQRUrl.$uriTemplate->expand([
             'location' => $location,
             'seatNumber' => $seatNumber,
         ]);
@@ -72,39 +78,45 @@ class LocationCheckInUrlApi
 
     /**
      * @param string $campusQRUrl
+     *
      * @return string
+     *
      * @throws UriException
      */
     public function getLocationListRequestUrl(string $campusQRUrl): string
     {
         $uriTemplate = new UriTemplate('/location/list');
 
-        return $campusQRUrl . $uriTemplate->expand();
+        return $campusQRUrl.$uriTemplate->expand();
     }
 
     /**
      * @param string $campusQRUrl
+     *
      * @return string
+     *
      * @throws UriException
      */
     public function getLocationCheckInActionListOfCurrentPersonRequestUrl(string $campusQRUrl): string
     {
         $uriTemplate = new UriTemplate('/report/listActiveCheckIns');
 
-        return $campusQRUrl . $uriTemplate->expand();
+        return $campusQRUrl.$uriTemplate->expand();
     }
 
     /**
      * @param string $campusQRUrl
      * @param string $configKey
+     *
      * @return string
+     *
      * @throws UriException
      */
     public function getConfigUrl(string $campusQRUrl, string $configKey): string
     {
         $uriTemplate = new UriTemplate('/config/get?id={configKey}');
 
-        return $campusQRUrl . $uriTemplate->expand([
+        return $campusQRUrl.$uriTemplate->expand([
                 'configKey' => $configKey,
             ]);
     }

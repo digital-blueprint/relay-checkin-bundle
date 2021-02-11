@@ -17,41 +17,41 @@ class LocationCheckInApiUrlTest extends WebTestCase
     protected function setUp(): void
     {
         $this->urls = new LocationCheckInUrlApi();
-        $this->campusQRUrl = "http://test";
+        $this->campusQRUrl = 'http://test';
     }
 
-    public function test_getCheckInRequestUrl()
+    public function testGetCheckInRequestUrl()
     {
-        $this->assertEquals($this->campusQRUrl . '/location/foob%3Far/visit', $this->urls->getCheckInRequestUrl($this->campusQRUrl, 'foob?ar'));
-        $this->assertEquals($this->campusQRUrl . '/location/foob%3Far-22/visit', $this->urls->getCheckInRequestUrl($this->campusQRUrl, 'foob?ar', 22));
+        $this->assertEquals($this->campusQRUrl.'/location/foob%3Far/visit', $this->urls->getCheckInRequestUrl($this->campusQRUrl, 'foob?ar'));
+        $this->assertEquals($this->campusQRUrl.'/location/foob%3Far-22/visit', $this->urls->getCheckInRequestUrl($this->campusQRUrl, 'foob?ar', 22));
     }
 
-    public function test_getGuestCheckInRequestUrl()
+    public function testGetGuestCheckInRequestUrl()
     {
-        $this->assertEquals($this->campusQRUrl . '/location/foob%3Far/guestCheckInBy',
+        $this->assertEquals($this->campusQRUrl.'/location/foob%3Far/guestCheckInBy',
             $this->urls->getGuestCheckInRequestUrl($this->campusQRUrl, 'foob?ar'));
-        $this->assertEquals($this->campusQRUrl . '/location/foob%3Far-22/guestCheckInBy',
+        $this->assertEquals($this->campusQRUrl.'/location/foob%3Far-22/guestCheckInBy',
             $this->urls->getGuestCheckInRequestUrl($this->campusQRUrl, 'foob?ar', 22));
     }
 
-    public function test_getCheckOutRequestUrl()
+    public function testGetCheckOutRequestUrl()
     {
-        $this->assertEquals($this->campusQRUrl . '/location/foob%3Far/checkoutSeat', $this->urls->getCheckOutRequestUrl($this->campusQRUrl, 'foob?ar'));
-        $this->assertEquals($this->campusQRUrl . '/location/foob%3Far-22/checkoutSeat', $this->urls->getCheckOutRequestUrl($this->campusQRUrl, 'foob?ar', 22));
+        $this->assertEquals($this->campusQRUrl.'/location/foob%3Far/checkoutSeat', $this->urls->getCheckOutRequestUrl($this->campusQRUrl, 'foob?ar'));
+        $this->assertEquals($this->campusQRUrl.'/location/foob%3Far-22/checkoutSeat', $this->urls->getCheckOutRequestUrl($this->campusQRUrl, 'foob?ar', 22));
     }
 
-    public function test_getLocationListRequestUrl()
+    public function testGetLocationListRequestUrl()
     {
-        $this->assertEquals($this->campusQRUrl . '/location/list', $this->urls->getLocationListRequestUrl($this->campusQRUrl));
+        $this->assertEquals($this->campusQRUrl.'/location/list', $this->urls->getLocationListRequestUrl($this->campusQRUrl));
     }
 
-    public function test_getLocationCheckInActionListOfCurrentPersonRequestUrl()
+    public function testGetLocationCheckInActionListOfCurrentPersonRequestUrl()
     {
-        $this->assertEquals($this->campusQRUrl . '/report/listActiveCheckIns', $this->urls->getLocationCheckInActionListOfCurrentPersonRequestUrl($this->campusQRUrl));
+        $this->assertEquals($this->campusQRUrl.'/report/listActiveCheckIns', $this->urls->getLocationCheckInActionListOfCurrentPersonRequestUrl($this->campusQRUrl));
     }
 
-    public function test_getConfigUrl()
+    public function testGetConfigUrl()
     {
-        $this->assertEquals($this->campusQRUrl . '/config/get?id=foob%3Far', $this->urls->getConfigUrl($this->campusQRUrl, 'foob?ar'));
+        $this->assertEquals($this->campusQRUrl.'/config/get?id=foob%3Far', $this->urls->getConfigUrl($this->campusQRUrl, 'foob?ar'));
     }
 }

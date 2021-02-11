@@ -37,7 +37,7 @@ class LocationCheckInApiTest extends WebTestCase
         $nullLogger = new Logger('dummy', [new NullHandler()]);
 
         $person = new Person();
-        $person->setEmail("dummy@email.com");
+        $person->setEmail('dummy@email.com');
         $personProvider = new DummyPersonProvider($person);
 
         /** @var MessageBusInterface $messageBus */
@@ -51,8 +51,8 @@ class LocationCheckInApiTest extends WebTestCase
             ->getMock();
 
         $this->api = new LocationCheckInApi($nullLogger, $personProvider, $client->getContainer(), $messageBus, $lockFactory);
-        $this->api->setCampusQRUrl("http://dummy");
-        $this->api->setCampusQRToken("dummy");
+        $this->api->setCampusQRUrl('http://dummy');
+        $this->api->setCampusQRToken('dummy');
         $this->mockResponses([]);
     }
 
@@ -62,13 +62,13 @@ class LocationCheckInApiTest extends WebTestCase
         $this->api->setClientHandler($stack);
     }
 
-    public function test_sendCampusQRCheckInRequest()
+    public function testSendCampusQRCheckInRequest()
     {
         $action = new LocationCheckInAction();
         $action->setAgent(new Person());
 
         $location = new CheckInPlace();
-        $location->setIdentifier("dummy");
+        $location->setIdentifier('dummy');
         $action->setLocation($location);
 
         $this->mockResponses([
@@ -80,16 +80,16 @@ class LocationCheckInApiTest extends WebTestCase
         $this->assertTrue($result);
     }
 
-    public function test_sendCampusQRCheckOutRequestForLocationCheckOutAction()
+    public function testSendCampusQRCheckOutRequestForLocationCheckOutAction()
     {
         $action = new LocationCheckOutAction();
 
         $person = new Person();
-        $person->setEmail("dummy@email.com");
+        $person->setEmail('dummy@email.com');
         $action->setAgent($person);
 
         $location = new CheckInPlace();
-        $location->setIdentifier("dummy");
+        $location->setIdentifier('dummy');
         $action->setLocation($location);
 
         $this->mockResponses([
@@ -101,7 +101,7 @@ class LocationCheckInApiTest extends WebTestCase
         $this->assertTrue($result);
     }
 
-    public function test_fetchCheckInPlaces()
+    public function testFetchCheckInPlaces()
     {
         $this->mockResponses([
             new Response(200, [], self::placesResponse),
@@ -114,66 +114,66 @@ class LocationCheckInApiTest extends WebTestCase
         $this->assertTrue($result[0] instanceof CheckInPlace);
     }
 
-    public function test_fetchCheckInPlacesByName()
+    public function testFetchCheckInPlacesByName()
     {
         $this->mockResponses([
             new Response(200, [], self::placesResponse),
         ]);
 
-        $result = $this->api->fetchCheckInPlaces("Brock 84");
+        $result = $this->api->fetchCheckInPlaces('Brock 84');
 
         $this->assertCount(1, $result);
         $this->assertTrue($result[0] instanceof CheckInPlace);
-        $this->assertEquals($result[0]->getName(), "Brockmanngasse 84 Coworkingspace");
+        $this->assertEquals($result[0]->getName(), 'Brockmanngasse 84 Coworkingspace');
         $this->assertEquals($result[0]->getMaximumPhysicalAttendeeCapacity(), 70);
     }
 
-    public function test_fetchCheckInPlacesNameNotFound()
+    public function testFetchCheckInPlacesNameNotFound()
     {
         $this->mockResponses([
             new Response(200, [], self::placesResponse),
         ]);
 
-        $result = $this->api->fetchCheckInPlaces("Brock 100");
+        $result = $this->api->fetchCheckInPlaces('Brock 100');
 
         $this->assertCount(0, $result);
     }
 
-    public function test_fetchCheckInPlacesEmptyCapacity()
+    public function testFetchCheckInPlacesEmptyCapacity()
     {
         $this->mockResponses([
             new Response(200, [], self::placesResponse),
         ]);
 
-        $result = $this->api->fetchCheckInPlaces("test");
+        $result = $this->api->fetchCheckInPlaces('test');
 
         $this->assertCount(1, $result);
         $this->assertTrue($result[0] instanceof CheckInPlace);
-        $this->assertEquals($result[0]->getName(), "Test Location");
+        $this->assertEquals($result[0]->getName(), 'Test Location');
         $this->assertNull($result[0]->getMaximumPhysicalAttendeeCapacity());
     }
 
-    public function test_fetchCheckInPlace()
+    public function testFetchCheckInPlace()
     {
         $this->mockResponses([
             new Response(200, [], self::placesResponse),
         ]);
 
-        $result = $this->api->fetchCheckInPlace("f0ad66aaaf1debabb44a");
+        $result = $this->api->fetchCheckInPlace('f0ad66aaaf1debabb44a');
 
         $this->assertTrue($result instanceof CheckInPlace);
-        $this->assertEquals($result->getName(), "Brockmanngasse 84 Coworkingspace");
+        $this->assertEquals($result->getName(), 'Brockmanngasse 84 Coworkingspace');
         $this->assertEquals($result->getMaximumPhysicalAttendeeCapacity(), 70);
     }
 
-    public function test_fetchCheckInPlaceNotFound()
+    public function testFetchCheckInPlaceNotFound()
     {
         $this->mockResponses([
             new Response(200, [], self::placesResponse),
         ]);
 
         try {
-            $this->api->fetchCheckInPlace("wrong");
+            $this->api->fetchCheckInPlace('wrong');
         } catch (NotFoundHttpException $e) {
             $this->assertStringContainsString('Location was not found!', $e->getMessage());
         } catch (\Exception $e) {
@@ -181,7 +181,7 @@ class LocationCheckInApiTest extends WebTestCase
         }
     }
 
-    public function test_fetchLocationCheckInActionsOfCurrentPerson()
+    public function testFetchLocationCheckInActionsOfCurrentPerson()
     {
         $this->mockResponses([
             new Response(200, [], self::listActiveCheckInsResponse),
@@ -193,59 +193,59 @@ class LocationCheckInApiTest extends WebTestCase
         $this->assertTrue($result instanceof ArrayCollection);
         $this->assertCount(1, $result);
         $this->assertTrue($result[0] instanceof LocationCheckInAction);
-        $this->assertEquals($result[0]->getStartTime(), new \DateTime("2020-10-15 14:10:09"));
+        $this->assertEquals($result[0]->getStartTime(), new \DateTime('2020-10-15 14:10:09'));
         $this->assertEquals($result[0]->getSeatNumber(), 17);
     }
 
-    public function test_fetchLocationCheckInActionsOfCurrentPersonWithLocation()
+    public function testFetchLocationCheckInActionsOfCurrentPersonWithLocation()
     {
         $this->mockResponses([
             new Response(200, [], self::listActiveCheckInsResponse),
         ]);
 
-        $result = $this->api->fetchLocationCheckInActionsOfCurrentPerson("f0ad66aaaf1debabb44a");
+        $result = $this->api->fetchLocationCheckInActionsOfCurrentPerson('f0ad66aaaf1debabb44a');
 
         $this->assertTrue($result instanceof ArrayCollection);
         $this->assertCount(1, $result);
         $this->assertTrue($result[0] instanceof LocationCheckInAction);
-        $this->assertEquals($result[0]->getStartTime(), new \DateTime("2020-10-15 14:10:09"));
+        $this->assertEquals($result[0]->getStartTime(), new \DateTime('2020-10-15 14:10:09'));
         $this->assertEquals($result[0]->getSeatNumber(), 17);
     }
 
-    public function test_fetchLocationCheckInActionsOfCurrentPersonWithLocationNotFound()
+    public function testFetchLocationCheckInActionsOfCurrentPersonWithLocationNotFound()
     {
         $this->mockResponses([
             new Response(200, [], self::listActiveCheckInsResponse),
         ]);
 
-        $result = $this->api->fetchLocationCheckInActionsOfCurrentPerson("wrong");
+        $result = $this->api->fetchLocationCheckInActionsOfCurrentPerson('wrong');
 
         $this->assertTrue($result instanceof ArrayCollection);
         $this->assertCount(0, $result);
     }
 
-    public function test_fetchLocationCheckInActionsOfCurrentPersonWithLocationAndSeat()
+    public function testFetchLocationCheckInActionsOfCurrentPersonWithLocationAndSeat()
     {
         $this->mockResponses([
             new Response(200, [], self::listActiveCheckInsResponse),
         ]);
 
-        $result = $this->api->fetchLocationCheckInActionsOfCurrentPerson("f0ad66aaaf1debabb44a", 17);
+        $result = $this->api->fetchLocationCheckInActionsOfCurrentPerson('f0ad66aaaf1debabb44a', 17);
 
         $this->assertTrue($result instanceof ArrayCollection);
         $this->assertCount(1, $result);
         $this->assertTrue($result[0] instanceof LocationCheckInAction);
-        $this->assertEquals($result[0]->getStartTime(), new \DateTime("2020-10-15 14:10:09"));
+        $this->assertEquals($result[0]->getStartTime(), new \DateTime('2020-10-15 14:10:09'));
         $this->assertEquals(17, $result[0]->getSeatNumber());
     }
 
-    public function test_fetchLocationCheckInActionsOfCurrentPersonWithLocationAndSeatNotFound()
+    public function testFetchLocationCheckInActionsOfCurrentPersonWithLocationAndSeatNotFound()
     {
         $this->mockResponses([
             new Response(200, [], self::listActiveCheckInsResponse),
         ]);
 
-        $result = $this->api->fetchLocationCheckInActionsOfCurrentPerson("f0ad66aaaf1debabb44a", 18);
+        $result = $this->api->fetchLocationCheckInActionsOfCurrentPerson('f0ad66aaaf1debabb44a', 18);
 
         $this->assertTrue($result instanceof ArrayCollection);
         $this->assertCount(0, $result);

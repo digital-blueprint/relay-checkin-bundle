@@ -6,13 +6,11 @@ namespace DBP\API\LocationCheckInBundle\DataPersister;
 
 use ApiPlatform\Core\DataPersister\DataPersisterInterface;
 use DBP\API\CoreBundle\Exception\ItemNotLoadedException;
+use DBP\API\CoreBundle\Exception\ItemNotStoredException;
 use DBP\API\CoreBundle\Exception\ItemNotUsableException;
-use DBP\API\CoreBundle\Helpers\Tools;
+use DBP\API\CoreBundle\Service\PersonProviderInterface;
 use DBP\API\LocationCheckInBundle\Entity\LocationCheckInAction;
 use DBP\API\LocationCheckInBundle\Service\LocationCheckInApi;
-use DBP\API\CoreBundle\Exception\ItemNotStoredException;
-use DBP\API\CoreBundle\Service\PersonProviderInterface;
-use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 final class LocationCheckInActionDataPersister implements DataPersisterInterface
@@ -49,7 +47,7 @@ final class LocationCheckInActionDataPersister implements DataPersisterInterface
     {
         $person = $this->personProvider->getCurrentPerson();
         $location = $locationCheckInAction->getLocation();
-        $locationCheckInAction->setIdentifier(md5($location->getIdentifier() . rand(0, 10000) . time()));
+        $locationCheckInAction->setIdentifier(md5($location->getIdentifier().rand(0, 10000).time()));
         $locationCheckInAction->setStartTime(new \DateTime());
         $locationCheckInAction->setEndTime($this->api->fetchMaxCheckInEndTime());
         $locationCheckInAction->setAgent($person);
@@ -61,7 +59,7 @@ final class LocationCheckInActionDataPersister implements DataPersisterInterface
         // https://gitlab.tugraz.at/dbp/middleware/api/-/issues/64
         $lock = $this->api->acquireBlockingLock(
             sprintf(
-                "check-in-%s-%s-%s",
+                'check-in-%s-%s-%s',
                 $location->getIdentifier(),
                 $locationCheckInAction->getSeatNumber(),
                 $person->getEmail()
@@ -74,7 +72,7 @@ final class LocationCheckInActionDataPersister implements DataPersisterInterface
                 $locationCheckInAction->getSeatNumber());
 
             if (count($existingCheckIns) > 0) {
-                throw new ItemNotStoredException("There are already check-ins at the location with provided seat for the current user!");
+                throw new ItemNotStoredException('There are already check-ins at the location with provided seat for the current user!');
             }
 
             $this->api->sendCampusQRCheckInRequest($locationCheckInAction);

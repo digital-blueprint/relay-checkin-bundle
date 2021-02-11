@@ -17,7 +17,7 @@ class DbpLocationCheckInExtension extends ConfigurableExtension implements Prepe
     {
         // https://symfony.com/doc/4.4/messenger.html#transports-async-queued-messages
         $this->extendArrayParameter($container, 'dbp_api.messenger_routing', [
-            'DBP\API\LocationCheckInBundle\Message\LocationGuestCheckOutMessage' => 'async'
+            'DBP\API\LocationCheckInBundle\Message\LocationGuestCheckOutMessage' => 'async',
         ]);
     }
 

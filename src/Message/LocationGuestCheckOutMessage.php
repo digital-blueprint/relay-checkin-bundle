@@ -34,8 +34,7 @@ class LocationGuestCheckOutMessage
         string $email,
         CheckInPlace $location,
         ?int $seatNumber
-    )
-    {
+    ) {
         $this->email = $email;
         $this->location = $location;
         $this->seatNumber = $seatNumber;

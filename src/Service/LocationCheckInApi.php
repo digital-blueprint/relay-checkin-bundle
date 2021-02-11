@@ -14,10 +14,10 @@ use DBP\API\CoreBundle\Helpers\GuzzleTools;
 use DBP\API\CoreBundle\Helpers\JsonException;
 use DBP\API\CoreBundle\Helpers\Tools;
 use DBP\API\CoreBundle\Helpers\Tools as CoreTools;
+use DBP\API\CoreBundle\Service\PersonProviderInterface;
 use DBP\API\LocationCheckInBundle\Entity\CheckInPlace;
 use DBP\API\LocationCheckInBundle\Entity\LocationCheckInAction;
 use DBP\API\LocationCheckInBundle\Entity\LocationCheckOutAction;
-use DBP\API\CoreBundle\Service\PersonProviderInterface;
 use DBP\API\LocationCheckInBundle\Entity\LocationGuestCheckInAction;
 use DBP\API\LocationCheckInBundle\Message\LocationGuestCheckOutMessage;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -70,12 +70,12 @@ class LocationCheckInApi
     /**
      * @var string
      */
-    private $campusQRUrl = "";
+    private $campusQRUrl = '';
 
     /**
      * @var string
      */
-    private $campusQRToken = "";
+    private $campusQRToken = '';
 
     /**
      * @var int
@@ -83,13 +83,13 @@ class LocationCheckInApi
     private $autoCheckOutMinutes = 0;
 
     // Caching time of https://campusqr-dev.tugraz.at/location/list
-    const LOCATION_CACHE_TTL = 300;
+    public const LOCATION_CACHE_TTL = 300;
 
-    const CONFIG_KEY_AUTO_CHECK_OUT_MINUTES = "autoCheckOutMinutes";
-
+    public const CONFIG_KEY_AUTO_CHECK_OUT_MINUTES = 'autoCheckOutMinutes';
 
     /**
      * LocationCheckInApi constructor.
+     *
      * @param LoggerInterface $logger
      * @param PersonProviderInterface $personProvider
      * @param ContainerInterface $container
@@ -102,8 +102,7 @@ class LocationCheckInApi
         ContainerInterface $container,
         MessageBusInterface $bus,
         LockFactory $lockFactory
-    )
-    {
+    ) {
         $this->clientHandler = null;
         $this->logger = $logger;
         $this->personProvider = $personProvider;
@@ -119,6 +118,7 @@ class LocationCheckInApi
 
     /**
      * Replace the guzzle client handler for testing.
+     *
      * @param object|null $handler
      */
     public function setClientHandler(?object $handler)
@@ -173,18 +173,21 @@ class LocationCheckInApi
 
     /**
      * @param LocationCheckInAction $locationCheckInAction
+     *
      * @return bool
+     *
      * @throws ItemNotStoredException
      * @throws AccessDeniedHttpException
      */
-    public function sendCampusQRCheckInRequest(LocationCheckInAction $locationCheckInAction): bool {
+    public function sendCampusQRCheckInRequest(LocationCheckInAction $locationCheckInAction): bool
+    {
         $location = $locationCheckInAction->getLocation();
         $seatNumber = $locationCheckInAction->getSeatNumber();
         $person = $locationCheckInAction->getAgent();
 
         $client = $this->getClient();
         $options = [
-            'body' => json_encode(['email' => $person->getEmail()])
+            'body' => json_encode(['email' => $person->getEmail()]),
         ];
 
         try {
@@ -196,29 +199,30 @@ class LocationCheckInApi
 
             $body = $response->getBody()->getContents();
 
-            return $body === "ok";
+            return $body === 'ok';
         } catch (GuzzleException $e) {
             $status = $e->getCode();
 
-            if ($status == 403) {
+            if ($status === 403) {
                 throw new AccessDeniedHttpException('You are not allowed to check-in at this location!');
             }
 
-            throw new ItemNotStoredException(sprintf('LocationCheckInAction could not be stored: %s',
-                Tools::filterErrorMessage($e->getMessage())));
-        } catch (\Exception|UriException $e) {
-            throw new ItemNotStoredException(sprintf('LocationCheckInAction could not be stored: %s',
-                Tools::filterErrorMessage($e->getMessage())));
+            throw new ItemNotStoredException(sprintf('LocationCheckInAction could not be stored: %s', Tools::filterErrorMessage($e->getMessage())));
+        } catch (\Exception | UriException $e) {
+            throw new ItemNotStoredException(sprintf('LocationCheckInAction could not be stored: %s', Tools::filterErrorMessage($e->getMessage())));
         }
     }
 
     /**
      * @param LocationGuestCheckInAction $locationGuestCheckInAction
+     *
      * @return bool
+     *
      * @throws ItemNotStoredException
      * @throws AccessDeniedHttpException
      */
-    public function sendCampusQRGuestCheckInRequest(LocationGuestCheckInAction $locationGuestCheckInAction): bool {
+    public function sendCampusQRGuestCheckInRequest(LocationGuestCheckInAction $locationGuestCheckInAction): bool
+    {
         $location = $locationGuestCheckInAction->getLocation();
         $seatNumber = $locationGuestCheckInAction->getSeatNumber();
         $email = $locationGuestCheckInAction->getEmail();
@@ -226,8 +230,8 @@ class LocationCheckInApi
 
         $client = $this->getClient();
         $options = [
-            'headers' => [ 'X-Authorization' => $this->campusQRToken ],
-            'body' => json_encode(['email' => $email, 'host' => $currentPerson->getEmail()])
+            'headers' => ['X-Authorization' => $this->campusQRToken],
+            'body' => json_encode(['email' => $email, 'host' => $currentPerson->getEmail()]),
         ];
 
         try {
@@ -243,19 +247,17 @@ class LocationCheckInApi
 
             $body = $response->getBody()->getContents();
 
-            return $body === "ok";
+            return $body === 'ok';
         } catch (GuzzleException $e) {
             $status = $e->getCode();
 
-            if ($status == 403) {
+            if ($status === 403) {
                 throw new AccessDeniedHttpException('You are not allowed to check-in at this location!');
             }
 
-            throw new ItemNotStoredException(sprintf('LocationGuestCheckInAction could not be stored: %s',
-                Tools::filterErrorMessage($e->getMessage())));
-        } catch (\Exception|UriException $e) {
-            throw new ItemNotStoredException(sprintf('LocationGuestCheckInAction could not be stored: %s',
-                Tools::filterErrorMessage($e->getMessage())));
+            throw new ItemNotStoredException(sprintf('LocationGuestCheckInAction could not be stored: %s', Tools::filterErrorMessage($e->getMessage())));
+        } catch (\Exception | UriException $e) {
+            throw new ItemNotStoredException(sprintf('LocationGuestCheckInAction could not be stored: %s', Tools::filterErrorMessage($e->getMessage())));
         }
     }
 
@@ -263,15 +265,18 @@ class LocationCheckInApi
      * @param string $email
      * @param CheckInPlace $location
      * @param int|null $seatNumber
+     *
      * @return bool
+     *
      * @throws ItemNotLoadedException
      * @throws ItemNotStoredException
      */
-    public function sendCampusQRCheckOutRequest(string $email, CheckInPlace $location, ?int $seatNumber): bool {
+    public function sendCampusQRCheckOutRequest(string $email, CheckInPlace $location, ?int $seatNumber): bool
+    {
         $client = $this->getClient();
         $options = [
-            'headers' => [ 'X-Authorization' => $this->campusQRToken ],
-            'body' => json_encode(['email' => $email])
+            'headers' => ['X-Authorization' => $this->campusQRToken],
+            'body' => json_encode(['email' => $email]),
         ];
 
         try {
@@ -283,29 +288,30 @@ class LocationCheckInApi
 
             $body = $response->getBody()->getContents();
 
-            return $body === "ok";
+            return $body === 'ok';
         } catch (GuzzleException $e) {
             $status = $e->getCode();
 
-            if ($status == 403) {
+            if ($status === 403) {
                 throw new AccessDeniedHttpException('You are not allowed to check-out at this location!');
             }
 
-            throw new ItemNotStoredException(sprintf('Check out was not be possible: %s',
-                Tools::filterErrorMessage($e->getMessage())));
-        } catch (\Exception|UriException $e) {
-            throw new ItemNotStoredException(sprintf('Check out was not be possible: %s',
-                Tools::filterErrorMessage($e->getMessage())));
+            throw new ItemNotStoredException(sprintf('Check out was not be possible: %s', Tools::filterErrorMessage($e->getMessage())));
+        } catch (\Exception | UriException $e) {
+            throw new ItemNotStoredException(sprintf('Check out was not be possible: %s', Tools::filterErrorMessage($e->getMessage())));
         }
     }
 
     /**
      * @param LocationCheckOutAction $locationCheckOutAction
+     *
      * @return bool
+     *
      * @throws ItemNotLoadedException
      * @throws ItemNotStoredException
      */
-    public function sendCampusQRCheckOutRequestForLocationCheckOutAction(LocationCheckOutAction $locationCheckOutAction): bool {
+    public function sendCampusQRCheckOutRequestForLocationCheckOutAction(LocationCheckOutAction $locationCheckOutAction): bool
+    {
         $person = $locationCheckOutAction->getAgent();
         $currentPerson = $this->personProvider->getCurrentPerson();
 
@@ -320,21 +326,23 @@ class LocationCheckInApi
     }
 
     /**
-     * Fetches all places or searches for all name parts in $name
+     * Fetches all places or searches for all name parts in $name.
      *
      * @param string $name
+     *
      * @return ArrayCollection|CheckInPlace[]
+     *
      * @throws ItemNotLoadedException
      */
-    public function fetchCheckInPlaces($name = ""): ArrayCollection
+    public function fetchCheckInPlaces($name = ''): ArrayCollection
     {
         /** @var ArrayCollection<int,CheckInPlace> $collection */
         $collection = new ArrayCollection();
 
         $authenticDocumentTypesJsonData = $this->fetchCheckInPlacesJsonData();
         $name = trim($name);
-        $nameParts = explode(" ", $name);
-        $hasName = $name !== "";
+        $nameParts = explode(' ', $name);
+        $hasName = $name !== '';
 
         foreach ($authenticDocumentTypesJsonData as $jsonData) {
             $checkInPlace = $this->checkInPlaceFromJsonItem($jsonData);
@@ -357,14 +365,17 @@ class LocationCheckInApi
 
     /**
      * @param string $id
+     *
      * @return CheckInPlace
+     *
      * @throws ItemNotLoadedException
      * @throws NotFoundHttpException
      */
-    public function fetchCheckInPlace(string $id): CheckInPlace {
+    public function fetchCheckInPlace(string $id): CheckInPlace
+    {
         $checkInPlaces = $this->fetchCheckInPlaces();
 
-        foreach($checkInPlaces as $checkInPlace) {
+        foreach ($checkInPlaces as $checkInPlace) {
             if ($checkInPlace->getIdentifier() === $id) {
                 return $checkInPlace;
             }
@@ -373,11 +384,12 @@ class LocationCheckInApi
         throw new NotFoundHttpException('Location was not found!');
     }
 
-    public function fetchCheckInPlacesJsonData(): array {
+    public function fetchCheckInPlacesJsonData(): array
+    {
         $client = $this->getLocationClient();
 
         $options = [
-            'headers' => [ 'X-Authorization' => $this->campusQRToken ]
+            'headers' => ['X-Authorization' => $this->campusQRToken],
         ];
 
         try {
@@ -391,29 +403,29 @@ class LocationCheckInApi
         } catch (GuzzleException $e) {
             $status = $e->getCode();
 
-            if ($status == 403) {
+            if ($status === 403) {
                 throw new AccessDeniedHttpException('The access token is not allowed to fetch places!');
             }
 
-            throw new ItemNotLoadedException(sprintf('Places could not be loaded: %s',
-                Tools::filterErrorMessage($e->getMessage())));
-        } catch (\Exception|UriException $e) {
-            throw new ItemNotLoadedException(sprintf('Places could not be loaded: %s',
-                Tools::filterErrorMessage($e->getMessage())));
+            throw new ItemNotLoadedException(sprintf('Places could not be loaded: %s', Tools::filterErrorMessage($e->getMessage())));
+        } catch (\Exception | UriException $e) {
+            throw new ItemNotLoadedException(sprintf('Places could not be loaded: %s', Tools::filterErrorMessage($e->getMessage())));
         }
     }
 
     /**
      * @param $jsonData
+     *
      * @return CheckInPlace
      */
-    public function checkInPlaceFromJsonItem($jsonData): CheckInPlace {
+    public function checkInPlaceFromJsonItem($jsonData): CheckInPlace
+    {
         $checkInPlace = new CheckInPlace();
-        $checkInPlace->setIdentifier($jsonData["id"]);
-        $checkInPlace->setName($jsonData["name"]);
+        $checkInPlace->setIdentifier($jsonData['id']);
+        $checkInPlace->setName($jsonData['name']);
 
-        if ($jsonData["seatCount"] !== null) {
-            $checkInPlace->setMaximumPhysicalAttendeeCapacity($jsonData["seatCount"]);
+        if ($jsonData['seatCount'] !== null) {
+            $checkInPlace->setMaximumPhysicalAttendeeCapacity($jsonData['seatCount']);
         }
 
         return $checkInPlace;
@@ -421,6 +433,7 @@ class LocationCheckInApi
 
     /**
      * @param ResponseInterface $response
+     *
      * @return mixed
      *
      * @throws ItemNotLoadedException
@@ -439,24 +452,25 @@ class LocationCheckInApi
      * @param string $email
      * @param string $location
      * @param ?int $seatNumber
+     *
      * @return ArrayCollection
+     *
      * @throws ItemNotLoadedException
      */
-    public function fetchLocationCheckInActionsOfEmail(string $email, $location = "", $seatNumber = null): ArrayCollection {
+    public function fetchLocationCheckInActionsOfEmail(string $email, $location = '', $seatNumber = null): ArrayCollection
+    {
         /** @var ArrayCollection<int,LocationCheckInAction> $collection */
         $collection = new ArrayCollection();
 
         $authenticDocumentTypesJsonData = $this->fetchLocationCheckInActionsOfEMailJsonData($email);
 
-        foreach ($authenticDocumentTypesJsonData as $jsonData)
-        {
+        foreach ($authenticDocumentTypesJsonData as $jsonData) {
             // Search for a location and seat if they were set
             // Search for the location alone if no seat was set
-            if (($location !== "" && $jsonData["locationId"] === $location &&
-                $seatNumber !== null && $jsonData["seat"] === $seatNumber) ||
-                ($location !== "" && $jsonData["locationId"] === $location && $seatNumber === null) ||
-                ($location === "" && $seatNumber === null))
-            {
+            if (($location !== '' && $jsonData['locationId'] === $location &&
+                $seatNumber !== null && $jsonData['seat'] === $seatNumber) ||
+                ($location !== '' && $jsonData['locationId'] === $location && $seatNumber === null) ||
+                ($location === '' && $seatNumber === null)) {
                 $checkInAction = $this->locationCheckInActionFromJsonItem($jsonData);
                 $checkInAction->setEndTime($this->fetchMaxCheckInEndTime($checkInAction->getStartTime()));
                 $collection->add($checkInAction);
@@ -469,10 +483,13 @@ class LocationCheckInApi
     /**
      * @param string $location
      * @param ?int $seatNumber
+     *
      * @return ArrayCollection
+     *
      * @throws ItemNotLoadedException
      */
-    public function fetchLocationCheckInActionsOfCurrentPerson($location = "", $seatNumber = null): ArrayCollection {
+    public function fetchLocationCheckInActionsOfCurrentPerson($location = '', $seatNumber = null): ArrayCollection
+    {
         $person = $this->personProvider->getCurrentPerson();
 
         return $this->fetchLocationCheckInActionsOfEmail($person->getEmail(), $location, $seatNumber);
@@ -480,15 +497,18 @@ class LocationCheckInApi
 
     /**
      * @param string $email
+     *
      * @return array
+     *
      * @throws ItemNotLoadedException
      */
-    public function fetchLocationCheckInActionsOfEMailJsonData(string $email): array {
+    public function fetchLocationCheckInActionsOfEMailJsonData(string $email): array
+    {
         $client = $this->getClient();
 
         $options = [
-            'headers' => [ 'X-Authorization' => $this->campusQRToken ],
-            'body' => json_encode(['emailAddress' => $email])
+            'headers' => ['X-Authorization' => $this->campusQRToken],
+            'body' => json_encode(['emailAddress' => $email]),
         ];
 
         try {
@@ -502,25 +522,26 @@ class LocationCheckInApi
         } catch (GuzzleException $e) {
             $status = $e->getCode();
 
-            if ($status == 403) {
+            if ($status === 403) {
                 throw new AccessDeniedHttpException('The access token is not allowed to fetch LocationCheckInActions!');
             }
 
-            throw new ItemNotLoadedException(sprintf('LocationCheckInActions could not be loaded: %s',
-                Tools::filterErrorMessage($e->getMessage())));
-        } catch (\Exception|UriException $e) {
-            throw new ItemNotLoadedException(sprintf('LocationCheckInActions could not be loaded: %s',
-                Tools::filterErrorMessage($e->getMessage())));
+            throw new ItemNotLoadedException(sprintf('LocationCheckInActions could not be loaded: %s', Tools::filterErrorMessage($e->getMessage())));
+        } catch (\Exception | UriException $e) {
+            throw new ItemNotLoadedException(sprintf('LocationCheckInActions could not be loaded: %s', Tools::filterErrorMessage($e->getMessage())));
         }
     }
 
     /**
      * @param $jsonData
      * @param PersonProviderInterface|null $person
+     *
      * @return LocationCheckInAction
+     *
      * @throws ItemNotLoadedException
      */
-    public function locationCheckInActionFromJsonItem($jsonData, ?PersonProviderInterface $person = null): LocationCheckInAction {
+    public function locationCheckInActionFromJsonItem($jsonData, ?PersonProviderInterface $person = null): LocationCheckInAction
+    {
         if ($person === null) {
             $person = $this->personProvider->getCurrentPerson();
         }
@@ -528,16 +549,16 @@ class LocationCheckInApi
         // We don't get any maximumPhysicalAttendeeCapacity, so we are hiding it in the result when fetching the
         // LocationCheckInAction list via normalization context group "LocationCheckIn:outputList"
         $checkInPlace = new CheckInPlace();
-        $checkInPlace->setIdentifier($jsonData["locationId"]);
-        $checkInPlace->setName($jsonData["locationName"]);
+        $checkInPlace->setIdentifier($jsonData['locationId']);
+        $checkInPlace->setName($jsonData['locationName']);
 
         // The api returns the "checkInDate" as float, like 1.60214467586E12, see https://github.com/studo-app/campus-qr/issues/53
         $dateTime = new \DateTime();
-        $dateTime->setTimestamp((int) ($jsonData["checkInDate"] / 1000));
+        $dateTime->setTimestamp((int) ($jsonData['checkInDate'] / 1000));
 
         $locationCheckInAction = new LocationCheckInAction();
-        $locationCheckInAction->setIdentifier($jsonData["id"]);
-        $locationCheckInAction->setSeatNumber($jsonData["seat"]);
+        $locationCheckInAction->setIdentifier($jsonData['id']);
+        $locationCheckInAction->setSeatNumber($jsonData['seat']);
         $locationCheckInAction->setStartTime($dateTime);
         $locationCheckInAction->setAgent($person);
         $locationCheckInAction->setLocation($checkInPlace);
@@ -547,6 +568,7 @@ class LocationCheckInApi
 
     /**
      * @param string $campusQRUrl
+     *
      * @return LocationCheckInApi
      */
     public function setCampusQRUrl(string $campusQRUrl): LocationCheckInApi
@@ -558,6 +580,7 @@ class LocationCheckInApi
 
     /**
      * @param string $campusQRToken
+     *
      * @return LocationCheckInApi
      */
     public function setCampusQRToken(string $campusQRToken): LocationCheckInApi
@@ -570,6 +593,7 @@ class LocationCheckInApi
     /**
      * @param \DBP\API\LocationCheckInBundle\Entity\CheckInPlace $location
      * @param int|null $seatNumber
+     *
      * @throws ItemNotStoredException
      */
     public function seatCheck(CheckInPlace $location, ?int $seatNumber): void
@@ -577,27 +601,30 @@ class LocationCheckInApi
         $maximumPhysicalAttendeeCapacity = $location->getMaximumPhysicalAttendeeCapacity();
 
         if ($seatNumber === null && $maximumPhysicalAttendeeCapacity !== null) {
-            throw new ItemNotStoredException("Location has seats activated, you need to set a seatNumber!");
+            throw new ItemNotStoredException('Location has seats activated, you need to set a seatNumber!');
         } elseif ($seatNumber !== null && $maximumPhysicalAttendeeCapacity === null) {
             throw new ItemNotStoredException("Location doesn't have any seats activated, you cannot set a seatNumber!");
         } elseif ($seatNumber !== null && $seatNumber > $maximumPhysicalAttendeeCapacity) {
-            throw new ItemNotStoredException("seatNumber must not exceed maximumPhysicalAttendeeCapacity of location!");
+            throw new ItemNotStoredException('seatNumber must not exceed maximumPhysicalAttendeeCapacity of location!');
         } elseif ($seatNumber !== null && $seatNumber < 1) {
-            throw new ItemNotStoredException("seatNumber too low!");
+            throw new ItemNotStoredException('seatNumber too low!');
         }
     }
 
     /**
      * @param string $configKey
+     *
      * @return mixed
+     *
      * @throws ItemNotLoadedException
      * @throws AccessDeniedHttpException
      */
-    public function fetchConfig(string $configKey) {
+    public function fetchConfig(string $configKey)
+    {
         $client = $this->getLocationClient();
 
         $options = [
-            'headers' => [ 'X-Authorization' => $this->campusQRToken ],
+            'headers' => ['X-Authorization' => $this->campusQRToken],
         ];
 
         try {
@@ -610,24 +637,25 @@ class LocationCheckInApi
         } catch (GuzzleException $e) {
             $status = $e->getCode();
 
-            if ($status == 403) {
+            if ($status === 403) {
                 throw new AccessDeniedHttpException('The access token is not allowed to fetch config!');
             }
 
-            throw new ItemNotLoadedException(sprintf('Config could not be loaded: %s',
-                Tools::filterErrorMessage($e->getMessage())));
-        } catch (\Exception|UriException $e) {
-            throw new ItemNotLoadedException(sprintf('Config could not be loaded: %s',
-                Tools::filterErrorMessage($e->getMessage())));
+            throw new ItemNotLoadedException(sprintf('Config could not be loaded: %s', Tools::filterErrorMessage($e->getMessage())));
+        } catch (\Exception | UriException $e) {
+            throw new ItemNotLoadedException(sprintf('Config could not be loaded: %s', Tools::filterErrorMessage($e->getMessage())));
         }
     }
 
     /**
      * @param \DateTime|null $date
+     *
      * @return \DateTime
+     *
      * @throws ItemNotLoadedException
      */
-    public function fetchMaxCheckInEndTime(\DateTime $date = null): \DateTime {
+    public function fetchMaxCheckInEndTime(\DateTime $date = null): \DateTime
+    {
         if ($date === null) {
             $date = new \DateTime();
         }
@@ -664,9 +692,11 @@ class LocationCheckInApi
 
     /**
      * @param LocationGuestCheckInAction $locationGuestCheckInAction
+     *
      * @return DelayStamp
      */
-    public function getDelayStampFromLocationGuestCheckInAction(LocationGuestCheckInAction $locationGuestCheckInAction): DelayStamp {
+    public function getDelayStampFromLocationGuestCheckInAction(LocationGuestCheckInAction $locationGuestCheckInAction): DelayStamp
+    {
         $endTime = $locationGuestCheckInAction->getEndTime();
         $seconds = $endTime->getTimestamp() - time();
 
@@ -678,11 +708,12 @@ class LocationCheckInApi
     }
 
     /**
-     * Handles the delayed checkout of guests
+     * Handles the delayed checkout of guests.
      *
      * @param LocationGuestCheckOutMessage $message
      */
-    public function handleLocationGuestCheckOutMessage(LocationGuestCheckOutMessage $message) {
+    public function handleLocationGuestCheckOutMessage(LocationGuestCheckOutMessage $message)
+    {
         try {
             $this->sendCampusQRCheckOutRequest(
                 $message->getEmail(),
@@ -697,11 +728,14 @@ class LocationCheckInApi
     /**
      * @param string $resource
      * @param int $maxRetry retry this amount of times ever 100ms
+     *
      * @return LockInterface
+     *
      * @throws ItemNotUsableException
      */
-    public function acquireBlockingLock(string $resource, $maxRetry = 300): LockInterface {
-        $resourceKey = "location-check-in-" . $resource;
+    public function acquireBlockingLock(string $resource, $maxRetry = 300): LockInterface
+    {
+        $resourceKey = 'location-check-in-'.$resource;
         $lock = $this->lockFactory->createLock($resourceKey);
         $counter = 0;
 

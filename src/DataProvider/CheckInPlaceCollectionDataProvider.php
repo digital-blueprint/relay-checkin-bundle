@@ -6,8 +6,8 @@ namespace DBP\API\LocationCheckInBundle\DataProvider;
 
 use ApiPlatform\Core\DataProvider\CollectionDataProviderInterface;
 use ApiPlatform\Core\DataProvider\RestrictedDataProviderInterface;
-use DBP\API\LocationCheckInBundle\Entity\CheckInPlace;
 use DBP\API\CoreBundle\Helpers\ArrayFullPaginator;
+use DBP\API\LocationCheckInBundle\Entity\CheckInPlace;
 use DBP\API\LocationCheckInBundle\Service\LocationCheckInApi;
 
 final class CheckInPlaceCollectionDataProvider implements CollectionDataProviderInterface, RestrictedDataProviderInterface

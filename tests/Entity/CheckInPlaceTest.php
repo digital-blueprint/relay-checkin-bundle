@@ -12,7 +12,7 @@ class CheckInPlaceTest extends WebTestCase
     public function testBasics()
     {
         $place = new CheckInPlace();
-        $place->setName("Test");
+        $place->setName('Test');
         $this->assertNull($place->getMaximumPhysicalAttendeeCapacity());
     }
 }

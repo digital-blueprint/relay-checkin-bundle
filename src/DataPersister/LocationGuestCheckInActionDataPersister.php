@@ -6,13 +6,11 @@ namespace DBP\API\LocationCheckInBundle\DataPersister;
 
 use ApiPlatform\Core\DataPersister\DataPersisterInterface;
 use DBP\API\CoreBundle\Exception\ItemNotLoadedException;
+use DBP\API\CoreBundle\Exception\ItemNotStoredException;
 use DBP\API\CoreBundle\Exception\ItemNotUsableException;
-use DBP\API\CoreBundle\Helpers\Tools;
+use DBP\API\CoreBundle\Service\PersonProviderInterface;
 use DBP\API\LocationCheckInBundle\Entity\LocationGuestCheckInAction;
 use DBP\API\LocationCheckInBundle\Service\LocationCheckInApi;
-use DBP\API\CoreBundle\Exception\ItemNotStoredException;
-use DBP\API\CoreBundle\Service\PersonProviderInterface;
-use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 final class LocationGuestCheckInActionDataPersister implements DataPersisterInterface
@@ -48,7 +46,7 @@ final class LocationGuestCheckInActionDataPersister implements DataPersisterInte
     public function persist($locationGuestCheckInAction)
     {
         $location = $locationGuestCheckInAction->getLocation();
-        $locationGuestCheckInAction->setIdentifier(md5($location->getIdentifier() . rand(0, 10000) . time()));
+        $locationGuestCheckInAction->setIdentifier(md5($location->getIdentifier().rand(0, 10000).time()));
         $locationGuestCheckInAction->setStartTime(new \DateTime());
         $locationGuestCheckInAction->setAgent($this->personProvider->getCurrentPerson());
 
@@ -56,13 +54,13 @@ final class LocationGuestCheckInActionDataPersister implements DataPersisterInte
 
         // check if endDate is in the past
         if ((new \DateTime()) > $locationGuestCheckInAction->getEndTime()) {
-            throw new ItemNotStoredException("The endDate must be in the future!");
+            throw new ItemNotStoredException('The endDate must be in the future!');
         }
 
         // check if endDate is too far in the future
         $maxCheckInEndTime = $this->api->fetchMaxCheckInEndTime();
         if ($maxCheckInEndTime < $locationGuestCheckInAction->getEndTime()) {
-            $maxCheckInEndTimeString = $maxCheckInEndTime->format("c");
+            $maxCheckInEndTimeString = $maxCheckInEndTime->format('c');
             throw new ItemNotStoredException("The endDate can't be after ${maxCheckInEndTimeString}!");
         }
 
@@ -71,7 +69,7 @@ final class LocationGuestCheckInActionDataPersister implements DataPersisterInte
         // https://gitlab.tugraz.at/dbp/middleware/api/-/issues/64
         $lock = $this->api->acquireBlockingLock(
             sprintf(
-                "guest-check-in-%s-%s-%s",
+                'guest-check-in-%s-%s-%s',
                 $location->getIdentifier(),
                 $locationGuestCheckInAction->getSeatNumber(),
                 $locationGuestCheckInAction->getEmail()
@@ -86,7 +84,7 @@ final class LocationGuestCheckInActionDataPersister implements DataPersisterInte
                 $locationGuestCheckInAction->getSeatNumber());
 
             if (count($existingCheckIns) > 0) {
-                throw new ItemNotStoredException("There are already check-ins at the location with provided seat for the email address!");
+                throw new ItemNotStoredException('There are already check-ins at the location with provided seat for the email address!');
             }
 
             // send the guest check-in request

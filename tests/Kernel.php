@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace DBP\API\LocationCheckInBundle\Tests;
 
 use ApiPlatform\Core\Bridge\Symfony\Bundle\ApiPlatformBundle;
-use DBP\API\LocationCheckInBundle\DbpLocationCheckInBundle;
 use DBP\API\CoreBundle\DbpCoreBundle;
+use DBP\API\LocationCheckInBundle\DbpLocationCheckInBundle;
 use Nelmio\CorsBundle\NelmioCorsBundle;
 use Symfony\Bundle\FrameworkBundle\FrameworkBundle;
 use Symfony\Bundle\FrameworkBundle\Kernel\MicroKernelTrait;

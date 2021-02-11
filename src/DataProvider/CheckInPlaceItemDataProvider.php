@@ -1,6 +1,6 @@
 <?php
 /**
- * CheckInPlace item data provider
+ * CheckInPlace item data provider.
  *
  * We need to provide a CheckInPlace item data provider to be able to post a "location" like
  * "/check_in_places/f0ad66aaaf1debabb44a" in a LocationCheckInAction
@@ -40,7 +40,9 @@ final class CheckInPlaceItemDataProvider implements ItemDataProviderInterface, R
      * @param array|int|string $id
      * @param string|null $operationName
      * @param array $context
+     *
      * @return CheckInPlace|null
+     *
      * @throws ItemNotLoadedException
      * @throws NotFoundHttpException
      */
