@@ -33,7 +33,6 @@ class LocationCheckInUrlApi
 
     /**
      * @param string $campusQRUrl
-     * @param string $hostEmail
      * @param string $location
      * @param int|null $seatNumber
      *

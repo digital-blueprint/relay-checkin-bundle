@@ -26,9 +26,9 @@ class LocationGuestCheckOutMessage
     /**
      * LocationGuestCheckOutMessage constructor.
      *
-     * @param $email string
-     * @param $location CheckInPlace
-     * @param $seatNumber ?int
+     * @param string $email
+     * @param CheckInPlace $location
+     * @param ?int $seatNumber
      */
     public function __construct(
         string $email,

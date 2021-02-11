@@ -414,7 +414,7 @@ class LocationCheckInApi
     }
 
     /**
-     * @param $jsonData
+     * @param mixed $jsonData
      *
      * @return CheckInPlace
      */
@@ -533,7 +533,7 @@ class LocationCheckInApi
     }
 
     /**
-     * @param $jsonData
+     * @param mixed $jsonData
      * @param PersonProviderInterface|null $person
      *
      * @return LocationCheckInAction
