@@ -8,6 +8,7 @@
         "ext-soap": "*",
         "api-platform/core": "^2.5",
         "dbp/api-core-bundle": "@dev",
+        "doctrine/collections": "^1.6",
         "guzzlehttp/guzzle": "^7.0",
         "myclabs/php-enum": "^1.7",
         "symfony/framework-bundle": "^4.1.12",
