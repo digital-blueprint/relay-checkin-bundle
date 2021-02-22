@@ -7,12 +7,13 @@
         "ext-json": "*",
         "ext-soap": "*",
         "api-platform/core": "^2.5",
-        "dbp/api-core-bundle": "@dev",
+        "dbp/api-core-bundle": "dev-main",
         "doctrine/collections": "^1.6",
         "guzzlehttp/guzzle": "^7.0",
         "myclabs/php-enum": "^1.7",
         "symfony/framework-bundle": "^4.1.12",
         "symfony/lock": "^4.4",
+        "league/uri": "^6.4",
         "symfony/messenger": "^4.4"
     },
     "require-dev": {
