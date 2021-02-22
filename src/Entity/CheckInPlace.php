@@ -13,22 +13,33 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *
  * @ApiResource(
  *     collectionOperations={
- *       "get"={"openapi_context"={
- *         "parameters"={{"name"="search", "in"="query", "description"="Search for a place name", "type"="string", "example"="Coworkingspace"}
- *       }}},
+ *         "get" = {
+ *             "openapi_context" = {
+ *                 "parameters" = {
+ *                     {"name" = "search", "in" = "query", "description" = "Search for a place name", "type" = "string", "example" = "Coworkingspace"}
+ *                 }
+ *             }
+ *         },
  *     },
- *     itemOperations={"get"},
+ *     itemOperations={
+ *         "get"
+ *     },
  *     iri="http://schema.org/Place",
  *     description="Check-in place",
- *     normalizationContext={"jsonld_embed_context"=true, "groups"={"CheckInPlace:output", "LocationCheckIn:outputList"}},
- *     denormalizationContext={"groups"={"CheckInPlace:input"}}
+ *     normalizationContext={
+ *         "jsonld_embed_context" = true,
+ *         "groups" = {"CheckInPlace:output", "LocationCheckIn:outputList"}
+ *     },
+ *     denormalizationContext={
+ *         "groups" = {"CheckInPlace:input"}
+ *     }
  * )
  */
 class CheckInPlace
 {
     /**
      * @Groups({"CheckInPlace:output", "LocationCheckIn:outputList"})
-     * @ApiProperty(identifier=true,iri="http://schema.org/identifier")
+     * @ApiProperty(identifier=true, iri="http://schema.org/identifier")
      * Note: Every entity needs an identifier!
      */
     private $identifier;

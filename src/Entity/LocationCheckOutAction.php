@@ -16,27 +16,39 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ApiResource(
  *     collectionOperations={
  *         "get",
- *         "post"={
- *             "method"="POST",
- *             "openapi_context"={
- *                 "requestBody"={"content"={"application/json"={"schema"={"type"="object"},
- *                     "example"={"location"="/check_in_places/f0ad66aaaf1debabb44a", "seatNumber"=17}
- *                  }}}
+ *         "post" = {
+ *             "method" = "POST",
+ *             "openapi_context" = {
+ *                 "requestBody" = {
+ *                     "content" = {
+ *                         "application/json" = {
+ *                             "schema" = {"type" = "object"},
+ *                             "example" = {"location" = "/check_in_places/f0ad66aaaf1debabb44a", "seatNumber" = 17}
+ *                         }
+ *                     }
+ *                 }
  *             },
  *         },
  *     },
- *     itemOperations={"get"},
+ *     itemOperations={
+ *         "get"
+ *     },
  *     iri="http://schema.org/CheckOutAction",
  *     description="Location check-out action",
- *     normalizationContext={"jsonld_embed_context"=true, "groups"={"LocationCheckOut:output", "CheckInPlace:output"}},
- *     denormalizationContext={"groups"={"LocationCheckOut:input"}}
+ *     normalizationContext={
+ *         "jsonld_embed_context" = true,
+ *         "groups" = {"LocationCheckOut:output", "CheckInPlace:output"}
+ *     },
+ *     denormalizationContext={
+ *         "groups" = {"LocationCheckOut:input"}
+ *     }
  * )
  */
 class LocationCheckOutAction
 {
     /**
      * @Groups({"LocationCheckOut:output"})
-     * @ApiProperty(identifier=true,iri="http://schema.org/identifier")
+     * @ApiProperty(identifier=true, iri="http://schema.org/identifier")
      * Note: Every entity needs an identifier!
      */
     private $identifier;

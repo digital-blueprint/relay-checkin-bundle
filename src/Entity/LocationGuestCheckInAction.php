@@ -15,42 +15,56 @@ use Symfony\Component\Validator\Constraints as Assert;
  *
  * @ApiResource(
  *     collectionOperations={
- *         "get"={
- *             "normalization_context"={"groups"={"LocationCheckIn:output", "LocationCheckIn:outputList"}},
- *             "openapi_context"={
- *                 "summary"="Retrieves all LocationGuestCheckInActions of the current user.",
- *                 "parameters"={
- *                    {
- *                      "name"="location",
- *                      "in"="query",
- *                      "description"="Location",
- *                      "type"="string",
- *                      "example"="f0ad66aaaf1debabb44a"
- *                    }
+ *         "get" = {
+ *             "normalization_context" = {
+ *                 "groups" = {"LocationCheckIn:output", "LocationCheckIn:outputList"}
+ *             },
+ *             "openapi_context" = {
+ *                 "summary" = "Retrieves all LocationGuestCheckInActions of the current user.",
+ *                 "parameters" = {
+ *                     {
+ *                         "name" = "location",
+ *                         "in" = "query",
+ *                         "description" = "Location",
+ *                         "type" = "string",
+ *                         "example" = "f0ad66aaaf1debabb44a"
+ *                     }
  *                 }
  *             },
  *         },
- *         "post"={
- *             "method"="POST",
- *             "openapi_context"={
- *                 "requestBody"={"content"={"application/json"={"schema"={"type"="object"},
- *                     "example"={"location"="/check_in_places/f0ad66aaaf1debabb44a", "seatNumber"=17, "email"="test@test.com", "endTime"="2021-10-19T08:03:11.336Z"}
- *                  }}}
+ *         "post" = {
+ *             "method" = "POST",
+ *             "openapi_context" = {
+ *                 "requestBody" = {
+ *                     "content" = {
+ *                         "application/json" = {
+ *                             "schema" = {"type" = "object"},
+ *                             "example" = {"location" = "/check_in_places/f0ad66aaaf1debabb44a", "seatNumber" = 17, "email" = "test@test.com", "endTime" = "2021-10-19T08:03:11.336Z"}
+ *                         }
+ *                     }
+ *                 }
  *             },
  *         },
  *     },
- *     itemOperations={"get"},
+ *     itemOperations={
+ *         "get"
+ *     },
  *     iri="http://schema.org/CheckInAction",
  *     description="Location guest check-in action",
- *     normalizationContext={"jsonld_embed_context"=true, "groups"={"LocationCheckIn:output", "CheckInPlace:output"}},
- *     denormalizationContext={"groups"={"LocationCheckIn:input"}}
+ *     normalizationContext={
+ *         "jsonld_embed_context" = true,
+ *         "groups" = {"LocationCheckIn:output", "CheckInPlace:output"}
+ *     },
+ *     denormalizationContext={
+ *         "groups" = {"LocationCheckIn:input"}
+ *     }
  * )
  */
 class LocationGuestCheckInAction
 {
     /**
      * @Groups({"LocationCheckIn:output"})
-     * @ApiProperty(identifier=true,iri="http://schema.org/identifier")
+     * @ApiProperty(identifier=true, iri="http://schema.org/identifier")
      * Note: Every entity needs an identifier!
      */
     private $identifier;
