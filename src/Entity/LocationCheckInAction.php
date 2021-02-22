@@ -14,8 +14,12 @@ use Symfony\Component\Validator\Constraints as Assert;
  * Note: We need a "collectionOperations" setting for "get" to get an "entryPoint" in JSONLD.
  *
  * @ApiResource(
+ *     attributes={
+ *         "security" = "is_granted('IS_AUTHENTICATED_FULLY')"
+ *     },
  *     collectionOperations={
  *         "get" = {
+ *             "security" = "is_granted('IS_AUTHENTICATED_FULLY')",
  *             "normalization_context" = {
  *                 "groups" = {"LocationCheckIn:output", "LocationCheckIn:outputList"}
  *             },
@@ -33,6 +37,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *             },
  *         },
  *         "post" = {
+ *             "security" = "is_granted('IS_AUTHENTICATED_FULLY')",
  *             "method" = "POST",
  *             "openapi_context" = {
  *                 "requestBody" = {
@@ -47,7 +52,9 @@ use Symfony\Component\Validator\Constraints as Assert;
  *         },
  *     },
  *     itemOperations={
- *         "get"
+ *         "get" = {
+ *             "security" = "is_granted('IS_AUTHENTICATED_FULLY')"
+ *         }
  *     },
  *     iri="http://schema.org/CheckInAction",
  *     description="Location check-in action",

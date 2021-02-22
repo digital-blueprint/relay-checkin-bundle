@@ -12,8 +12,12 @@ use Symfony\Component\Serializer\Annotation\Groups;
  * Note: We need a "collectionOperations" setting for "get" to get an "entryPoint" in JSONLD.
  *
  * @ApiResource(
+ *     attributes={
+ *         "security" = "is_granted('IS_AUTHENTICATED_FULLY')"
+ *     },
  *     collectionOperations={
  *         "get" = {
+ *             "security" = "is_granted('IS_AUTHENTICATED_FULLY')",
  *             "openapi_context" = {
  *                 "parameters" = {
  *                     {"name" = "search", "in" = "query", "description" = "Search for a place name", "type" = "string", "example" = "Coworkingspace"}
@@ -22,7 +26,9 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *         },
  *     },
  *     itemOperations={
- *         "get"
+ *         "get" = {
+ *             "security" = "is_granted('IS_AUTHENTICATED_FULLY')"
+ *         }
  *     },
  *     iri="http://schema.org/Place",
  *     description="Check-in place",
