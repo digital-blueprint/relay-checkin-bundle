@@ -50,6 +50,7 @@ final class CheckInPlaceItemDataProvider extends AbstractController implements I
     public function getItem(string $resourceClass, $id, string $operationName = null, array $context = []): ?CheckInPlace
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+        $this->denyAccessUnlessGranted('ROLE_SCOPE_LOCATION-CHECK-IN');
 
         return $this->api->fetchCheckInPlace($id);
     }

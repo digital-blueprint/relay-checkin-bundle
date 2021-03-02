@@ -33,6 +33,7 @@ final class CheckInPlaceCollectionDataProvider extends AbstractController implem
     public function getCollection(string $resourceClass, string $operationName = null, array $context = []): ArrayFullPaginator
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+        $this->denyAccessUnlessGranted('ROLE_SCOPE_LOCATION-CHECK-IN');
 
         $api = $this->api;
         $filters = $context['filters'] ?? [];

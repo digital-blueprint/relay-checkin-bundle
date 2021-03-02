@@ -47,6 +47,7 @@ final class LocationCheckInActionDataPersister extends AbstractController implem
     public function persist($locationCheckInAction)
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+        $this->denyAccessUnlessGranted('ROLE_SCOPE_LOCATION-CHECK-IN');
 
         $person = $this->personProvider->getCurrentPerson();
         $location = $locationCheckInAction->getLocation();

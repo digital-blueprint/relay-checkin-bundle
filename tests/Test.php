@@ -39,6 +39,8 @@ class Test extends ApiTestCase
             ['GET', '/location_check_in_actions', 401],
             ['POST', '/location_check_out_actions', 401],
             ['POST', '/location_guest_check_in_actions', 401],
+            ['GET', '/check_in_places', 401],
+            ['GET', '/check_in_places/42', 401],
         ];
 
         foreach ($endpoints as $ep) {

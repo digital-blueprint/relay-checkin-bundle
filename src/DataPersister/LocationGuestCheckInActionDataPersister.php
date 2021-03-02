@@ -47,6 +47,8 @@ final class LocationGuestCheckInActionDataPersister extends AbstractController i
     public function persist($locationGuestCheckInAction)
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+        $this->denyAccessUnlessGranted('ROLE_SCOPE_LOCATION-CHECK-IN');
+        $this->denyAccessUnlessGranted('ROLE_SCOPE_LOCATION-CHECK-IN-GUEST');
 
         $location = $locationGuestCheckInAction->getLocation();
         $locationGuestCheckInAction->setIdentifier(md5($location->getIdentifier().rand(0, 10000).time()));
