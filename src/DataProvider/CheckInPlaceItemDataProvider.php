@@ -15,10 +15,11 @@ use ApiPlatform\Core\DataProvider\RestrictedDataProviderInterface;
 use DBP\API\CoreBundle\Exception\ItemNotLoadedException;
 use DBP\API\LocationCheckInBundle\Entity\CheckInPlace;
 use DBP\API\LocationCheckInBundle\Service\LocationCheckInApi;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-final class CheckInPlaceItemDataProvider implements ItemDataProviderInterface, RestrictedDataProviderInterface
+final class CheckInPlaceItemDataProvider extends AbstractController implements ItemDataProviderInterface, RestrictedDataProviderInterface
 {
     private $api;
 
@@ -48,6 +49,8 @@ final class CheckInPlaceItemDataProvider implements ItemDataProviderInterface, R
      */
     public function getItem(string $resourceClass, $id, string $operationName = null, array $context = []): ?CheckInPlace
     {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+
         return $this->api->fetchCheckInPlace($id);
     }
 }

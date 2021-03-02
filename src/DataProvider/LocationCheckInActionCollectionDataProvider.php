@@ -10,8 +10,9 @@ use DBP\API\CoreBundle\Exception\ItemNotLoadedException;
 use DBP\API\CoreBundle\Helpers\ArrayFullPaginator;
 use DBP\API\LocationCheckInBundle\Entity\LocationCheckInAction;
 use DBP\API\LocationCheckInBundle\Service\LocationCheckInApi;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
-final class LocationCheckInActionCollectionDataProvider implements CollectionDataProviderInterface, RestrictedDataProviderInterface
+final class LocationCheckInActionCollectionDataProvider extends AbstractController implements CollectionDataProviderInterface, RestrictedDataProviderInterface
 {
     public const ITEMS_PER_PAGE = 100;
 
@@ -32,6 +33,8 @@ final class LocationCheckInActionCollectionDataProvider implements CollectionDat
      */
     public function getCollection(string $resourceClass, string $operationName = null, array $context = []): ArrayFullPaginator
     {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+
         $api = $this->api;
         $filters = $context['filters'] ?? [];
         $location = $filters['location'] ?? '';

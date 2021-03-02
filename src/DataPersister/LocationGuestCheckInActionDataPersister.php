@@ -11,9 +11,10 @@ use DBP\API\CoreBundle\Exception\ItemNotUsableException;
 use DBP\API\CoreBundle\Service\PersonProviderInterface;
 use DBP\API\LocationCheckInBundle\Entity\LocationGuestCheckInAction;
 use DBP\API\LocationCheckInBundle\Service\LocationCheckInApi;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
-final class LocationGuestCheckInActionDataPersister implements DataPersisterInterface
+final class LocationGuestCheckInActionDataPersister extends AbstractController implements DataPersisterInterface
 {
     private $api;
 
@@ -45,6 +46,8 @@ final class LocationGuestCheckInActionDataPersister implements DataPersisterInte
      */
     public function persist($locationGuestCheckInAction)
     {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+
         $location = $locationGuestCheckInAction->getLocation();
         $locationGuestCheckInAction->setIdentifier(md5($location->getIdentifier().rand(0, 10000).time()));
         $locationGuestCheckInAction->setStartTime(new \DateTime());

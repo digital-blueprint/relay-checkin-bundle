@@ -31,4 +31,21 @@ class Test extends ApiTestCase
         $this->assertEquals(Response::HTTP_UNAUTHORIZED, $response->getStatusCode());
         $this->assertJson($response->getContent(false));
     }
+
+    public function testNotAuth()
+    {
+        $endpoints = [
+            ['POST', '/location_check_in_actions', 401],
+            ['GET', '/location_check_in_actions', 401],
+            ['POST', '/location_check_out_actions', 401],
+            ['POST', '/location_guest_check_in_actions', 401],
+        ];
+
+        foreach ($endpoints as $ep) {
+            [$method, $path, $status] = $ep;
+            $client = self::createClient();
+            $response = $client->request($method, $path);
+            $this->assertEquals($status, $response->getStatusCode(), $path);
+        }
+    }
 }

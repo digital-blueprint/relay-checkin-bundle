@@ -9,8 +9,9 @@ use ApiPlatform\Core\DataProvider\RestrictedDataProviderInterface;
 use DBP\API\CoreBundle\Helpers\ArrayFullPaginator;
 use DBP\API\LocationCheckInBundle\Entity\CheckInPlace;
 use DBP\API\LocationCheckInBundle\Service\LocationCheckInApi;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
-final class CheckInPlaceCollectionDataProvider implements CollectionDataProviderInterface, RestrictedDataProviderInterface
+final class CheckInPlaceCollectionDataProvider extends AbstractController implements CollectionDataProviderInterface, RestrictedDataProviderInterface
 {
     public const ITEMS_PER_PAGE = 100;
 
@@ -31,6 +32,8 @@ final class CheckInPlaceCollectionDataProvider implements CollectionDataProvider
      */
     public function getCollection(string $resourceClass, string $operationName = null, array $context = []): ArrayFullPaginator
     {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+
         $api = $this->api;
         $filters = $context['filters'] ?? [];
         $name = $filters['search'] ?? '';
