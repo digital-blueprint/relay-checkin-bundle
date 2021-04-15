@@ -24,11 +24,11 @@ class DbpLocationCheckInExtension extends ConfigurableExtension implements Prepe
     public function loadInternal(array $mergedConfig, ContainerBuilder $container)
     {
         $this->extendArrayParameter($container, 'dbp_api.paths_to_hide', [
-            '/location_check_in_actions/{id}',
+            '/location_check_in_actions/{identifier}',
             '/location_guest_check_in_actions',
-            '/location_guest_check_in_actions/{id}',
+            '/location_guest_check_in_actions/{identifier}',
             '/location_check_out_actions',
-            '/location_check_out_actions/{id}',
+            '/location_check_out_actions/{identifier}',
         ]);
 
         $this->extendArrayParameter(

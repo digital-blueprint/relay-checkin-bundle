@@ -38,7 +38,6 @@ final class CheckInPlaceItemDataProvider extends AbstractController implements I
 
     /**
      * @param string $resourceClass
-     * @param array|int|string $id
      * @param string|null $operationName
      * @param array $context
      *

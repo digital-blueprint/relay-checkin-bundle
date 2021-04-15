@@ -6,7 +6,7 @@
         "php": "^7.3",
         "ext-json": "*",
         "ext-soap": "*",
-        "api-platform/core": "^2.5",
+        "api-platform/core": "^2.6",
         "dbp/api-core-bundle": "dev-main",
         "doctrine/collections": "^1.6",
         "guzzlehttp/guzzle": "^7.0",
