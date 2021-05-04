@@ -112,7 +112,7 @@ class LocationGuestCheckInAction
     /**
      * @ApiProperty(iri="https://schema.org/endTime")
      * @Groups({"LocationCheckIn:output", "LocationCheckIn:input"})
-     * @Assert\DateTime
+     * @Assert\Type("\DateTimeInterface")
      * @Assert\NotBlank
      *
      * @var \DateTime
