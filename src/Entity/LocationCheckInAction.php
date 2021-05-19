@@ -19,6 +19,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *     },
  *     collectionOperations={
  *         "get" = {
+ *             "path" = "/location_check_in_actions",
  *             "security" = "is_granted('IS_AUTHENTICATED_FULLY')",
  *             "normalization_context" = {
  *                 "groups" = {"LocationCheckIn:output", "LocationCheckIn:outputList"}
@@ -38,6 +39,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *             },
  *         },
  *         "post" = {
+ *             "path" = "/location_check_in_actions",
  *             "security" = "is_granted('IS_AUTHENTICATED_FULLY')",
  *             "method" = "POST",
  *             "openapi_context" = {
@@ -55,6 +57,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *     },
  *     itemOperations={
  *         "get" = {
+ *             "path" = "/location_check_in_actions/{identifier}",
  *             "security" = "is_granted('IS_AUTHENTICATED_FULLY')",
  *             "openapi_context" = {
  *                 "tags" = {"LocationCheckIn"},
