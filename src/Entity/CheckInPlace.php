@@ -19,6 +19,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *         "get" = {
  *             "security" = "is_granted('IS_AUTHENTICATED_FULLY')",
  *             "openapi_context" = {
+ *                 "tags" = {"LocationCheckIn"},
  *                 "parameters" = {
  *                     {"name" = "search", "in" = "query", "description" = "Search for a place name", "type" = "string", "example" = "Coworkingspace"}
  *                 }
@@ -27,7 +28,10 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *     },
  *     itemOperations={
  *         "get" = {
- *             "security" = "is_granted('IS_AUTHENTICATED_FULLY')"
+ *             "security" = "is_granted('IS_AUTHENTICATED_FULLY')",
+ *             "openapi_context" = {
+ *                 "tags" = {"LocationCheckIn"},
+ *             },
  *         }
  *     },
  *     iri="http://schema.org/Place",

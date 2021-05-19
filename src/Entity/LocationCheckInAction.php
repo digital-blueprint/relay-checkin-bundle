@@ -24,6 +24,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *                 "groups" = {"LocationCheckIn:output", "LocationCheckIn:outputList"}
  *             },
  *             "openapi_context" = {
+ *                 "tags" = {"LocationCheckIn"},
  *                 "summary" = "Retrieves all LocationCheckInActions of the current user.",
  *                 "parameters" = {
  *                     {
@@ -40,6 +41,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *             "security" = "is_granted('IS_AUTHENTICATED_FULLY')",
  *             "method" = "POST",
  *             "openapi_context" = {
+ *                 "tags" = {"LocationCheckIn"},
  *                 "requestBody" = {
  *                     "content" = {
  *                         "application/json" = {
@@ -53,7 +55,10 @@ use Symfony\Component\Validator\Constraints as Assert;
  *     },
  *     itemOperations={
  *         "get" = {
- *             "security" = "is_granted('IS_AUTHENTICATED_FULLY')"
+ *             "security" = "is_granted('IS_AUTHENTICATED_FULLY')",
+ *             "openapi_context" = {
+ *                 "tags" = {"LocationCheckIn"},
+ *             },
  *         }
  *     },
  *     iri="http://schema.org/CheckInAction",
