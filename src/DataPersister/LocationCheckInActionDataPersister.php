@@ -35,7 +35,7 @@ final class LocationCheckInActionDataPersister extends AbstractController implem
     }
 
     /**
-     * @param LocationCheckInAction $locationCheckInAction
+     * @param LocationCheckInAction $data
      *
      * @return LocationCheckInAction
      *
@@ -44,8 +44,9 @@ final class LocationCheckInActionDataPersister extends AbstractController implem
      * @throws AccessDeniedHttpException
      * @throws ItemNotUsableException
      */
-    public function persist($locationCheckInAction)
+    public function persist($data)
     {
+        $locationCheckInAction = $data;
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
         $this->denyAccessUnlessGranted('ROLE_SCOPE_LOCATION-CHECK-IN');
 
@@ -88,9 +89,9 @@ final class LocationCheckInActionDataPersister extends AbstractController implem
     }
 
     /**
-     * @param LocationCheckInAction $locationCheckInAction
+     * @param LocationCheckInAction $data
      */
-    public function remove($locationCheckInAction)
+    public function remove($data)
     {
     }
 }

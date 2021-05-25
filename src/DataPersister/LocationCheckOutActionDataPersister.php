@@ -35,7 +35,7 @@ final class LocationCheckOutActionDataPersister extends AbstractController imple
     }
 
     /**
-     * @param LocationCheckOutAction $locationCheckOutAction
+     * @param LocationCheckOutAction $data
      *
      * @return LocationCheckOutAction
      *
@@ -44,8 +44,9 @@ final class LocationCheckOutActionDataPersister extends AbstractController imple
      * @throws AccessDeniedHttpException
      * @throws ItemNotUsableException
      */
-    public function persist($locationCheckOutAction)
+    public function persist($data)
     {
+        $locationCheckOutAction = $data;
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
         $this->denyAccessUnlessGranted('ROLE_SCOPE_LOCATION-CHECK-IN');
 
@@ -96,9 +97,9 @@ final class LocationCheckOutActionDataPersister extends AbstractController imple
     }
 
     /**
-     * @param LocationCheckOutAction $locationCheckOutAction
+     * @param LocationCheckOutAction $data
      */
-    public function remove($locationCheckOutAction)
+    public function remove($data)
     {
     }
 }
