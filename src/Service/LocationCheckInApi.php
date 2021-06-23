@@ -30,8 +30,8 @@ use Kevinrob\GuzzleCache\Strategy\GreedyCacheStrategy;
 use League\Uri\Contracts\UriException;
 use Psr\Cache\CacheItemPoolInterface;
 use Psr\Http\Message\ResponseInterface;
-use Psr\Log\LoggerInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerAwareTrait;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Lock\LockFactory;
@@ -39,13 +39,13 @@ use Symfony\Component\Lock\LockInterface;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Messenger\Stamp\DelayStamp;
 
-class LocationCheckInApi
+class LocationCheckInApi implements LoggerAwareInterface
 {
+    use LoggerAwareTrait;
+
     private $clientHandler;
 
-    private $logger;
-
-    private $container;
+    private $cachePool;
 
     /**
      * @var MessageBusInterface
@@ -82,7 +82,7 @@ class LocationCheckInApi
      */
     private $autoCheckOutMinutes = 0;
 
-    // Caching time of https://campusqr-dev.tugraz.at/location/list
+    // Caching time of https://campusqr-dev.tugraz.at/location/list and the config
     public const LOCATION_CACHE_TTL = 300;
 
     public const CONFIG_KEY_AUTO_CHECK_OUT_MINUTES = 'autoCheckOutMinutes';
@@ -90,30 +90,34 @@ class LocationCheckInApi
     /**
      * LocationCheckInApi constructor.
      *
-     * @param LoggerInterface $logger
      * @param PersonProviderInterface $personProvider
-     * @param ContainerInterface $container
      * @param MessageBusInterface $bus
      * @param LockFactory $lockFactory
      */
     public function __construct(
-        LoggerInterface $logger,
         PersonProviderInterface $personProvider,
-        ContainerInterface $container,
         MessageBusInterface $bus,
         LockFactory $lockFactory
     ) {
         $this->clientHandler = null;
-        $this->logger = $logger;
         $this->personProvider = $personProvider;
-        $this->container = $container;
         $this->bus = $bus;
         $this->lockFactory = $lockFactory;
         $this->urls = new LocationCheckInUrlApi();
 
-        $config = $container->getParameter('dbp_api.location_check_in.config');
+        $this->campusQRUrl = '';
+        $this->campusQRToken = '';
+    }
+
+    public function setConfig(array $config)
+    {
         $this->campusQRUrl = $config['campus_qr_url'] ?? '';
         $this->campusQRToken = $config['campus_qr_token'] ?? '';
+    }
+
+    public function setCache(?CacheItemPoolInterface $cachePool)
+    {
+        $this->cachePool = $cachePool;
     }
 
     /**
@@ -134,7 +138,9 @@ class LocationCheckInApi
             'handler' => $stack,
         ];
 
-        $stack->push(GuzzleTools::createLoggerMiddleware($this->logger));
+        if ($this->logger !== null) {
+            $stack->push(GuzzleTools::createLoggerMiddleware($this->logger));
+        }
 
         return new Client($client_options);
     }
@@ -147,28 +153,22 @@ class LocationCheckInApi
             'handler' => $stack,
         ];
 
-        $stack->push(GuzzleTools::createLoggerMiddleware($this->logger));
+        if ($this->logger !== null) {
+            $stack->push(GuzzleTools::createLoggerMiddleware($this->logger));
+        }
 
-        $guzzleCachePool = $this->getCachePool();
-        $cacheMiddleWare = new CacheMiddleware(
-            new GreedyCacheStrategy(
-                new Psr6CacheStorage($guzzleCachePool),
-                self::LOCATION_CACHE_TTL
-            )
-        );
-
-        $cacheMiddleWare->setHttpMethods(['GET' => true, 'HEAD' => true]);
-        $stack->push($cacheMiddleWare);
+        if ($this->cachePool !== null) {
+            $cacheMiddleWare = new CacheMiddleware(
+                new GreedyCacheStrategy(
+                    new Psr6CacheStorage($this->cachePool),
+                    self::LOCATION_CACHE_TTL
+                )
+            );
+            $cacheMiddleWare->setHttpMethods(['GET' => true, 'HEAD' => true]);
+            $stack->push($cacheMiddleWare);
+        }
 
         return new Client($client_options);
-    }
-
-    private function getCachePool(): CacheItemPoolInterface
-    {
-        $guzzleCachePool = $this->container->get('dbp_api.cache.location_check_in.location');
-        assert($guzzleCachePool instanceof CacheItemPoolInterface);
-
-        return $guzzleCachePool;
     }
 
     /**

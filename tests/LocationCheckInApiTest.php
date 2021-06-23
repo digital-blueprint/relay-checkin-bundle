@@ -14,8 +14,6 @@ use Doctrine\Common\Collections\ArrayCollection;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Response;
-use Monolog\Handler\NullHandler;
-use Monolog\Logger;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Lock\LockFactory;
@@ -33,9 +31,6 @@ class LocationCheckInApiTest extends WebTestCase
 
     protected function setUp(): void
     {
-        $client = static::createClient();
-        $nullLogger = new Logger('dummy', [new NullHandler()]);
-
         $person = new Person();
         $person->setEmail('dummy@email.com');
         $personProvider = new DummyPersonProvider($person);
@@ -50,7 +45,7 @@ class LocationCheckInApiTest extends WebTestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->api = new LocationCheckInApi($nullLogger, $personProvider, $client->getContainer(), $messageBus, $lockFactory);
+        $this->api = new LocationCheckInApi($personProvider, $messageBus, $lockFactory);
         $this->api->setCampusQRUrl('http://dummy');
         $this->api->setCampusQRToken('dummy');
         $this->mockResponses([]);
@@ -201,6 +196,7 @@ class LocationCheckInApiTest extends WebTestCase
     {
         $this->mockResponses([
             new Response(200, [], self::listActiveCheckInsResponse),
+            new Response(200, [], 180),
         ]);
 
         $result = $this->api->fetchLocationCheckInActionsOfCurrentPerson('f0ad66aaaf1debabb44a');
@@ -228,6 +224,7 @@ class LocationCheckInApiTest extends WebTestCase
     {
         $this->mockResponses([
             new Response(200, [], self::listActiveCheckInsResponse),
+            new Response(200, [], 180),
         ]);
 
         $result = $this->api->fetchLocationCheckInActionsOfCurrentPerson('f0ad66aaaf1debabb44a', 17);
@@ -243,6 +240,7 @@ class LocationCheckInApiTest extends WebTestCase
     {
         $this->mockResponses([
             new Response(200, [], self::listActiveCheckInsResponse),
+            new Response(200, [], 180),
         ]);
 
         $result = $this->api->fetchLocationCheckInActionsOfCurrentPerson('f0ad66aaaf1debabb44a', 18);
