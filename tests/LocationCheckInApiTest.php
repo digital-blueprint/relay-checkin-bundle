@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace DBP\API\LocationCheckInBundle\Tests;
 
-use DBP\API\CoreBundle\Entity\Person;
-use DBP\API\CoreBundle\TestUtils\DummyPersonProvider;
+use DBP\API\BaseBundle\Entity\Person;
+use DBP\API\BaseBundle\TestUtils\DummyPersonProvider;
 use DBP\API\LocationCheckInBundle\Entity\CheckInPlace;
 use DBP\API\LocationCheckInBundle\Entity\LocationCheckInAction;
 use DBP\API\LocationCheckInBundle\Entity\LocationCheckOutAction;

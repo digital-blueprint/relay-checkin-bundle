@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace DBP\API\LocationCheckInBundle\Tests;
 
 use ApiPlatform\Core\Bridge\Symfony\Bundle\ApiPlatformBundle;
+use DBP\API\BaseBundle\DbpBaseBundle;
 use DBP\API\CoreBundle\DbpCoreBundle;
 use DBP\API\LocationCheckInBundle\DbpLocationCheckInBundle;
 use Nelmio\CorsBundle\NelmioCorsBundle;
@@ -28,6 +29,7 @@ class Kernel extends BaseKernel
         yield new TwigBundle();
         yield new NelmioCorsBundle();
         yield new ApiPlatformBundle();
+        yield new DbpBaseBundle();
         yield new DbpCoreBundle();
         yield new DbpLocationCheckInBundle();
     }

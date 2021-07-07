@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace DBP\API\LocationCheckInBundle\Tests\Entity;
 
-use DBP\API\CoreBundle\Entity\Person;
+use DBP\API\BaseBundle\Entity\Person;
 use DBP\API\LocationCheckInBundle\Entity\CheckInPlace;
 use DBP\API\LocationCheckInBundle\Entity\LocationCheckInAction;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;

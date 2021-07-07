@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace DBP\API\LocationCheckInBundle\DataPersister;
 
 use ApiPlatform\Core\DataPersister\DataPersisterInterface;
-use DBP\API\CoreBundle\API\PersonProviderInterface;
+use DBP\API\BaseBundle\API\PersonProviderInterface;
 use DBP\API\CoreBundle\Exception\ItemNotLoadedException;
 use DBP\API\CoreBundle\Exception\ItemNotStoredException;
 use DBP\API\CoreBundle\Exception\ItemNotUsableException;
