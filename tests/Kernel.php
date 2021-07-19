@@ -16,7 +16,7 @@ use Symfony\Bundle\TwigBundle\TwigBundle;
 use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Kernel as BaseKernel;
-use Symfony\Component\Routing\RouteCollectionBuilder;
+use Symfony\Component\Routing\Loader\Configurator\RoutingConfigurator;
 use Symfony\Bundle\MonologBundle\MonologBundle;
 
 class Kernel extends BaseKernel
@@ -36,7 +36,7 @@ class Kernel extends BaseKernel
         yield new DbpLocationCheckInBundle();
     }
 
-    protected function configureRoutes(RouteCollectionBuilder $routes)
+    protected function configureRoutes(RoutingConfigurator $routes)
     {
         $routes->import('@DbpCoreBundle/Resources/config/routing.yaml');
     }
