@@ -6,13 +6,10 @@ namespace DBP\API\LocationCheckInBundle\DataPersister;
 
 use ApiPlatform\Core\DataPersister\DataPersisterInterface;
 use DBP\API\BaseBundle\API\PersonProviderInterface;
-use DBP\API\CoreBundle\Exception\ItemNotLoadedException;
 use DBP\API\CoreBundle\Exception\ItemNotStoredException;
-use DBP\API\CoreBundle\Exception\ItemNotUsableException;
 use DBP\API\LocationCheckInBundle\Entity\LocationCheckInAction;
 use DBP\API\LocationCheckInBundle\Service\LocationCheckInApi;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 final class LocationCheckInActionDataPersister extends AbstractController implements DataPersisterInterface
 {
@@ -38,11 +35,6 @@ final class LocationCheckInActionDataPersister extends AbstractController implem
      * @param LocationCheckInAction $data
      *
      * @return LocationCheckInAction
-     *
-     * @throws ItemNotLoadedException
-     * @throws ItemNotStoredException
-     * @throws AccessDeniedHttpException
-     * @throws ItemNotUsableException
      */
     public function persist($data)
     {

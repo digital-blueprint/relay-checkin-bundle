@@ -6,7 +6,6 @@ namespace DBP\API\LocationCheckInBundle\DataProvider;
 
 use ApiPlatform\Core\DataProvider\CollectionDataProviderInterface;
 use ApiPlatform\Core\DataProvider\RestrictedDataProviderInterface;
-use DBP\API\CoreBundle\Exception\ItemNotLoadedException;
 use DBP\API\CoreBundle\Helpers\ArrayFullPaginator;
 use DBP\API\LocationCheckInBundle\Entity\LocationCheckInAction;
 use DBP\API\LocationCheckInBundle\Service\LocationCheckInApi;
@@ -28,9 +27,6 @@ final class LocationCheckInActionCollectionDataProvider extends AbstractControll
         return LocationCheckInAction::class === $resourceClass;
     }
 
-    /**
-     * @throws ItemNotLoadedException
-     */
     public function getCollection(string $resourceClass, string $operationName = null, array $context = []): ArrayFullPaginator
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
