@@ -9,9 +9,6 @@ namespace DBP\API\LocationCheckInBundle\Service;
 
 use DBP\API\BaseBundle\API\PersonProviderInterface;
 use DBP\API\CoreBundle\Helpers\GuzzleTools;
-use DBP\API\CoreBundle\Helpers\JsonException;
-use DBP\API\CoreBundle\Helpers\Tools;
-use DBP\API\CoreBundle\Helpers\Tools as CoreTools;
 use DBP\API\LocationCheckInBundle\Entity\CheckInPlace;
 use DBP\API\LocationCheckInBundle\Entity\LocationCheckInAction;
 use DBP\API\LocationCheckInBundle\Entity\LocationCheckOutAction;
@@ -19,6 +16,7 @@ use DBP\API\LocationCheckInBundle\Entity\LocationGuestCheckInAction;
 use DBP\API\LocationCheckInBundle\Exceptions\ItemNotLoadedException;
 use DBP\API\LocationCheckInBundle\Exceptions\ItemNotStoredException;
 use DBP\API\LocationCheckInBundle\Exceptions\ItemNotUsableException;
+use DBP\API\LocationCheckInBundle\Helpers\Tools;
 use DBP\API\LocationCheckInBundle\Message\LocationGuestCheckOutMessage;
 use Doctrine\Common\Collections\ArrayCollection;
 use GuzzleHttp\Client;
@@ -442,9 +440,9 @@ class LocationCheckInApi implements LoggerAwareInterface
     {
         $body = $response->getBody();
         try {
-            return CoreTools::decodeJSON((string) $body, true);
-        } catch (JsonException $e) {
-            throw new ItemNotLoadedException(sprintf('Invalid json: %s', CoreTools::filterErrorMessage($e->getMessage())));
+            return json_decode((string) $body, true, 512, JSON_THROW_ON_ERROR);
+        } catch (\JsonException $e) {
+            throw new ItemNotLoadedException(sprintf('Invalid json: %s', Tools::filterErrorMessage($e->getMessage())));
         }
     }
 
