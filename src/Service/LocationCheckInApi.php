@@ -8,7 +8,6 @@ declare(strict_types=1);
 namespace DBP\API\LocationCheckInBundle\Service;
 
 use DBP\API\BaseBundle\API\PersonProviderInterface;
-use DBP\API\CoreBundle\Helpers\GuzzleTools;
 use DBP\API\LocationCheckInBundle\Entity\CheckInPlace;
 use DBP\API\LocationCheckInBundle\Entity\LocationCheckInAction;
 use DBP\API\LocationCheckInBundle\Entity\LocationCheckOutAction;
@@ -137,7 +136,7 @@ class LocationCheckInApi implements LoggerAwareInterface
         ];
 
         if ($this->logger !== null) {
-            $stack->push(GuzzleTools::createLoggerMiddleware($this->logger));
+            $stack->push(Tools::createLoggerMiddleware($this->logger));
         }
 
         return new Client($client_options);
@@ -152,7 +151,7 @@ class LocationCheckInApi implements LoggerAwareInterface
         ];
 
         if ($this->logger !== null) {
-            $stack->push(GuzzleTools::createLoggerMiddleware($this->logger));
+            $stack->push(Tools::createLoggerMiddleware($this->logger));
         }
 
         if ($this->cachePool !== null) {
