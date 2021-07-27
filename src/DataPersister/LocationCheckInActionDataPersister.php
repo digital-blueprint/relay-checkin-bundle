@@ -6,8 +6,8 @@ namespace DBP\API\LocationCheckInBundle\DataPersister;
 
 use ApiPlatform\Core\DataPersister\DataPersisterInterface;
 use DBP\API\BaseBundle\API\PersonProviderInterface;
-use DBP\API\CoreBundle\Exception\ItemNotStoredException;
 use DBP\API\LocationCheckInBundle\Entity\LocationCheckInAction;
+use DBP\API\LocationCheckInBundle\Exceptions\ItemNotStoredException;
 use DBP\API\LocationCheckInBundle\Service\LocationCheckInApi;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
