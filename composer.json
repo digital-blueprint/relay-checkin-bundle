@@ -8,9 +8,10 @@
         "ext-soap": "*",
         "api-platform/core": "^2.6",
         "dbp/api-base-bundle": "dev-main",
-        "dbp/api-core-bundle": "^0.1",
+        "dbp/relay-core-bundle": "^0.1.11",
         "doctrine/collections": "^1.6",
         "guzzlehttp/guzzle": "^7.0",
+        "kevinrob/guzzle-cache-middleware": "^3.3",
         "league/uri": "^6.4",
         "myclabs/php-enum": "^1.7",
         "symfony/framework-bundle": "^5.2",
@@ -28,10 +29,6 @@
         "vimeo/psalm": "^4.0"
     },
     "repositories": [
-        {
-            "type": "vcs",
-            "url": "git@gitlab.tugraz.at:dbp/dbp-api/api-core-bundle.git"
-        },
         {
             "type": "vcs",
             "url": "git@gitlab.tugraz.at:dbp/dbp-api/api-base-bundle.git"
