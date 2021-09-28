@@ -40,3 +40,9 @@ Add this bundle to `./symfony.lock`:
     },
 ...
 ```
+
+## Roles
+
+This bundle needs the roles `ROLE_SCOPE_LOCATION-CHECK-IN` and `ROLE_SCOPE_LOCATION-CHECK-IN-GUEST` assigned to the user
+to get permissions for the api.
+
