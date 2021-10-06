@@ -6,7 +6,7 @@ namespace DBP\API\LocationCheckInBundle\Entity;
 
 use ApiPlatform\Core\Annotation\ApiProperty;
 use ApiPlatform\Core\Annotation\ApiResource;
-use DBP\API\BaseBundle\Entity\Person;
+use Dbp\Relay\BaseBundle\Entity\Person;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 

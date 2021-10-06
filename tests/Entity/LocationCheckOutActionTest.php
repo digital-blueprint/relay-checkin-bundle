@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace DBP\API\LocationCheckInBundle\Tests\Entity;
 
-use DBP\API\BaseBundle\Entity\Person;
 use DBP\API\LocationCheckInBundle\Entity\CheckInPlace;
 use DBP\API\LocationCheckInBundle\Entity\LocationCheckOutAction;
+use Dbp\Relay\BaseBundle\Entity\Person;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class LocationCheckOutActionTest extends WebTestCase

@@ -7,7 +7,6 @@ declare(strict_types=1);
 
 namespace DBP\API\LocationCheckInBundle\Service;
 
-use DBP\API\BaseBundle\API\PersonProviderInterface;
 use DBP\API\LocationCheckInBundle\Entity\CheckInPlace;
 use DBP\API\LocationCheckInBundle\Entity\LocationCheckInAction;
 use DBP\API\LocationCheckInBundle\Entity\LocationCheckOutAction;
@@ -17,6 +16,7 @@ use DBP\API\LocationCheckInBundle\Exceptions\ItemNotStoredException;
 use DBP\API\LocationCheckInBundle\Exceptions\ItemNotUsableException;
 use DBP\API\LocationCheckInBundle\Helpers\Tools;
 use DBP\API\LocationCheckInBundle\Message\LocationGuestCheckOutMessage;
+use Dbp\Relay\BaseBundle\API\PersonProviderInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;

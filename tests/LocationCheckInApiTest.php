@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace DBP\API\LocationCheckInBundle\Tests;
 
-use DBP\API\BaseBundle\Entity\Person;
-use DBP\API\BaseBundle\TestUtils\DummyPersonProvider;
 use DBP\API\LocationCheckInBundle\Entity\CheckInPlace;
 use DBP\API\LocationCheckInBundle\Entity\LocationCheckInAction;
 use DBP\API\LocationCheckInBundle\Entity\LocationCheckOutAction;
 use DBP\API\LocationCheckInBundle\Service\LocationCheckInApi;
+use Dbp\Relay\BaseBundle\Entity\Person;
+use Dbp\Relay\BaseBundle\TestUtils\DummyPersonProvider;
 use Doctrine\Common\Collections\ArrayCollection;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;

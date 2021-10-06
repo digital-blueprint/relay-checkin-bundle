@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace DBP\API\LocationCheckInBundle\DataPersister;
 
 use ApiPlatform\Core\DataPersister\DataPersisterInterface;
-use DBP\API\BaseBundle\API\PersonProviderInterface;
 use DBP\API\LocationCheckInBundle\Entity\LocationGuestCheckInAction;
 use DBP\API\LocationCheckInBundle\Exceptions\ItemNotStoredException;
 use DBP\API\LocationCheckInBundle\Service\LocationCheckInApi;
+use Dbp\Relay\BaseBundle\API\PersonProviderInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 final class LocationGuestCheckInActionDataPersister extends AbstractController implements DataPersisterInterface
