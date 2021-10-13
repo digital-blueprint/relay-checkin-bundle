@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace DBP\API\LocationCheckInBundle\Helpers;
+namespace Dbp\Relay\CheckinBundle\Helpers;
 
 use GuzzleHttp\MessageFormatter;
 use GuzzleHttp\Middleware;

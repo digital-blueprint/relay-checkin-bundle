@@ -2,29 +2,29 @@
 
 declare(strict_types=1);
 
-namespace DBP\API\LocationCheckInBundle\DataProvider;
+namespace Dbp\Relay\CheckinBundle\DataProvider;
 
 use ApiPlatform\Core\DataProvider\CollectionDataProviderInterface;
 use ApiPlatform\Core\DataProvider\RestrictedDataProviderInterface;
-use DBP\API\LocationCheckInBundle\Entity\LocationCheckInAction;
-use DBP\API\LocationCheckInBundle\Service\LocationCheckInApi;
+use Dbp\Relay\CheckinBundle\Entity\CheckInAction;
+use Dbp\Relay\CheckinBundle\Service\CheckinApi;
 use Dbp\Relay\CoreBundle\Helpers\ArrayFullPaginator;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
-final class LocationCheckInActionCollectionDataProvider extends AbstractController implements CollectionDataProviderInterface, RestrictedDataProviderInterface
+final class CheckInActionCollectionDataProvider extends AbstractController implements CollectionDataProviderInterface, RestrictedDataProviderInterface
 {
     public const ITEMS_PER_PAGE = 100;
 
     private $api;
 
-    public function __construct(LocationCheckInApi $api)
+    public function __construct(CheckinApi $api)
     {
         $this->api = $api;
     }
 
     public function supports(string $resourceClass, string $operationName = null, array $context = []): bool
     {
-        return LocationCheckInAction::class === $resourceClass;
+        return CheckInAction::class === $resourceClass;
     }
 
     public function getCollection(string $resourceClass, string $operationName = null, array $context = []): ArrayFullPaginator
@@ -36,7 +36,7 @@ final class LocationCheckInActionCollectionDataProvider extends AbstractControll
         $filters = $context['filters'] ?? [];
         $location = $filters['location'] ?? '';
 
-        $locationCheckInActions = $api->fetchLocationCheckInActionsOfCurrentPerson($location);
+        $locationCheckInActions = $api->fetchCheckInActionsOfCurrentPerson($location);
 
         $perPage = self::ITEMS_PER_PAGE;
         $page = 1;

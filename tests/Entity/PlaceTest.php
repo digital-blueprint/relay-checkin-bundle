@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace DBP\API\LocationCheckInBundle\Tests\Entity;
+namespace Dbp\Relay\CheckinBundle\Tests\Entity;
 
-use DBP\API\LocationCheckInBundle\Entity\CheckInPlace;
+use Dbp\Relay\CheckinBundle\Entity\Place;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
-class CheckInPlaceTest extends WebTestCase
+class PlaceTest extends WebTestCase
 {
     public function testBasics()
     {
-        $place = new CheckInPlace();
+        $place = new Place();
         $place->setName('Test');
         $this->assertNull($place->getMaximumPhysicalAttendeeCapacity());
     }

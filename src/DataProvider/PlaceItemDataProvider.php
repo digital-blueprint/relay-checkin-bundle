@@ -1,30 +1,30 @@
 <?php
 /**
- * CheckInPlace item data provider.
+ * Place item data provider.
  *
- * We need to provide a CheckInPlace item data provider to be able to post a "location" like
- * "/check_in_places/f0ad66aaaf1debabb44a" in a LocationCheckInAction
+ * We need to provide a Place item data provider to be able to post a "location" like
+ * "/checkin/places/f0ad66aaaf1debabb44a" in a CheckInAction
  */
 
 declare(strict_types=1);
 
-namespace DBP\API\LocationCheckInBundle\DataProvider;
+namespace Dbp\Relay\CheckinBundle\DataProvider;
 
 use ApiPlatform\Core\DataProvider\ItemDataProviderInterface;
 use ApiPlatform\Core\DataProvider\RestrictedDataProviderInterface;
-use DBP\API\LocationCheckInBundle\Entity\CheckInPlace;
-use DBP\API\LocationCheckInBundle\Service\LocationCheckInApi;
+use Dbp\Relay\CheckinBundle\Entity\Place;
+use Dbp\Relay\CheckinBundle\Service\CheckinApi;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-final class CheckInPlaceItemDataProvider extends AbstractController implements ItemDataProviderInterface, RestrictedDataProviderInterface
+final class PlaceItemDataProvider extends AbstractController implements ItemDataProviderInterface, RestrictedDataProviderInterface
 {
     private $api;
 
     private $requestStack;
 
-    public function __construct(LocationCheckInApi $api, RequestStack $requestStack)
+    public function __construct(CheckinApi $api, RequestStack $requestStack)
     {
         $this->api = $api;
         $this->requestStack = $requestStack;
@@ -32,7 +32,7 @@ final class CheckInPlaceItemDataProvider extends AbstractController implements I
 
     public function supports(string $resourceClass, string $operationName = null, array $context = []): bool
     {
-        return CheckInPlace::class === $resourceClass;
+        return Place::class === $resourceClass;
     }
 
     /**
@@ -40,15 +40,15 @@ final class CheckInPlaceItemDataProvider extends AbstractController implements I
      * @param string|null $operationName
      * @param array $context
      *
-     * @return CheckInPlace|null
+     * @return Place|null
      *
      * @throws NotFoundHttpException
      */
-    public function getItem(string $resourceClass, $id, string $operationName = null, array $context = []): ?CheckInPlace
+    public function getItem(string $resourceClass, $id, string $operationName = null, array $context = []): ?Place
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
         $this->denyAccessUnlessGranted('ROLE_SCOPE_LOCATION-CHECK-IN');
 
-        return $this->api->fetchCheckInPlace($id);
+        return $this->api->fetchPlace($id);
     }
 }

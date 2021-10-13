@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace DBP\API\LocationCheckInBundle\DataPersister;
+namespace Dbp\Relay\CheckinBundle\DataPersister;
 
 use ApiPlatform\Core\DataPersister\DataPersisterInterface;
-use DBP\API\LocationCheckInBundle\Entity\LocationGuestCheckInAction;
-use DBP\API\LocationCheckInBundle\Exceptions\ItemNotStoredException;
-use DBP\API\LocationCheckInBundle\Service\LocationCheckInApi;
+use Dbp\Relay\CheckinBundle\Entity\GuestCheckInAction;
+use Dbp\Relay\CheckinBundle\Exceptions\ItemNotStoredException;
+use Dbp\Relay\CheckinBundle\Service\CheckinApi;
 use Dbp\Relay\BaseBundle\API\PersonProviderInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
-final class LocationGuestCheckInActionDataPersister extends AbstractController implements DataPersisterInterface
+final class GuestCheckInActionDataPersister extends AbstractController implements DataPersisterInterface
 {
     private $api;
 
@@ -20,7 +20,7 @@ final class LocationGuestCheckInActionDataPersister extends AbstractController i
      */
     private $personProvider;
 
-    public function __construct(LocationCheckInApi $api, PersonProviderInterface $personProvider)
+    public function __construct(CheckinApi $api, PersonProviderInterface $personProvider)
     {
         $this->api = $api;
         $this->personProvider = $personProvider;
@@ -28,13 +28,13 @@ final class LocationGuestCheckInActionDataPersister extends AbstractController i
 
     public function supports($data): bool
     {
-        return $data instanceof LocationGuestCheckInAction;
+        return $data instanceof GuestCheckInAction;
     }
 
     /**
-     * @param LocationGuestCheckInAction $data
+     * @param GuestCheckInAction $data
      *
-     * @return LocationGuestCheckInAction
+     * @return GuestCheckInAction
      */
     public function persist($data)
     {
@@ -56,10 +56,10 @@ final class LocationGuestCheckInActionDataPersister extends AbstractController i
         }
 
         // check if endDate is too far in the future
-        $maxCheckInEndTime = $this->api->fetchMaxCheckInEndTime();
-        if ($maxCheckInEndTime < $locationGuestCheckInAction->getEndTime()) {
-            $maxCheckInEndTimeString = $maxCheckInEndTime->format('c');
-            throw new ItemNotStoredException("The endDate can't be after ${maxCheckInEndTimeString}!");
+        $maxCheckinEndTime = $this->api->fetchMaxCheckinEndTime();
+        if ($maxCheckinEndTime < $locationGuestCheckInAction->getEndTime()) {
+            $maxCheckinEndTimeString = $maxCheckinEndTime->format('c');
+            throw new ItemNotStoredException("The endDate can't be after ${maxCheckinEndTimeString}!");
         }
 
         // We want to wait until we have checked if the guest already took the same seat
@@ -76,12 +76,12 @@ final class LocationGuestCheckInActionDataPersister extends AbstractController i
 
         try {
             // check if there are check-ins for with guest email
-            $existingCheckIns = $this->api->fetchLocationCheckInActionsOfEmail(
+            $existingCheckins = $this->api->fetchCheckInActionsOfEmail(
                 $locationGuestCheckInAction->getEmail(),
                 $location->getIdentifier(),
                 $locationGuestCheckInAction->getSeatNumber());
 
-            if (count($existingCheckIns) > 0) {
+            if (count($existingCheckins) > 0) {
                 throw new ItemNotStoredException('There are already check-ins at the location with provided seat for the email address!');
             }
 
@@ -92,13 +92,13 @@ final class LocationGuestCheckInActionDataPersister extends AbstractController i
         }
 
         // dispatch guest check out message
-        $this->api->createAndDispatchLocationGuestCheckOutMessage($locationGuestCheckInAction);
+        $this->api->createAndDispatchGuestCheckOutMessage($locationGuestCheckInAction);
 
         return $locationGuestCheckInAction;
     }
 
     /**
-     * @param LocationGuestCheckInAction $data
+     * @param GuestCheckInAction $data
      */
     public function remove($data)
     {

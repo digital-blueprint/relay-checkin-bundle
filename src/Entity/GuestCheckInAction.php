@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace DBP\API\LocationCheckInBundle\Entity;
+namespace Dbp\Relay\CheckinBundle\Entity;
 
 use ApiPlatform\Core\Annotation\ApiProperty;
 use ApiPlatform\Core\Annotation\ApiResource;
@@ -19,14 +19,14 @@ use Symfony\Component\Validator\Constraints as Assert;
  *     },
  *     collectionOperations={
  *         "get" = {
- *             "path" = "/location_guest_check_in_actions",
+ *             "path" = "/checkin/guest_check_in_actions",
  *             "security" = "is_granted('IS_AUTHENTICATED_FULLY')",
  *             "normalization_context" = {
- *                 "groups" = {"LocationCheckIn:output", "LocationCheckIn:outputList"}
+ *                 "groups" = {"Checkin:output", "Checkin:outputList"}
  *             },
  *             "openapi_context" = {
- *                 "tags" = {"LocationCheckIn"},
- *                 "summary" = "Retrieves all LocationGuestCheckInActions of the current user.",
+ *                 "tags" = {"Checkin"},
+ *                 "summary" = "Retrieves all GuestCheckInActions of the current user.",
  *                 "parameters" = {
  *                     {
  *                         "name" = "location",
@@ -39,16 +39,16 @@ use Symfony\Component\Validator\Constraints as Assert;
  *             },
  *         },
  *         "post" = {
- *             "path" = "/location_guest_check_in_actions",
+ *             "path" = "/checkin/guest_check_in_actions",
  *             "security" = "is_granted('IS_AUTHENTICATED_FULLY')",
  *             "method" = "POST",
  *             "openapi_context" = {
- *                 "tags" = {"LocationCheckIn"},
+ *                 "tags" = {"Checkin"},
  *                 "requestBody" = {
  *                     "content" = {
  *                         "application/json" = {
  *                             "schema" = {"type" = "object"},
- *                             "example" = {"location" = "/check_in_places/f0ad66aaaf1debabb44a", "seatNumber" = 17, "email" = "test@test.com", "endTime" = "2021-10-19T08:03:11.336Z"}
+ *                             "example" = {"location" = "/checkin/places/f0ad66aaaf1debabb44a", "seatNumber" = 17, "email" = "test@test.com", "endTime" = "2021-10-19T08:03:11.336Z"}
  *                         }
  *                     }
  *                 }
@@ -57,10 +57,10 @@ use Symfony\Component\Validator\Constraints as Assert;
  *     },
  *     itemOperations={
  *         "get" = {
- *             "path" = "/location_guest_check_in_actions/{identifier}",
+ *             "path" = "/checkin/guest_check_in_actions/{identifier}",
  *             "security" = "is_granted('IS_AUTHENTICATED_FULLY')",
  *             "openapi_context" = {
- *                 "tags" = {"LocationCheckIn"},
+ *                 "tags" = {"Checkin"},
  *             },
  *         }
  *     },
@@ -68,17 +68,17 @@ use Symfony\Component\Validator\Constraints as Assert;
  *     description="Location guest check-in action",
  *     normalizationContext={
  *         "jsonld_embed_context" = true,
- *         "groups" = {"LocationCheckIn:output", "CheckInPlace:output"}
+ *         "groups" = {"Checkin:output", "Place:output"}
  *     },
  *     denormalizationContext={
- *         "groups" = {"LocationCheckIn:input"}
+ *         "groups" = {"Checkin:input"}
  *     }
  * )
  */
-class LocationGuestCheckInAction
+class GuestCheckInAction
 {
     /**
-     * @Groups({"LocationCheckIn:output"})
+     * @Groups({"Checkin:output"})
      * @ApiProperty(identifier=true, iri="http://schema.org/identifier")
      * Note: Every entity needs an identifier!
      */
@@ -86,7 +86,7 @@ class LocationGuestCheckInAction
 
     /**
      * @ApiProperty(iri="http://schema.org/Person")
-     * @Groups({"LocationCheckIn:output"})
+     * @Groups({"Checkin:output"})
      *
      * @var Person
      */
@@ -94,16 +94,16 @@ class LocationGuestCheckInAction
 
     /**
      * @ApiProperty(iri="http://schema.org/location")
-     * @Groups({"LocationCheckIn:output", "LocationCheckIn:input"})
+     * @Groups({"Checkin:output", "Checkin:input"})
      * @Assert\NotBlank
      *
-     * @var CheckInPlace
+     * @var Place
      */
     private $location;
 
     /**
      * @ApiProperty(iri="http://schema.org/seatNumber")
-     * @Groups({"LocationCheckIn:output", "LocationCheckIn:input"})
+     * @Groups({"Checkin:output", "Checkin:input"})
      *
      * @var ?int
      */
@@ -111,7 +111,7 @@ class LocationGuestCheckInAction
 
     /**
      * @ApiProperty(iri="https://schema.org/startTime")
-     * @Groups({"LocationCheckIn:output"})
+     * @Groups({"Checkin:output"})
      *
      * @var \DateTime
      */
@@ -119,7 +119,7 @@ class LocationGuestCheckInAction
 
     /**
      * @ApiProperty(iri="https://schema.org/endTime")
-     * @Groups({"LocationCheckIn:output", "LocationCheckIn:input"})
+     * @Groups({"Checkin:output", "Checkin:input"})
      * @Assert\Type("\DateTimeInterface")
      * @Assert\NotBlank
      *
@@ -129,7 +129,7 @@ class LocationGuestCheckInAction
 
     /**
      * @ApiProperty(iri="http://schema.org/email")
-     * @Groups({"LocationCheckIn:output", "LocationCheckIn:input"})
+     * @Groups({"Checkin:output", "Checkin:input"})
      * @Assert\Email
      * @Assert\NotBlank
      *
@@ -161,12 +161,12 @@ class LocationGuestCheckInAction
         return $this;
     }
 
-    public function getLocation(): CheckInPlace
+    public function getLocation(): Place
     {
         return $this->location;
     }
 
-    public function setLocation(CheckInPlace $location): self
+    public function setLocation(Place $location): self
     {
         $this->location = $location;
 

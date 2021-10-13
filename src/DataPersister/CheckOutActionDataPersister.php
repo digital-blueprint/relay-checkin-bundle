@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace DBP\API\LocationCheckInBundle\DataPersister;
+namespace Dbp\Relay\CheckinBundle\DataPersister;
 
 use ApiPlatform\Core\DataPersister\DataPersisterInterface;
-use DBP\API\LocationCheckInBundle\Entity\LocationCheckOutAction;
-use DBP\API\LocationCheckInBundle\Exceptions\ItemNotStoredException;
-use DBP\API\LocationCheckInBundle\Service\LocationCheckInApi;
+use Dbp\Relay\CheckinBundle\Entity\CheckOutAction;
+use Dbp\Relay\CheckinBundle\Exceptions\ItemNotStoredException;
+use Dbp\Relay\CheckinBundle\Service\CheckinApi;
 use Dbp\Relay\BaseBundle\API\PersonProviderInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
-final class LocationCheckOutActionDataPersister extends AbstractController implements DataPersisterInterface
+final class CheckOutActionDataPersister extends AbstractController implements DataPersisterInterface
 {
     private $api;
 
@@ -20,7 +20,7 @@ final class LocationCheckOutActionDataPersister extends AbstractController imple
      */
     private $personProvider;
 
-    public function __construct(LocationCheckInApi $api, PersonProviderInterface $personProvider)
+    public function __construct(CheckinApi $api, PersonProviderInterface $personProvider)
     {
         $this->api = $api;
         $this->personProvider = $personProvider;
@@ -28,13 +28,13 @@ final class LocationCheckOutActionDataPersister extends AbstractController imple
 
     public function supports($data): bool
     {
-        return $data instanceof LocationCheckOutAction;
+        return $data instanceof CheckOutAction;
     }
 
     /**
-     * @param LocationCheckOutAction $data
+     * @param CheckOutAction $data
      *
-     * @return LocationCheckOutAction
+     * @return CheckOutAction
      */
     public function persist($data)
     {
@@ -72,15 +72,15 @@ final class LocationCheckOutActionDataPersister extends AbstractController imple
             )
         );
         try {
-            $existingCheckIns = $this->api->fetchLocationCheckInActionsOfCurrentPerson(
+            $existingCheckins = $this->api->fetchCheckInActionsOfCurrentPerson(
                 $location->getIdentifier(),
                 $locationCheckOutAction->getSeatNumber());
 
-            if (count($existingCheckIns) === 0) {
+            if (count($existingCheckins) === 0) {
                 throw new ItemNotStoredException('There are no check-ins at the location with provided seat for the current user!');
             }
 
-            $this->api->sendCampusQRCheckOutRequestForLocationCheckOutAction($locationCheckOutAction);
+            $this->api->sendCampusQRCheckOutRequestForCheckOutAction($locationCheckOutAction);
         } finally {
             $lock->release();
         }
@@ -89,7 +89,7 @@ final class LocationCheckOutActionDataPersister extends AbstractController imple
     }
 
     /**
-     * @param LocationCheckOutAction $data
+     * @param CheckOutAction $data
      */
     public function remove($data)
     {

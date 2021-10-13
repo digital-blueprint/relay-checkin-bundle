@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace DBP\API\LocationCheckInBundle\Service;
+namespace Dbp\Relay\CheckinBundle\Service;
 
 use League\Uri\Contracts\UriException;
 use League\Uri\UriTemplate;
 
-class LocationCheckInUrlApi
+class CheckinUrlApi
 {
     /**
      * @param string $campusQRUrl
@@ -44,8 +44,8 @@ class LocationCheckInUrlApi
     {
         $uriTemplate = new UriTemplate(
             $seatNumber === null ?
-                '/location/{location}/guestCheckInBy' :
-                '/location/{location}-{seatNumber}/guestCheckInBy');
+                '/location/{location}/guestCheckinBy' :
+                '/location/{location}-{seatNumber}/guestCheckinBy');
 
         return $campusQRUrl.$uriTemplate->expand([
             'location' => $location,
@@ -96,9 +96,9 @@ class LocationCheckInUrlApi
      *
      * @throws UriException
      */
-    public function getLocationCheckInActionListOfCurrentPersonRequestUrl(string $campusQRUrl): string
+    public function getCheckInActionListOfCurrentPersonRequestUrl(string $campusQRUrl): string
     {
-        $uriTemplate = new UriTemplate('/report/listActiveCheckIns');
+        $uriTemplate = new UriTemplate('/report/listActiveCheckins');
 
         return $campusQRUrl.$uriTemplate->expand();
     }

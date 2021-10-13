@@ -1,19 +1,19 @@
 services:
-  DBP\API\LocationCheckInBundle\Service\LocationCheckInApi:
+  Dbp\Relay\CheckinBundle\Service\CheckinApi:
     public: false
     autowire: true
 
-  DBP\API\LocationCheckInBundle\DataPersister\:
+  Dbp\Relay\CheckinBundle\DataPersister\:
     resource: '../../DataPersister'
     autowire: true
     autoconfigure: true
 
-  DBP\API\LocationCheckInBundle\DataProvider\:
+  Dbp\Relay\CheckinBundle\DataProvider\:
     resource: '../../DataProvider'
     autowire: true
     autoconfigure: true
 
-  DBP\API\LocationCheckInBundle\MessageHandler\LocationGuestCheckOutHandler:
+  Dbp\Relay\CheckinBundle\MessageHandler\GuestCheckOutHandler:
     public: false
     autowire: true
     autoconfigure: true

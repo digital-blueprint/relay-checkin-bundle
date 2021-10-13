@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace DBP\API\LocationCheckInBundle\Entity;
+namespace Dbp\Relay\CheckinBundle\Entity;
 
 use ApiPlatform\Core\Annotation\ApiProperty;
 use ApiPlatform\Core\Annotation\ApiResource;
@@ -19,23 +19,23 @@ use Symfony\Component\Validator\Constraints as Assert;
  *     },
  *     collectionOperations={
  *         "get" = {
- *             "path" = "/location_check_out_actions",
+ *             "path" = "/checkin/check_out_actions",
  *             "security" = "is_granted('IS_AUTHENTICATED_FULLY')",
  *             "openapi_context" = {
- *                 "tags" = {"LocationCheckIn"},
+ *                 "tags" = {"Checkin"},
  *             },
  *         },
  *         "post" = {
- *             "path" = "/location_check_out_actions",
+ *             "path" = "/checkin/check_out_actions",
  *             "security" = "is_granted('IS_AUTHENTICATED_FULLY')",
  *             "method" = "POST",
  *             "openapi_context" = {
- *                 "tags" = {"LocationCheckIn"},
+ *                 "tags" = {"Checkin"},
  *                 "requestBody" = {
  *                     "content" = {
  *                         "application/json" = {
  *                             "schema" = {"type" = "object"},
- *                             "example" = {"location" = "/check_in_places/f0ad66aaaf1debabb44a", "seatNumber" = 17}
+ *                             "example" = {"location" = "/checkin/places/f0ad66aaaf1debabb44a", "seatNumber" = 17}
  *                         }
  *                     }
  *                 }
@@ -44,10 +44,10 @@ use Symfony\Component\Validator\Constraints as Assert;
  *     },
  *     itemOperations={
  *         "get" = {
- *             "path" = "/location_check_out_actions/{identifier}",
+ *             "path" = "/checkin/check_out_actions/{identifier}",
  *             "security" = "is_granted('IS_AUTHENTICATED_FULLY')",
  *             "openapi_context" = {
- *                 "tags" = {"LocationCheckIn"},
+ *                 "tags" = {"Checkin"},
  *             },
  *         }
  *     },
@@ -55,17 +55,17 @@ use Symfony\Component\Validator\Constraints as Assert;
  *     description="Location check-out action",
  *     normalizationContext={
  *         "jsonld_embed_context" = true,
- *         "groups" = {"LocationCheckOut:output", "CheckInPlace:output"}
+ *         "groups" = {"CheckOut:output", "Place:output"}
  *     },
  *     denormalizationContext={
- *         "groups" = {"LocationCheckOut:input"}
+ *         "groups" = {"CheckOut:input"}
  *     }
  * )
  */
-class LocationCheckOutAction
+class CheckOutAction
 {
     /**
-     * @Groups({"LocationCheckOut:output"})
+     * @Groups({"CheckOut:output"})
      * @ApiProperty(identifier=true, iri="http://schema.org/identifier")
      * Note: Every entity needs an identifier!
      */
@@ -73,7 +73,7 @@ class LocationCheckOutAction
 
     /**
      * @ApiProperty(iri="http://schema.org/Person")
-     * @Groups({"LocationCheckOut:output"})
+     * @Groups({"CheckOut:output"})
      *
      * @var Person
      */
@@ -81,16 +81,16 @@ class LocationCheckOutAction
 
     /**
      * @ApiProperty(iri="http://schema.org/location")
-     * @Groups({"LocationCheckOut:output", "LocationCheckOut:input"})
+     * @Groups({"CheckOut:output", "CheckOut:input"})
      * @Assert\NotBlank
      *
-     * @var CheckInPlace
+     * @var Place
      */
     private $location;
 
     /**
      * @ApiProperty(iri="http://schema.org/seatNumber")
-     * @Groups({"LocationCheckOut:output", "LocationCheckOut:input"})
+     * @Groups({"CheckOut:output", "CheckOut:input"})
      *
      * @var ?int
      */
@@ -120,12 +120,12 @@ class LocationCheckOutAction
         return $this;
     }
 
-    public function getLocation(): CheckInPlace
+    public function getLocation(): Place
     {
         return $this->location;
     }
 
-    public function setLocation(CheckInPlace $location): self
+    public function setLocation(Place $location): self
     {
         $this->location = $location;
 
