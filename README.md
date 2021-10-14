@@ -1,45 +1,49 @@
-# Relay Checkin Bundle
+# DbpRelayCheckinBundle
 
-This Symfony bundle provides API endpoints for
+[GitLab](https://gitlab.tugraz.at/dbp/check-in/dbp-relay-checkin-bundle) | [Packagist](https://packagist.org/packages/dbp/relay-checkin-bundle)
 
-- TBD
+This bundle handles check-ins to places and contact tracing for warning about COVID-19 cases.
 
-for the API-Gateway.
+You will need to install and set up the Digital Blueprint fork of [CampusQR](https://gitlab.tugraz.at/dbp/check-in/campus-qr),
+the open source system for contact tracing at universities.
 
-## Prerequisites
+## Bundle installation
 
-- API Gateway with openAPI/Swagger
+You can install the bundle directly from [packagist.org](https://packagist.org/packages/dbp/relay-checkin-bundle).
 
-## Installation
+```bash
+composer require dbp/relay-checkin-bundle
+```
 
-### Step 1
+## Integration into the API Server
 
-Copy this bundle to `./bundles/relay-checkin-bundle`
-
-### Step 2
-
-Enable this bundle in `./config/bundles.php` by adding this element to the array returned:
+* Add the bundle to your `config/bundles.php`:
 
 ```php
 ...
-    return [
-        ...
-        Dbp\Relay\CheckinBundle\DbpRelayCheckinBundle::class => ['all' => true],
-    ];
-}
+Dbp\Relay\CheckinBundle\DbpRelayCheckinBundle::class => ['all' => true],
+Dbp\Relay\CoreBundle\DbpRelayCoreBundle::class => ['all' => true],
+];
 ```
 
-### Step 3
+* Run `composer install` to clear caches
 
-Add this bundle to `./symfony.lock`:
+## Configuration
 
-```json
-...
-    "dbp/relay-checkin-bundle": {
-        "version": "dev-master"
-    },
-...
+The bundle has a `campus_qr_url` and a `campus_qr_token` configuration value that you can specify in your
+app, either by hardcoding it, or by referencing an environment variable.
+
+For this create `config/packages/dbp_relay_checkin.yaml` in the app with the following content:
+
+```yaml
+dbp_relay_checkin:
+  campus_qr_url: 'https://campusqr.your.domain'
+  # campus_qr_url: '%env(CAMPUS_QR_URL)%'
+  campus_qr_token: 'secret token'
+  # campus_qr_token: '%env(CAMPUS_QR_TOKEN)%'
 ```
+
+For more info on bundle configuration see <https://symfony.com/doc/current/bundles/configuration.html>.
 
 ## Roles
 
