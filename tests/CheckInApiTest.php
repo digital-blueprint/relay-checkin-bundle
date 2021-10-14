@@ -27,7 +27,7 @@ class CheckinApiTest extends WebTestCase
     private $api;
 
     private const placesResponse = '[{"id":"testLocation","name":"Test Location","checkInCount":50,"accessType":"FREE","seatCount":null},{"id":"f0ad66aaaf1debabb44a","name":"Brockmanngasse 84 Coworkingspace","checkInCount":280,"accessType":"FREE","seatCount":70}]';
-    private const listActiveCheckinsResponse = '[{"id":"280ceccd269f5527603c3acbfc416dbb","locationId":"f0ad66aaaf1debabb44a","locationName":"Brockmanngasse 84 Coworkingspace","seat":17,"checkInDate":1.602763809372E12,"email":"test@test.com"}]';
+    private const listActiveCheckInsResponse = '[{"id":"280ceccd269f5527603c3acbfc416dbb","locationId":"f0ad66aaaf1debabb44a","locationName":"Brockmanngasse 84 Coworkingspace","seat":17,"checkInDate":1.602763809372E12,"email":"test@test.com"}]';
 
     protected function setUp(): void
     {
@@ -179,7 +179,7 @@ class CheckinApiTest extends WebTestCase
     public function testFetchCheckInActionsOfCurrentPerson()
     {
         $this->mockResponses([
-            new Response(200, [], self::listActiveCheckinsResponse),
+            new Response(200, [], self::listActiveCheckInsResponse),
             new Response(200, [], 180), // for CheckinApi::fetchMaxCheckinEndTime
         ]);
 
@@ -195,7 +195,7 @@ class CheckinApiTest extends WebTestCase
     public function testFetchCheckInActionsOfCurrentPersonWithLocation()
     {
         $this->mockResponses([
-            new Response(200, [], self::listActiveCheckinsResponse),
+            new Response(200, [], self::listActiveCheckInsResponse),
             new Response(200, [], 180),
         ]);
 
@@ -211,7 +211,7 @@ class CheckinApiTest extends WebTestCase
     public function testFetchCheckInActionsOfCurrentPersonWithLocationNotFound()
     {
         $this->mockResponses([
-            new Response(200, [], self::listActiveCheckinsResponse),
+            new Response(200, [], self::listActiveCheckInsResponse),
         ]);
 
         $result = $this->api->fetchCheckInActionsOfCurrentPerson('wrong');
@@ -223,7 +223,7 @@ class CheckinApiTest extends WebTestCase
     public function testFetchCheckInActionsOfCurrentPersonWithLocationAndSeat()
     {
         $this->mockResponses([
-            new Response(200, [], self::listActiveCheckinsResponse),
+            new Response(200, [], self::listActiveCheckInsResponse),
             new Response(200, [], 180),
         ]);
 
@@ -239,7 +239,7 @@ class CheckinApiTest extends WebTestCase
     public function testFetchCheckInActionsOfCurrentPersonWithLocationAndSeatNotFound()
     {
         $this->mockResponses([
-            new Response(200, [], self::listActiveCheckinsResponse),
+            new Response(200, [], self::listActiveCheckInsResponse),
             new Response(200, [], 180),
         ]);
 

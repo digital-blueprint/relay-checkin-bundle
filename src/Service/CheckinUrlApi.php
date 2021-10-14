@@ -44,8 +44,8 @@ class CheckinUrlApi
     {
         $uriTemplate = new UriTemplate(
             $seatNumber === null ?
-                '/location/{location}/guestCheckinBy' :
-                '/location/{location}-{seatNumber}/guestCheckinBy');
+                '/location/{location}/guestCheckInBy' :
+                '/location/{location}-{seatNumber}/guestCheckInBy');
 
         return $campusQRUrl.$uriTemplate->expand([
             'location' => $location,
@@ -98,7 +98,7 @@ class CheckinUrlApi
      */
     public function getCheckInActionListOfCurrentPersonRequestUrl(string $campusQRUrl): string
     {
-        $uriTemplate = new UriTemplate('/report/listActiveCheckins');
+        $uriTemplate = new UriTemplate('/report/listActiveCheckIns');
 
         return $campusQRUrl.$uriTemplate->expand();
     }
