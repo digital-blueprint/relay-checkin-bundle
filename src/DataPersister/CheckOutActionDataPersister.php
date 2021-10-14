@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace Dbp\Relay\CheckinBundle\DataPersister;
 
 use ApiPlatform\Core\DataPersister\DataPersisterInterface;
+use Dbp\Relay\BaseBundle\API\PersonProviderInterface;
 use Dbp\Relay\CheckinBundle\Entity\CheckOutAction;
 use Dbp\Relay\CheckinBundle\Exceptions\ItemNotStoredException;
 use Dbp\Relay\CheckinBundle\Service\CheckinApi;
-use Dbp\Relay\BaseBundle\API\PersonProviderInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 final class CheckOutActionDataPersister extends AbstractController implements DataPersisterInterface

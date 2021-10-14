@@ -7,16 +7,16 @@ declare(strict_types=1);
 
 namespace Dbp\Relay\CheckinBundle\Service;
 
-use Dbp\Relay\CheckinBundle\Entity\Place;
+use Dbp\Relay\BaseBundle\API\PersonProviderInterface;
 use Dbp\Relay\CheckinBundle\Entity\CheckInAction;
 use Dbp\Relay\CheckinBundle\Entity\CheckOutAction;
 use Dbp\Relay\CheckinBundle\Entity\GuestCheckInAction;
+use Dbp\Relay\CheckinBundle\Entity\Place;
 use Dbp\Relay\CheckinBundle\Exceptions\ItemNotLoadedException;
 use Dbp\Relay\CheckinBundle\Exceptions\ItemNotStoredException;
 use Dbp\Relay\CheckinBundle\Exceptions\ItemNotUsableException;
 use Dbp\Relay\CheckinBundle\Helpers\Tools;
 use Dbp\Relay\CheckinBundle\Message\GuestCheckOutMessage;
-use Dbp\Relay\BaseBundle\API\PersonProviderInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;

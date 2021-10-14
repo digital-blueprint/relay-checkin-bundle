@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Dbp\Relay\CheckinBundle\Tests;
 
-use Dbp\Relay\CheckinBundle\Entity\Place;
-use Dbp\Relay\CheckinBundle\Entity\CheckInAction;
-use Dbp\Relay\CheckinBundle\Entity\CheckOutAction;
-use Dbp\Relay\CheckinBundle\Service\CheckinApi;
 use Dbp\Relay\BaseBundle\Entity\Person;
 use Dbp\Relay\BaseBundle\TestUtils\DummyPersonProvider;
+use Dbp\Relay\CheckinBundle\Entity\CheckInAction;
+use Dbp\Relay\CheckinBundle\Entity\CheckOutAction;
+use Dbp\Relay\CheckinBundle\Entity\Place;
+use Dbp\Relay\CheckinBundle\Service\CheckinApi;
 use Doctrine\Common\Collections\ArrayCollection;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
