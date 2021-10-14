@@ -15,7 +15,7 @@
     <server name="SYMFONY_PHPUNIT_VERSION" value="9"/>
     <server name="SYMFONY_DEPRECATIONS_HELPER" value="weak"/>
     <server name="LOCK_DSN" value="flock"/>
-    <server name="KERNEL_CLASS" value="DBP\API\LocationCheckInBundle\Tests\Kernel"/>
+    <server name="KERNEL_CLASS" value="Dbp\Relay\CheckinBundle\Tests\Kernel"/>
   </php>
   <testsuites>
     <testsuite name="Project Test Suite">

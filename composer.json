@@ -1,5 +1,5 @@
 {
-    "name": "dbp/api-location-check-in-bundle",
+    "name": "dbp/relay-checkin-bundle",
     "type": "symfony-bundle",
     "license": "AGPL-3.0-or-later",
     "require": {
@@ -36,12 +36,12 @@
     ],
     "autoload": {
         "psr-4": {
-            "DBP\\API\\LocationCheckInBundle\\": "src/"
+            "Dbp\\Relay\\CheckinBundle\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "DBP\\API\\LocationCheckInBundle\\Tests\\": "tests/"
+            "Dbp\\Relay\\CheckinBundle\\Tests\\": "tests/"
         }
     },
     "config": {

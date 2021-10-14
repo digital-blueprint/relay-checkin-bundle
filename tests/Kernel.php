@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace DBP\API\LocationCheckInBundle\Tests;
+namespace Dbp\Relay\CheckinBundle\Tests;
 
 use ApiPlatform\Core\Bridge\Symfony\Bundle\ApiPlatformBundle;
-use DBP\API\LocationCheckInBundle\DbpLocationCheckInBundle;
 use Dbp\Relay\BaseBundle\DbpRelayBaseBundle;
+use Dbp\Relay\CheckinBundle\DbpRelayCheckinBundle;
 use Dbp\Relay\CoreBundle\DbpRelayCoreBundle;
 use Nelmio\CorsBundle\NelmioCorsBundle;
 use Symfony\Bundle\FrameworkBundle\FrameworkBundle;
@@ -32,7 +32,7 @@ class Kernel extends BaseKernel
         yield new ApiPlatformBundle();
         yield new DbpRelayBaseBundle();
         yield new DbpRelayCoreBundle();
-        yield new DbpLocationCheckInBundle();
+        yield new DbpRelayCheckinBundle();
     }
 
     protected function configureRoutes(RoutingConfigurator $routes)

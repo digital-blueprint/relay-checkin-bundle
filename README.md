@@ -1,6 +1,6 @@
-# api-location-check-in-bundle
+# Relay Checkin Bundle
 
-This Symfony 4.4 bundle provides API endpoints for
+This Symfony bundle provides API endpoints for
 
 - TBD
 
@@ -14,7 +14,7 @@ for the API-Gateway.
 
 ### Step 1
 
-Copy this bundle to `./bundles/api-location-check-in-bundle`
+Copy this bundle to `./bundles/relay-checkin-bundle`
 
 ### Step 2
 
@@ -24,7 +24,7 @@ Enable this bundle in `./config/bundles.php` by adding this element to the array
 ...
     return [
         ...
-        DBP\API\LocationCheckInBundle\DbpLocationCheckInBundle::class => ['all' => true],
+        Dbp\Relay\CheckinBundle\DbpRelayCheckinBundle::class => ['all' => true],
     ];
 }
 ```
@@ -35,7 +35,7 @@ Add this bundle to `./symfony.lock`:
 
 ```json
 ...
-    "dbp/api-location-check-in-bundle": {
+    "dbp/relay-checkin-bundle": {
         "version": "dev-master"
     },
 ...

@@ -2,21 +2,21 @@
 
 declare(strict_types=1);
 
-namespace DBP\API\LocationCheckInBundle\Tests;
+namespace Dbp\Relay\CheckinBundle\Tests;
 
-use DBP\API\LocationCheckInBundle\Service\LocationCheckInUrlApi;
+use Dbp\Relay\CheckinBundle\Service\CheckinUrlApi;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
-class LocationCheckInApiUrlTest extends WebTestCase
+class CheckinApiUrlTest extends WebTestCase
 {
-    /* @var LocationCheckInUrlApi */
+    /* @var CheckinUrlApi */
     private $urls;
 
     private $campusQRUrl;
 
     protected function setUp(): void
     {
-        $this->urls = new LocationCheckInUrlApi();
+        $this->urls = new CheckinUrlApi();
         $this->campusQRUrl = 'http://test';
     }
 
@@ -45,9 +45,9 @@ class LocationCheckInApiUrlTest extends WebTestCase
         $this->assertEquals($this->campusQRUrl.'/location/list', $this->urls->getLocationListRequestUrl($this->campusQRUrl));
     }
 
-    public function testGetLocationCheckInActionListOfCurrentPersonRequestUrl()
+    public function testGetCheckInActionListOfCurrentPersonRequestUrl()
     {
-        $this->assertEquals($this->campusQRUrl.'/report/listActiveCheckIns', $this->urls->getLocationCheckInActionListOfCurrentPersonRequestUrl($this->campusQRUrl));
+        $this->assertEquals($this->campusQRUrl.'/report/listActiveCheckIns', $this->urls->getCheckInActionListOfCurrentPersonRequestUrl($this->campusQRUrl));
     }
 
     public function testGetConfigUrl()

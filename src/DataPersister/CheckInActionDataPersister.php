@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace DBP\API\LocationCheckInBundle\DataPersister;
+namespace Dbp\Relay\CheckinBundle\DataPersister;
 
 use ApiPlatform\Core\DataPersister\DataPersisterInterface;
-use DBP\API\LocationCheckInBundle\Entity\LocationCheckInAction;
-use DBP\API\LocationCheckInBundle\Exceptions\ItemNotStoredException;
-use DBP\API\LocationCheckInBundle\Service\LocationCheckInApi;
 use Dbp\Relay\BaseBundle\API\PersonProviderInterface;
+use Dbp\Relay\CheckinBundle\Entity\CheckInAction;
+use Dbp\Relay\CheckinBundle\Exceptions\ItemNotStoredException;
+use Dbp\Relay\CheckinBundle\Service\CheckinApi;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
-final class LocationCheckInActionDataPersister extends AbstractController implements DataPersisterInterface
+final class CheckInActionDataPersister extends AbstractController implements DataPersisterInterface
 {
     private $api;
 
@@ -20,7 +20,7 @@ final class LocationCheckInActionDataPersister extends AbstractController implem
      */
     private $personProvider;
 
-    public function __construct(LocationCheckInApi $api, PersonProviderInterface $personProvider)
+    public function __construct(CheckinApi $api, PersonProviderInterface $personProvider)
     {
         $this->api = $api;
         $this->personProvider = $personProvider;
@@ -28,13 +28,13 @@ final class LocationCheckInActionDataPersister extends AbstractController implem
 
     public function supports($data): bool
     {
-        return $data instanceof LocationCheckInAction;
+        return $data instanceof CheckInAction;
     }
 
     /**
-     * @param LocationCheckInAction $data
+     * @param CheckInAction $data
      *
-     * @return LocationCheckInAction
+     * @return CheckInAction
      */
     public function persist($data)
     {
@@ -46,7 +46,7 @@ final class LocationCheckInActionDataPersister extends AbstractController implem
         $location = $locationCheckInAction->getLocation();
         $locationCheckInAction->setIdentifier(md5($location->getIdentifier().rand(0, 10000).time()));
         $locationCheckInAction->setStartTime(new \DateTime());
-        $locationCheckInAction->setEndTime($this->api->fetchMaxCheckInEndTime());
+        $locationCheckInAction->setEndTime($this->api->fetchMaxCheckinEndTime());
         $locationCheckInAction->setAgent($person);
 
         $this->api->seatCheck($location, $locationCheckInAction->getSeatNumber());
@@ -64,11 +64,11 @@ final class LocationCheckInActionDataPersister extends AbstractController implem
         );
 
         try {
-            $existingCheckIns = $this->api->fetchLocationCheckInActionsOfCurrentPerson(
+            $existingCheckins = $this->api->fetchCheckInActionsOfCurrentPerson(
                 $location->getIdentifier(),
                 $locationCheckInAction->getSeatNumber());
 
-            if (count($existingCheckIns) > 0) {
+            if (count($existingCheckins) > 0) {
                 throw new ItemNotStoredException('There are already check-ins at the location with provided seat for the current user!');
             }
 
@@ -81,7 +81,7 @@ final class LocationCheckInActionDataPersister extends AbstractController implem
     }
 
     /**
-     * @param LocationCheckInAction $data
+     * @param CheckInAction $data
      */
     public function remove($data)
     {

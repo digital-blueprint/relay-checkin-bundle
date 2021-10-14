@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace DBP\API\LocationCheckInBundle\Message;
+namespace Dbp\Relay\CheckinBundle\Message;
 
-use DBP\API\LocationCheckInBundle\Entity\CheckInPlace;
+use Dbp\Relay\CheckinBundle\Entity\Place;
 
-class LocationGuestCheckOutMessage
+class GuestCheckOutMessage
 {
     /**
      * @var string
@@ -14,7 +14,7 @@ class LocationGuestCheckOutMessage
     private $email;
 
     /**
-     * @var CheckInPlace
+     * @var Place
      */
     private $location;
 
@@ -24,15 +24,15 @@ class LocationGuestCheckOutMessage
     private $seatNumber;
 
     /**
-     * LocationGuestCheckOutMessage constructor.
+     * GuestCheckOutMessage constructor.
      *
      * @param string $email
-     * @param CheckInPlace $location
+     * @param Place $location
      * @param ?int $seatNumber
      */
     public function __construct(
         string $email,
-        CheckInPlace $location,
+        Place $location,
         ?int $seatNumber
     ) {
         $this->email = $email;
@@ -45,7 +45,7 @@ class LocationGuestCheckOutMessage
         return $this->email;
     }
 
-    public function getLocation(): CheckInPlace
+    public function getLocation(): Place
     {
         return $this->location;
     }
