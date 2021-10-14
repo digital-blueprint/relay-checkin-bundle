@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace DBP\API\LocationCheckInBundle\Entity;
+namespace Dbp\Relay\CheckinBundle\Entity;
 
 use ApiPlatform\Core\Annotation\ApiProperty;
 use ApiPlatform\Core\Annotation\ApiResource;
@@ -17,10 +17,10 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *     },
  *     collectionOperations={
  *         "get" = {
- *             "path" = "/check_in_places",
+ *             "path" = "/checkin/places",
  *             "security" = "is_granted('IS_AUTHENTICATED_FULLY')",
  *             "openapi_context" = {
- *                 "tags" = {"LocationCheckIn"},
+ *                 "tags" = {"Checkin"},
  *                 "parameters" = {
  *                     {"name" = "search", "in" = "query", "description" = "Search for a place name", "type" = "string", "example" = "Coworkingspace"}
  *                 }
@@ -29,10 +29,10 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *     },
  *     itemOperations={
  *         "get" = {
- *             "path" = "/check_in_places/{identifier}",
+ *             "path" = "/checkin/places/{identifier}",
  *             "security" = "is_granted('IS_AUTHENTICATED_FULLY')",
  *             "openapi_context" = {
- *                 "tags" = {"LocationCheckIn"},
+ *                 "tags" = {"Checkin"},
  *             },
  *         }
  *     },
@@ -40,17 +40,17 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *     description="Check-in place",
  *     normalizationContext={
  *         "jsonld_embed_context" = true,
- *         "groups" = {"CheckInPlace:output", "LocationCheckIn:outputList"}
+ *         "groups" = {"Place:output", "Checkin:outputList"}
  *     },
  *     denormalizationContext={
- *         "groups" = {"CheckInPlace:input"}
+ *         "groups" = {"Place:input"}
  *     }
  * )
  */
-class CheckInPlace
+class Place
 {
     /**
-     * @Groups({"CheckInPlace:output", "LocationCheckIn:outputList"})
+     * @Groups({"Place:output", "Checkin:outputList"})
      * @ApiProperty(identifier=true, iri="http://schema.org/identifier")
      * Note: Every entity needs an identifier!
      */
@@ -58,7 +58,7 @@ class CheckInPlace
 
     /**
      * @ApiProperty(iri="http://schema.org/name")
-     * @Groups({"CheckInPlace:output", "LocationCheckIn:outputList"})
+     * @Groups({"Place:output", "Checkin:outputList"})
      *
      * @var string
      */
@@ -66,7 +66,7 @@ class CheckInPlace
 
     /**
      * @ApiProperty(iri="http://schema.org/maximumPhysicalAttendeeCapacity")
-     * @Groups({"CheckInPlace:output"})
+     * @Groups({"Place:output"})
      *
      * @var ?int
      */

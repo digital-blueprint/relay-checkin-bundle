@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace DBP\API\LocationCheckInBundle\Exceptions;
+namespace Dbp\Relay\CheckinBundle\Exceptions;
 
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\HttpException;

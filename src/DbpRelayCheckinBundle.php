@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace DBP\API\LocationCheckInBundle;
+namespace Dbp\Relay\CheckinBundle;
 
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
-class DbpLocationCheckInBundle extends Bundle
+class DbpRelayCheckinBundle extends Bundle
 {
     public function build(ContainerBuilder $container)
     {
