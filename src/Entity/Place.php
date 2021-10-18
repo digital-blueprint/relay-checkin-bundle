@@ -37,6 +37,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *         }
  *     },
  *     iri="http://schema.org/Place",
+ *     shortName="CheckinPlace",
  *     description="Check-in place",
  *     normalizationContext={
  *         "jsonld_embed_context" = true,

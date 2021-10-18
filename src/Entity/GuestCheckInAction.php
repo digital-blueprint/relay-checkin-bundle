@@ -65,6 +65,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *         }
  *     },
  *     iri="http://schema.org/CheckInAction",
+ *     shortName="CheckinGuestCheckInAction",
  *     description="Location guest check-in action",
  *     normalizationContext={
  *         "jsonld_embed_context" = true,

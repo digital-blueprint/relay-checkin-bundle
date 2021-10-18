@@ -26,7 +26,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *             },
  *             "openapi_context" = {
  *                 "tags" = {"Checkin"},
- *                 "summary" = "Retrieves all CheckInActions of the current user.",
+ *                 "summary" = "Retrieves all CheckinCheckInActions of the current user.",
  *                 "parameters" = {
  *                     {
  *                         "name" = "location",
@@ -65,6 +65,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *         }
  *     },
  *     iri="http://schema.org/CheckInAction",
+ *     shortName="CheckinCheckInAction",
  *     description="Location check-in action",
  *     normalizationContext={
  *         "jsonld_embed_context" = true,

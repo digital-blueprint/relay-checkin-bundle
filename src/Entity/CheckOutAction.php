@@ -52,6 +52,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *         }
  *     },
  *     iri="http://schema.org/CheckOutAction",
+ *     shortName="CheckinCheckOutAction",
  *     description="Location check-out action",
  *     normalizationContext={
  *         "jsonld_embed_context" = true,
