@@ -43,7 +43,17 @@ dbp_relay_checkin:
   # campus_qr_token: '%env(CAMPUS_QR_TOKEN)%'
 ```
 
-You also need to set an environment variable `MESSENGER_TRANSPORT_DSN` in your `.env` file or by any other means.
+To handle locking you need to set an environment variable `LOCK_DSN` in your `.env` file or by any other means.
+The usual way would be to use [Redis](https://redis.io/) for locking.
+
+Example:
+
+```dotenv
+LOCK_DSN=redis://redis:6379/
+```
+
+You also need to set an environment variable `MESSENGER_TRANSPORT_DSN` that is used by the
+[Symfony Messenger](https://symfony.com/doc/current/components/messenger.html) in your `.env` file or by any other means.
 [Redis](https://redis.io/) is also the best way for this.
 
 Example:
@@ -51,6 +61,8 @@ Example:
 ```dotenv
 MESSENGER_TRANSPORT_DSN=redis://redis:6379/local-messages/symfony/consumer?auto_setup=true&serializer=1&stream_max_entries=0&dbindex=0
 ```
+
+The Symfony Messenger is used by the bundle to check out guests after a certain amount of time.
 
 For more info on bundle configuration see <https://symfony.com/doc/current/bundles/configuration.html>.
 
