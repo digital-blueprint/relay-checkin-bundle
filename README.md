@@ -15,7 +15,7 @@ You can install the bundle directly from [packagist.org](https://packagist.org/p
 composer require dbp/relay-checkin-bundle
 ```
 
-## Integration into the API Server
+## Integration into the Relay API Server
 
 * Add the bundle to your `config/bundles.php` in front of `DbpRelayCoreBundle`:
 
