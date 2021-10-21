@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Dbp\Relay\CheckinBundle\Tests;
 
-use Dbp\Relay\BaseBundle\Entity\Person;
-use Dbp\Relay\BaseBundle\TestUtils\DummyPersonProvider;
+use Dbp\Relay\BasePersonBundle\Entity\Person;
+use Dbp\Relay\BasePersonBundle\TestUtils\DummyPersonProvider;
 use Dbp\Relay\CheckinBundle\Entity\CheckInAction;
 use Dbp\Relay\CheckinBundle\Entity\CheckOutAction;
 use Dbp\Relay\CheckinBundle\Entity\Place;

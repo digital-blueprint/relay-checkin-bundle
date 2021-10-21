@@ -7,7 +7,7 @@ declare(strict_types=1);
 
 namespace Dbp\Relay\CheckinBundle\Service;
 
-use Dbp\Relay\BaseBundle\API\PersonProviderInterface;
+use Dbp\Relay\BasePersonBundle\API\PersonProviderInterface;
 use Dbp\Relay\CheckinBundle\Entity\CheckInAction;
 use Dbp\Relay\CheckinBundle\Entity\CheckOutAction;
 use Dbp\Relay\CheckinBundle\Entity\GuestCheckInAction;
