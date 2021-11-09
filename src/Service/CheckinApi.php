@@ -14,7 +14,6 @@ use Dbp\Relay\CheckinBundle\Entity\GuestCheckInAction;
 use Dbp\Relay\CheckinBundle\Entity\Place;
 use Dbp\Relay\CheckinBundle\Exceptions\ItemNotLoadedException;
 use Dbp\Relay\CheckinBundle\Exceptions\ItemNotStoredException;
-use Dbp\Relay\CheckinBundle\Exceptions\ItemNotUsableException;
 use Dbp\Relay\CheckinBundle\Helpers\Tools;
 use Dbp\Relay\CheckinBundle\Message\GuestCheckOutMessage;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -724,30 +723,14 @@ class CheckinApi implements LoggerAwareInterface
 
     /**
      * @param string $resource
-     * @param int $maxRetry retry this amount of times ever 100ms
      *
      * @return LockInterface
-     *
-     * @throws ItemNotUsableException
      */
-    public function acquireBlockingLock(string $resource, $maxRetry = 300): LockInterface
+    public function acquireBlockingLock(string $resource): LockInterface
     {
         $resourceKey = 'check-in-'.$resource;
         $lock = $this->lockFactory->createLock($resourceKey);
-        $counter = 0;
-
-        do {
-            // Redis can't have blocking locks, so we will simulate it
-            $gotLock = $lock->acquire();
-
-            if (!$gotLock) {
-                usleep(100000);
-            }
-        } while (!$gotLock && (++$counter <= $maxRetry));
-
-        if (!$gotLock) {
-            throw new ItemNotUsableException(sprintf('System was not able to get lock on ressource: %s', $resource));
-        }
+        $lock->acquire(true);
 
         return $lock;
     }
