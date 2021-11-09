@@ -62,18 +62,8 @@ final class GuestCheckInActionDataPersister extends AbstractController implement
             throw new ItemNotStoredException("The endDate can't be after ${maxCheckinEndTimeString}!");
         }
 
-        // We want to wait until we have checked if the guest already took the same seat
-        // This lock will be auto-released
-        // https://gitlab.tugraz.at/dbp/middleware/api/-/issues/64
-        $lock = $this->api->acquireBlockingLock(
-            sprintf(
-                'guest-check-in-%s-%s-%s',
-                $location->getIdentifier(),
-                $locationGuestCheckInAction->getSeatNumber(),
-                $locationGuestCheckInAction->getEmail()
-            )
-        );
-
+        $lock = $this->api->createLock($locationGuestCheckInAction->getEmail(), $location->getIdentifier(), $locationGuestCheckInAction->getSeatNumber());
+        $lock->acquire(true);
         try {
             // check if there are check-ins for with guest email
             $existingCheckins = $this->api->fetchCheckInActionsOfEmail(
@@ -85,6 +75,7 @@ final class GuestCheckInActionDataPersister extends AbstractController implement
                 throw new ItemNotStoredException('There are already check-ins at the location with provided seat for the email address!');
             }
 
+            $lock->refresh();
             // send the guest check-in request
             $this->api->sendCampusQRGuestCheckInRequest($locationGuestCheckInAction);
         } finally {

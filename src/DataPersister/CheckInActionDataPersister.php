@@ -51,18 +51,8 @@ final class CheckInActionDataPersister extends AbstractController implements Dat
 
         $this->api->seatCheck($location, $locationCheckInAction->getSeatNumber());
 
-        // We want to wait until we have checked if the current person already took the same seat
-        // This lock will be auto-released
-        // https://gitlab.tugraz.at/dbp/middleware/api/-/issues/64
-        $lock = $this->api->acquireBlockingLock(
-            sprintf(
-                'check-in-%s-%s-%s',
-                $location->getIdentifier(),
-                $locationCheckInAction->getSeatNumber(),
-                $person->getEmail()
-            )
-        );
-
+        $lock = $this->api->createLock($person->getEmail(), $location->getIdentifier(), $locationCheckInAction->getSeatNumber());
+        $lock->acquire(true);
         try {
             $existingCheckins = $this->api->fetchCheckInActionsOfCurrentPerson(
                 $location->getIdentifier(),
@@ -71,7 +61,7 @@ final class CheckInActionDataPersister extends AbstractController implements Dat
             if (count($existingCheckins) > 0) {
                 throw new ItemNotStoredException('There are already check-ins at the location with provided seat for the current user!');
             }
-
+            $lock->refresh();
             $this->api->sendCampusQRCheckInRequest($locationCheckInAction);
         } finally {
             $lock->release();

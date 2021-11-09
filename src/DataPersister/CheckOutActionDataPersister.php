@@ -60,17 +60,8 @@ final class CheckOutActionDataPersister extends AbstractController implements Da
             throw new ItemNotStoredException('seatNumber too low!');
         }
 
-        // We want to wait until we have checked if the current person really has taken the seat
-        // This lock will be auto-released
-        // https://gitlab.tugraz.at/dbp/middleware/api/-/issues/64
-        $lock = $this->api->acquireBlockingLock(
-            sprintf(
-                'check-out-%s-%s-%s',
-                $location->getIdentifier(),
-                $locationCheckOutAction->getSeatNumber(),
-                $person->getEmail()
-            )
-        );
+        $lock = $this->api->createLock($person->getEmail(), $location->getIdentifier(), $locationCheckOutAction->getSeatNumber());
+        $lock->acquire(true);
         try {
             $existingCheckins = $this->api->fetchCheckInActionsOfCurrentPerson(
                 $location->getIdentifier(),
@@ -79,7 +70,7 @@ final class CheckOutActionDataPersister extends AbstractController implements Da
             if (count($existingCheckins) === 0) {
                 throw new ItemNotStoredException('There are no check-ins at the location with provided seat for the current user!');
             }
-
+            $lock->refresh();
             $this->api->sendCampusQRCheckOutRequestForCheckOutAction($locationCheckOutAction);
         } finally {
             $lock->release();

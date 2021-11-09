@@ -17,6 +17,7 @@ use GuzzleHttp\Psr7\Response;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Lock\LockFactory;
+use Symfony\Component\Lock\Store\InMemoryStore;
 use Symfony\Component\Messenger\MessageBusInterface;
 
 class CheckinApiTest extends WebTestCase
@@ -40,11 +41,7 @@ class CheckinApiTest extends WebTestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        /** @var LockFactory $lockFactory */
-        $lockFactory = $this->getMockBuilder(LockFactory::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-
+        $lockFactory = new LockFactory(new InMemoryStore());
         $this->api = new CheckinApi($personProvider, $messageBus, $lockFactory);
         $this->api->setCampusQRUrl('http://dummy');
         $this->api->setCampusQRToken('dummy');
@@ -247,5 +244,18 @@ class CheckinApiTest extends WebTestCase
 
         $this->assertTrue($result instanceof ArrayCollection);
         $this->assertCount(0, $result);
+    }
+
+    public function testCreateLock()
+    {
+        $lock = $this->api->createLock('foo@example.com', 'id', null);
+        $this->assertFalse($lock->isAcquired());
+        $this->assertTrue($lock->acquire());
+        $lock->release();
+
+        $lock = $this->api->createLock('foo@example.com', 'id', 42);
+        $this->assertFalse($lock->isAcquired());
+        $this->assertTrue($lock->acquire());
+        $lock->release();
     }
 }

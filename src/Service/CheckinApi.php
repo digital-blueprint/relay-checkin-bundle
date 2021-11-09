@@ -722,16 +722,18 @@ class CheckinApi implements LoggerAwareInterface
     }
 
     /**
-     * @param string $resource
-     *
-     * @return LockInterface
+     * Create a lock for a specific location for an email address.
+     * Can be used to serialize non-atomic updates during a check-in/out action.
      */
-    public function acquireBlockingLock(string $resource): LockInterface
+    public function createLock(string $email, string $location, ?int $seatNumber): LockInterface
     {
-        $resourceKey = 'check-in-'.$resource;
-        $lock = $this->lockFactory->createLock($resourceKey);
-        $lock->acquire(true);
+        $resourceKey = sprintf(
+                'checkin-%s-%s-%s',
+                $location,
+                $seatNumber,
+                $email
+            );
 
-        return $lock;
+        return $this->lockFactory->createLock($resourceKey, 60, true);
     }
 }
