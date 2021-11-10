@@ -50,7 +50,7 @@ class GuestCheckOutMessage
         return $this->location;
     }
 
-    public function getSeatNumber(): int
+    public function getSeatNumber(): ?int
     {
         return $this->seatNumber;
     }
