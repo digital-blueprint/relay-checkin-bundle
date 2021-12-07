@@ -43,6 +43,9 @@ dbp_relay_checkin:
   # campus_qr_token: '%env(CAMPUS_QR_TOKEN)%'
 ```
 
+If you were using the [DBP API Server Template](https://gitlab.tugraz.at/dbp/relay/dbp-relay-server-template)
+as template for your Symfony application, then the configuration file should have already been generated for you.
+
 To handle locking you need to [configure locking in the core bundle](https://gitlab.tugraz.at/dbp/relay/dbp-relay-core-bundle#bundle-config). 
 
 You also need to [configure the Symfony Messenger in the core bundle](https://gitlab.tugraz.at/dbp/relay/dbp-relay-core-bundle#bundle-config) to check out guests after a certain amount of time.
