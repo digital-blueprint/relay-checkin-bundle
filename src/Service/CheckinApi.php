@@ -204,7 +204,7 @@ class CheckinApi implements LoggerAwareInterface
             }
 
             throw new ItemNotStoredException(sprintf('CheckInAction could not be stored: %s', Tools::filterErrorMessage($e->getMessage())));
-        } catch (\Exception | UriException $e) {
+        } catch (\Exception|UriException $e) {
             throw new ItemNotStoredException(sprintf('CheckInAction could not be stored: %s', Tools::filterErrorMessage($e->getMessage())));
         }
     }
@@ -252,7 +252,7 @@ class CheckinApi implements LoggerAwareInterface
             }
 
             throw new ItemNotStoredException(sprintf('GuestCheckInAction could not be stored: %s', Tools::filterErrorMessage($e->getMessage())));
-        } catch (\Exception | UriException $e) {
+        } catch (\Exception|UriException $e) {
             throw new ItemNotStoredException(sprintf('GuestCheckInAction could not be stored: %s', Tools::filterErrorMessage($e->getMessage())));
         }
     }
@@ -293,7 +293,7 @@ class CheckinApi implements LoggerAwareInterface
             }
 
             throw new ItemNotStoredException(sprintf('Check out was not be possible: %s', Tools::filterErrorMessage($e->getMessage())));
-        } catch (\Exception | UriException $e) {
+        } catch (\Exception|UriException $e) {
             throw new ItemNotStoredException(sprintf('Check out was not be possible: %s', Tools::filterErrorMessage($e->getMessage())));
         }
     }
@@ -404,7 +404,7 @@ class CheckinApi implements LoggerAwareInterface
             }
 
             throw new ItemNotLoadedException(sprintf('Places could not be loaded: %s', Tools::filterErrorMessage($e->getMessage())));
-        } catch (\Exception | UriException $e) {
+        } catch (\Exception|UriException $e) {
             throw new ItemNotLoadedException(sprintf('Places could not be loaded: %s', Tools::filterErrorMessage($e->getMessage())));
         }
     }
@@ -523,7 +523,7 @@ class CheckinApi implements LoggerAwareInterface
             }
 
             throw new ItemNotLoadedException(sprintf('CheckInActions could not be loaded: %s', Tools::filterErrorMessage($e->getMessage())));
-        } catch (\Exception | UriException $e) {
+        } catch (\Exception|UriException $e) {
             throw new ItemNotLoadedException(sprintf('CheckInActions could not be loaded: %s', Tools::filterErrorMessage($e->getMessage())));
         }
     }
@@ -638,7 +638,7 @@ class CheckinApi implements LoggerAwareInterface
             }
 
             throw new ItemNotLoadedException(sprintf('Config could not be loaded: %s', Tools::filterErrorMessage($e->getMessage())));
-        } catch (\Exception | UriException $e) {
+        } catch (\Exception|UriException $e) {
             throw new ItemNotLoadedException(sprintf('Config could not be loaded: %s', Tools::filterErrorMessage($e->getMessage())));
         }
     }
@@ -665,6 +665,7 @@ class CheckinApi implements LoggerAwareInterface
         $autoCheckOutMinutes = $this->autoCheckOutMinutes;
 
         $newData = $startDate->add(new \DateInterval("PT${autoCheckOutMinutes}M"));
+
         return $newData;
     }
 
