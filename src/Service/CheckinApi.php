@@ -549,7 +549,7 @@ class CheckinApi implements LoggerAwareInterface
         $checkInPlace->setName($jsonData['locationName']);
 
         // The api returns the "checkInDate" as float, like 1.60214467586E12, see https://github.com/studo-app/campus-qr/issues/53
-        $dateTime = new \DateTimeImmutable();
+        $dateTime = new \DateTimeImmutable('now', new \DateTimeZone('UTC'));
         $dateTime = $dateTime->setTimestamp((int) ($jsonData['checkInDate'] / 1000));
 
         $locationCheckInAction = new CheckInAction();
@@ -652,7 +652,7 @@ class CheckinApi implements LoggerAwareInterface
      */
     public function fetchMaxCheckinEndTime(\DateTimeInterface $date = null): \DateTimeInterface
     {
-        $startDate = new \DateTimeImmutable();
+        $startDate = new \DateTimeImmutable('now', new \DateTimeZone('UTC'));
         if ($date !== null) {
             $startDate = $startDate->setTimestamp($date->getTimestamp());
         }

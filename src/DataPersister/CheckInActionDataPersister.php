@@ -45,7 +45,7 @@ final class CheckInActionDataPersister extends AbstractController implements Dat
         $person = $this->personProvider->getCurrentPerson();
         $location = $locationCheckInAction->getLocation();
         $locationCheckInAction->setIdentifier(md5($location->getIdentifier().rand(0, 10000).time()));
-        $locationCheckInAction->setStartTime(new \DateTimeImmutable());
+        $locationCheckInAction->setStartTime(new \DateTimeImmutable('now', new \DateTimeZone('UTC')));
         $locationCheckInAction->setEndTime($this->api->fetchMaxCheckinEndTime());
         $locationCheckInAction->setAgent($person);
 

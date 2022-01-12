@@ -45,13 +45,13 @@ final class GuestCheckInActionDataPersister extends AbstractController implement
 
         $location = $locationGuestCheckInAction->getLocation();
         $locationGuestCheckInAction->setIdentifier(md5($location->getIdentifier().rand(0, 10000).time()));
-        $locationGuestCheckInAction->setStartTime(new \DateTimeImmutable());
+        $locationGuestCheckInAction->setStartTime(new \DateTimeImmutable('now', new \DateTimeZone('UTC')));
         $locationGuestCheckInAction->setAgent($this->personProvider->getCurrentPerson());
 
         $this->api->seatCheck($location, $locationGuestCheckInAction->getSeatNumber());
 
         // check if endDate is in the past
-        if ((new \DateTimeImmutable()) > $locationGuestCheckInAction->getEndTime()) {
+        if ((new \DateTimeImmutable('now', new \DateTimeZone('UTC'))) > $locationGuestCheckInAction->getEndTime()) {
             throw new ItemNotStoredException('The endDate must be in the future!');
         }
 

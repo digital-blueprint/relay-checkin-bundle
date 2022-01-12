@@ -185,7 +185,7 @@ class CheckinApiTest extends WebTestCase
         $this->assertTrue($result instanceof ArrayCollection);
         $this->assertCount(1, $result);
         $this->assertTrue($result[0] instanceof CheckInAction);
-        $this->assertEquals($result[0]->getStartTime(), new \DateTimeImmutable('2020-10-15 14:10:09'));
+        $this->assertEquals($result[0]->getStartTime(), new \DateTimeImmutable('2020-10-15 12:10:09', new \DateTimeZone('UTC')));
         $this->assertEquals($result[0]->getSeatNumber(), 17);
     }
 
@@ -201,7 +201,7 @@ class CheckinApiTest extends WebTestCase
         $this->assertTrue($result instanceof ArrayCollection);
         $this->assertCount(1, $result);
         $this->assertTrue($result[0] instanceof CheckInAction);
-        $this->assertEquals($result[0]->getStartTime(), new \DateTimeImmutable('2020-10-15 14:10:09'));
+        $this->assertEquals($result[0]->getStartTime(), new \DateTimeImmutable('2020-10-15 12:10:09', new \DateTimeZone('UTC')));
         $this->assertEquals($result[0]->getSeatNumber(), 17);
     }
 
@@ -229,7 +229,7 @@ class CheckinApiTest extends WebTestCase
         $this->assertTrue($result instanceof ArrayCollection);
         $this->assertCount(1, $result);
         $this->assertTrue($result[0] instanceof CheckInAction);
-        $this->assertEquals($result[0]->getStartTime(), new \DateTimeImmutable('2020-10-15 14:10:09'));
+        $this->assertEquals($result[0]->getStartTime(), new \DateTimeImmutable('2020-10-15 12:10:09', new \DateTimeZone('UTC')));
         $this->assertEquals(17, $result[0]->getSeatNumber());
     }
 
