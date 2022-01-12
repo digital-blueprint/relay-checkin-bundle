@@ -114,7 +114,7 @@ class GuestCheckInAction
      * @ApiProperty(iri="https://schema.org/startTime")
      * @Groups({"Checkin:output"})
      *
-     * @var \DateTime
+     * @var \DateTimeInterface
      */
     private $startTime;
 
@@ -124,7 +124,7 @@ class GuestCheckInAction
      * @Assert\Type("\DateTimeInterface")
      * @Assert\NotBlank
      *
-     * @var \DateTime
+     * @var \DateTimeInterface
      */
     private $endTime;
 
@@ -186,24 +186,24 @@ class GuestCheckInAction
         return $this;
     }
 
-    public function getStartTime(): \DateTime
+    public function getStartTime(): \DateTimeInterface
     {
         return $this->startTime;
     }
 
-    public function setStartTime(\DateTime $startTime): self
+    public function setStartTime(\DateTimeInterface $startTime): self
     {
         $this->startTime = $startTime;
 
         return $this;
     }
 
-    public function getEndTime(): \DateTime
+    public function getEndTime(): \DateTimeInterface
     {
         return $this->endTime;
     }
 
-    public function setEndTime(\DateTime $endTime): self
+    public function setEndTime(\DateTimeInterface $endTime): self
     {
         $this->endTime = $endTime;
 

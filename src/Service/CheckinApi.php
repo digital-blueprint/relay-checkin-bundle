@@ -549,8 +549,8 @@ class CheckinApi implements LoggerAwareInterface
         $checkInPlace->setName($jsonData['locationName']);
 
         // The api returns the "checkInDate" as float, like 1.60214467586E12, see https://github.com/studo-app/campus-qr/issues/53
-        $dateTime = new \DateTime();
-        $dateTime->setTimestamp((int) ($jsonData['checkInDate'] / 1000));
+        $dateTime = new \DateTimeImmutable();
+        $dateTime = $dateTime->setTimestamp((int) ($jsonData['checkInDate'] / 1000));
 
         $locationCheckInAction = new CheckInAction();
         $locationCheckInAction->setIdentifier($jsonData['id']);
@@ -644,16 +644,17 @@ class CheckinApi implements LoggerAwareInterface
     }
 
     /**
-     * @param \DateTime|null $date
+     * @param \DateTimeInterface|null $date
      *
-     * @return \DateTime
+     * @return \DateTimeInterface
      *
      * @throws ItemNotLoadedException
      */
-    public function fetchMaxCheckinEndTime(\DateTime $date = null): \DateTime
+    public function fetchMaxCheckinEndTime(\DateTimeInterface $date = null): \DateTimeInterface
     {
-        if ($date === null) {
-            $date = new \DateTime();
+        $startDate = new \DateTimeImmutable();
+        if ($date !== null) {
+            $startDate = $startDate->setTimestamp($date->getTimestamp());
         }
 
         // only fetch if not already fetched
@@ -663,11 +664,8 @@ class CheckinApi implements LoggerAwareInterface
 
         $autoCheckOutMinutes = $this->autoCheckOutMinutes;
 
-        // needs a clone or else $date will be modified outside the function!
-        $newDate = clone $date;
-        $newDate->add(new \DateInterval("PT${autoCheckOutMinutes}M"));
-
-        return $newDate;
+        $newData = $startDate->add(new \DateInterval("PT${autoCheckOutMinutes}M"));
+        return $newData;
     }
 
     public function createAndDispatchGuestCheckOutMessage(GuestCheckInAction $locationGuestCheckInAction)
