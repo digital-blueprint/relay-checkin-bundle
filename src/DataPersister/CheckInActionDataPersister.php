@@ -32,13 +32,14 @@ final class CheckInActionDataPersister extends AbstractController implements Dat
     }
 
     /**
-     * @param CheckInAction $data
+     * @param mixed $data
      *
      * @return CheckInAction
      */
     public function persist($data)
     {
         $locationCheckInAction = $data;
+        assert($locationCheckInAction instanceof CheckInAction);
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
         $this->denyAccessUnlessGranted('ROLE_SCOPE_LOCATION-CHECK-IN');
 
@@ -71,7 +72,7 @@ final class CheckInActionDataPersister extends AbstractController implements Dat
     }
 
     /**
-     * @param CheckInAction $data
+     * @param mixed $data
      */
     public function remove($data)
     {

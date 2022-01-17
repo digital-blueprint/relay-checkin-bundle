@@ -32,13 +32,14 @@ final class CheckOutActionDataPersister extends AbstractController implements Da
     }
 
     /**
-     * @param CheckOutAction $data
+     * @param mixed $data
      *
      * @return CheckOutAction
      */
     public function persist($data)
     {
         $locationCheckOutAction = $data;
+        assert($locationCheckOutAction instanceof CheckOutAction);
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
         $this->denyAccessUnlessGranted('ROLE_SCOPE_LOCATION-CHECK-IN');
 
@@ -80,7 +81,7 @@ final class CheckOutActionDataPersister extends AbstractController implements Da
     }
 
     /**
-     * @param CheckOutAction $data
+     * @param mixed $data
      */
     public function remove($data)
     {
