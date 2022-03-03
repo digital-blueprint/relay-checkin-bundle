@@ -141,6 +141,28 @@ class CheckinApi implements LoggerAwareInterface
         return new Client($client_options);
     }
 
+    /**
+     * Check if CampusQR is reachable.
+     */
+    public function checkConnection(): void
+    {
+        $client = $this->getClient();
+        $client->request('GET', $this->campusQRUrl);
+    }
+
+    /**
+     * Check if we can talk to the API.
+     */
+    public function checkApi(): void
+    {
+        $client = $this->getClient();
+        $options = [
+            'headers' => ['X-Authorization' => $this->campusQRToken],
+        ];
+        $url = $this->urls->getLocationListRequestUrl($this->campusQRUrl);
+        $client->request('GET', $url, $options);
+    }
+
     private function getLocationClient(): Client
     {
         $stack = HandlerStack::create($this->clientHandler);

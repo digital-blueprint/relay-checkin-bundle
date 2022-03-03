@@ -3,6 +3,10 @@ services:
     public: false
     autowire: true
 
+  Dbp\Relay\CheckinBundle\Service\HealthCheck:
+    autowire: true
+    autoconfigure: true
+
   Dbp\Relay\CheckinBundle\DataPersister\:
     resource: '../../DataPersister'
     autowire: true
