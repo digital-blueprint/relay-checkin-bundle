@@ -1,11 +1,16 @@
 # DbpRelayCheckinBundle
 
-[GitLab](https://gitlab.tugraz.at/dbp/check-in/dbp-relay-checkin-bundle) | [Packagist](https://packagist.org/packages/dbp/relay-checkin-bundle)
+[GitLab](https://gitlab.tugraz.at/dbp/check-in/dbp-relay-checkin-bundle) |
+[Packagist](https://packagist.org/packages/dbp/relay-checkin-bundle) |
+[Check-in Application](https://gitlab.tugraz.at/dbp/check-in/checkin) |
+[Check-in Website](https://dbp-demo.tugraz.at/site/software/check-in.html)
 
 This bundle handles check-ins to places and contact tracing for warning about COVID-19 cases.
 
 You will need to install and set up the Digital Blueprint fork of [CampusQR](https://gitlab.tugraz.at/dbp/check-in/campus-qr),
 the open source system for contact tracing at universities.
+
+See [Check-in Website](https://dbp-demo.tugraz.at/site/software/check-in.html) for more information.
 
 ## Bundle installation
 
