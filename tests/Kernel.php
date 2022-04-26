@@ -31,8 +31,8 @@ class Kernel extends BaseKernel
         yield new MonologBundle();
         yield new ApiPlatformBundle();
         yield new DbpRelayBasePersonBundle();
-        yield new DbpRelayCoreBundle();
         yield new DbpRelayCheckinBundle();
+        yield new DbpRelayCoreBundle();
     }
 
     protected function configureRoutes(RoutingConfigurator $routes)

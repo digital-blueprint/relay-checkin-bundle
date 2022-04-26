@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Dbp\Relay\CheckinBundle\DependencyInjection;
 
+use Dbp\Relay\CheckinBundle\Message\GuestCheckOutMessage;
+use Dbp\Relay\CoreBundle\Extension\ExtensionTrait;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -13,26 +15,28 @@ use Symfony\Component\HttpKernel\DependencyInjection\ConfigurableExtension;
 
 class DbpRelayCheckinExtension extends ConfigurableExtension implements PrependExtensionInterface
 {
+    use ExtensionTrait;
+
     public function prepend(ContainerBuilder $container)
     {
-        // https://symfony.com/doc/4.4/messenger.html#transports-async-queued-messages
-        $this->extendArrayParameter($container, 'dbp_api.messenger_routing', [
-            'Dbp\Relay\CheckinBundle\Message\GuestCheckOutMessage' => 'async',
-        ]);
+        $this->addQueueMessage($container, GuestCheckOutMessage::class);
     }
 
     public function loadInternal(array $mergedConfig, ContainerBuilder $container)
     {
-        $this->extendArrayParameter($container, 'dbp_api.paths_to_hide', [
+        $pathsToHide = [
             '/checkin/check_in_actions/{identifier}',
             '/checkin/guest_check_in_actions',
             '/checkin/guest_check_in_actions/{identifier}',
             '/checkin/check_out_actions',
             '/checkin/check_out_actions/{identifier}',
-        ]);
+        ];
 
-        $this->extendArrayParameter(
-            $container, 'api_platform.resource_class_directories', [__DIR__.'/../Entity']);
+        foreach ($pathsToHide as $path) {
+            $this->addPathToHide($container, $path);
+        }
+
+        $this->addResourceClassDirectory($container, __DIR__.'/../Entity');
 
         $loader = new YamlFileLoader(
             $container,
@@ -48,15 +52,5 @@ class DbpRelayCheckinExtension extends ConfigurableExtension implements PrependE
         $definition = $container->getDefinition('Dbp\Relay\CheckinBundle\Service\CheckinApi');
         $definition->addMethodCall('setConfig', [$mergedConfig]);
         $definition->addMethodCall('setCache', [$cacheDef]);
-    }
-
-    private function extendArrayParameter(ContainerBuilder $container, string $parameter, array $values)
-    {
-        if (!$container->hasParameter($parameter)) {
-            $container->setParameter($parameter, []);
-        }
-        $oldValues = $container->getParameter($parameter);
-        assert(is_array($oldValues));
-        $container->setParameter($parameter, array_merge($oldValues, $values));
     }
 }
