@@ -19,14 +19,14 @@ use Symfony\Component\Validator\Constraints as Assert;
  *     },
  *     collectionOperations={
  *         "get" = {
- *             "path" = "/checkin/check_out_actions",
+ *             "path" = "/checkin/check-out-actions",
  *             "security" = "is_granted('IS_AUTHENTICATED_FULLY')",
  *             "openapi_context" = {
  *                 "tags" = {"Checkin"},
  *             },
  *         },
  *         "post" = {
- *             "path" = "/checkin/check_out_actions",
+ *             "path" = "/checkin/check-out-actions",
  *             "security" = "is_granted('IS_AUTHENTICATED_FULLY')",
  *             "method" = "POST",
  *             "openapi_context" = {
@@ -44,7 +44,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *     },
  *     itemOperations={
  *         "get" = {
- *             "path" = "/checkin/check_out_actions/{identifier}",
+ *             "path" = "/checkin/check-out-actions/{identifier}",
  *             "security" = "is_granted('IS_AUTHENTICATED_FULLY')",
  *             "openapi_context" = {
  *                 "tags" = {"Checkin"},

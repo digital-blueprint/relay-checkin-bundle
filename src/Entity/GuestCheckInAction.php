@@ -19,7 +19,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *     },
  *     collectionOperations={
  *         "get" = {
- *             "path" = "/checkin/guest_check_in_actions",
+ *             "path" = "/checkin/guest-check-in-actions",
  *             "security" = "is_granted('IS_AUTHENTICATED_FULLY')",
  *             "normalization_context" = {
  *                 "groups" = {"Checkin:output", "Checkin:outputList"}
@@ -39,7 +39,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *             },
  *         },
  *         "post" = {
- *             "path" = "/checkin/guest_check_in_actions",
+ *             "path" = "/checkin/guest-check-in-actions",
  *             "security" = "is_granted('IS_AUTHENTICATED_FULLY')",
  *             "method" = "POST",
  *             "openapi_context" = {
@@ -57,7 +57,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *     },
  *     itemOperations={
  *         "get" = {
- *             "path" = "/checkin/guest_check_in_actions/{identifier}",
+ *             "path" = "/checkin/guest-check-in-actions/{identifier}",
  *             "security" = "is_granted('IS_AUTHENTICATED_FULLY')",
  *             "openapi_context" = {
  *                 "tags" = {"Checkin"},
