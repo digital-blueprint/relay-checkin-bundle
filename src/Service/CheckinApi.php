@@ -132,6 +132,7 @@ class CheckinApi implements LoggerAwareInterface
 
         $client_options = [
             'handler' => $stack,
+            'headers' => ['X-Authorization' => $this->campusQRToken],
         ];
 
         if ($this->logger !== null) {
@@ -156,11 +157,8 @@ class CheckinApi implements LoggerAwareInterface
     public function checkApi(): void
     {
         $client = $this->getClient();
-        $options = [
-            'headers' => ['X-Authorization' => $this->campusQRToken],
-        ];
         $url = $this->urls->getLocationListRequestUrl($this->campusQRUrl);
-        $client->request('GET', $url, $options);
+        $client->request('GET', $url);
     }
 
     private function getLocationClient(): Client
@@ -169,6 +167,7 @@ class CheckinApi implements LoggerAwareInterface
 
         $client_options = [
             'handler' => $stack,
+            'headers' => ['X-Authorization' => $this->campusQRToken],
         ];
 
         if ($this->logger !== null) {
@@ -248,7 +247,6 @@ class CheckinApi implements LoggerAwareInterface
 
         $client = $this->getClient();
         $options = [
-            'headers' => ['X-Authorization' => $this->campusQRToken],
             'body' => json_encode(['email' => $email, 'host' => $currentPerson->getEmail()]),
         ];
 
@@ -293,7 +291,6 @@ class CheckinApi implements LoggerAwareInterface
     {
         $client = $this->getClient();
         $options = [
-            'headers' => ['X-Authorization' => $this->campusQRToken],
             'body' => json_encode(['email' => $email]),
         ];
 
@@ -406,16 +403,12 @@ class CheckinApi implements LoggerAwareInterface
     {
         $client = $this->getLocationClient();
 
-        $options = [
-            'headers' => ['X-Authorization' => $this->campusQRToken],
-        ];
-
         try {
             // e.g. https://campusqr-dev.tugraz.at/location/list
             $url = $this->urls->getLocationListRequestUrl($this->campusQRUrl);
 
             // http://docs.guzzlephp.org/en/stable/quickstart.html?highlight=get#making-a-request
-            $response = $client->request('GET', $url, $options);
+            $response = $client->request('GET', $url);
 
             return $this->decodeResponse($response);
         } catch (GuzzleException $e) {
@@ -525,7 +518,6 @@ class CheckinApi implements LoggerAwareInterface
         $client = $this->getClient();
 
         $options = [
-            'headers' => ['X-Authorization' => $this->campusQRToken],
             'body' => json_encode(['emailAddress' => $email]),
         ];
 
@@ -641,15 +633,11 @@ class CheckinApi implements LoggerAwareInterface
     {
         $client = $this->getLocationClient();
 
-        $options = [
-            'headers' => ['X-Authorization' => $this->campusQRToken],
-        ];
-
         try {
             $url = $this->urls->getConfigUrl($this->campusQRUrl, $configKey);
 
             // http://docs.guzzlephp.org/en/stable/quickstart.html?highlight=get#making-a-request
-            $response = $client->request('GET', $url, $options);
+            $response = $client->request('GET', $url);
 
             return $this->decodeResponse($response);
         } catch (GuzzleException $e) {
