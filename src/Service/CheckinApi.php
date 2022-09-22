@@ -126,7 +126,7 @@ class CheckinApi implements LoggerAwareInterface
         $this->clientHandler = $handler;
     }
 
-    private function getClient(): Client
+    private function getClient(bool $withCache = false): Client
     {
         $stack = HandlerStack::create($this->clientHandler);
 
@@ -137,6 +137,17 @@ class CheckinApi implements LoggerAwareInterface
 
         if ($this->logger !== null) {
             $stack->push(Tools::createLoggerMiddleware($this->logger));
+        }
+
+        if ($withCache && $this->cachePool !== null) {
+            $cacheMiddleWare = new CacheMiddleware(
+                new GreedyCacheStrategy(
+                    new Psr6CacheStorage($this->cachePool),
+                    self::LOCATION_CACHE_TTL
+                )
+            );
+            $cacheMiddleWare->setHttpMethods(['GET' => true, 'HEAD' => true]);
+            $stack->push($cacheMiddleWare);
         }
 
         return new Client($client_options);
@@ -159,33 +170,6 @@ class CheckinApi implements LoggerAwareInterface
         $client = $this->getClient();
         $url = $this->urls->getLocationListRequestUrl($this->campusQRUrl);
         $client->request('GET', $url);
-    }
-
-    private function getLocationClient(): Client
-    {
-        $stack = HandlerStack::create($this->clientHandler);
-
-        $client_options = [
-            'handler' => $stack,
-            'headers' => ['X-Authorization' => $this->campusQRToken],
-        ];
-
-        if ($this->logger !== null) {
-            $stack->push(Tools::createLoggerMiddleware($this->logger));
-        }
-
-        if ($this->cachePool !== null) {
-            $cacheMiddleWare = new CacheMiddleware(
-                new GreedyCacheStrategy(
-                    new Psr6CacheStorage($this->cachePool),
-                    self::LOCATION_CACHE_TTL
-                )
-            );
-            $cacheMiddleWare->setHttpMethods(['GET' => true, 'HEAD' => true]);
-            $stack->push($cacheMiddleWare);
-        }
-
-        return new Client($client_options);
     }
 
     /**
@@ -401,7 +385,7 @@ class CheckinApi implements LoggerAwareInterface
 
     public function fetchPlacesJsonData(): array
     {
-        $client = $this->getLocationClient();
+        $client = $this->getClient(true);
 
         try {
             // e.g. https://campusqr-dev.tugraz.at/location/list
@@ -631,7 +615,7 @@ class CheckinApi implements LoggerAwareInterface
      */
     public function fetchConfig(string $configKey)
     {
-        $client = $this->getLocationClient();
+        $client = $this->getClient(true);
 
         try {
             $url = $this->urls->getConfigUrl($this->campusQRUrl, $configKey);
