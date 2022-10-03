@@ -16,7 +16,6 @@ use Dbp\Relay\CheckinBundle\Exceptions\ItemNotLoadedException;
 use Dbp\Relay\CheckinBundle\Exceptions\ItemNotStoredException;
 use Dbp\Relay\CheckinBundle\Helpers\Tools;
 use Dbp\Relay\CheckinBundle\Message\GuestCheckOutMessage;
-use Doctrine\Common\Collections\ArrayCollection;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\HandlerStack;
@@ -329,14 +328,13 @@ class CheckinApi implements LoggerAwareInterface
      *
      * @param string $name
      *
-     * @return ArrayCollection|Place[]
+     * @return Place[]
      *
      * @throws ItemNotLoadedException
      */
-    public function fetchPlaces($name = ''): ArrayCollection
+    public function fetchPlaces($name = ''): array
     {
-        /** @var ArrayCollection<int,Place> $collection */
-        $collection = new ArrayCollection();
+        $collection = [];
 
         $authenticDocumentTypesJsonData = $this->fetchPlacesJsonData();
         $name = trim($name);
@@ -356,7 +354,7 @@ class CheckinApi implements LoggerAwareInterface
                 }
             }
 
-            $collection->add($checkInPlace);
+            $collection[] = $checkInPlace;
         }
 
         return $collection;
@@ -448,14 +446,13 @@ class CheckinApi implements LoggerAwareInterface
      * @param string $location
      * @param ?int $seatNumber
      *
-     * @return ArrayCollection
+     * @return CheckInAction[]
      *
      * @throws ItemNotLoadedException
      */
-    public function fetchCheckInActionsOfEmail(string $email, $location = '', $seatNumber = null): ArrayCollection
+    public function fetchCheckInActionsOfEmail(string $email, $location = '', $seatNumber = null): array
     {
-        /** @var ArrayCollection<int,CheckInAction> $collection */
-        $collection = new ArrayCollection();
+        $collection = [];
 
         $authenticDocumentTypesJsonData = $this->fetchCheckInActionsOfEMailJsonData($email);
 
@@ -468,7 +465,7 @@ class CheckinApi implements LoggerAwareInterface
                 ($location === '' && $seatNumber === null)) {
                 $checkInAction = $this->locationCheckInActionFromJsonItem($jsonData);
                 $checkInAction->setEndTime($this->fetchMaxCheckinEndTime($checkInAction->getStartTime()));
-                $collection->add($checkInAction);
+                $collection[] = $checkInAction;
             }
         }
 
@@ -479,11 +476,11 @@ class CheckinApi implements LoggerAwareInterface
      * @param string $location
      * @param ?int $seatNumber
      *
-     * @return ArrayCollection
+     * @return CheckInAction[]
      *
      * @throws ItemNotLoadedException
      */
-    public function fetchCheckInActionsOfCurrentPerson($location = '', $seatNumber = null): ArrayCollection
+    public function fetchCheckInActionsOfCurrentPerson($location = '', $seatNumber = null): array
     {
         $person = $this->personProvider->getCurrentPerson();
 

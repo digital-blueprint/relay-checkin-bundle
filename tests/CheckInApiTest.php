@@ -10,7 +10,6 @@ use Dbp\Relay\CheckinBundle\Entity\CheckInAction;
 use Dbp\Relay\CheckinBundle\Entity\CheckOutAction;
 use Dbp\Relay\CheckinBundle\Entity\Place;
 use Dbp\Relay\CheckinBundle\Service\CheckinApi;
-use Doctrine\Common\Collections\ArrayCollection;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Response;
@@ -101,7 +100,6 @@ class CheckinApiTest extends WebTestCase
 
         $result = $this->api->fetchPlaces();
 
-        $this->assertTrue($result instanceof ArrayCollection);
         $this->assertCount(2, $result);
         $this->assertTrue($result[0] instanceof Place);
     }
@@ -182,7 +180,6 @@ class CheckinApiTest extends WebTestCase
 
         $result = $this->api->fetchCheckInActionsOfCurrentPerson();
 
-        $this->assertTrue($result instanceof ArrayCollection);
         $this->assertCount(1, $result);
         $this->assertTrue($result[0] instanceof CheckInAction);
         $this->assertEquals($result[0]->getStartTime(), new \DateTimeImmutable('2020-10-15 12:10:09', new \DateTimeZone('UTC')));
@@ -198,7 +195,6 @@ class CheckinApiTest extends WebTestCase
 
         $result = $this->api->fetchCheckInActionsOfCurrentPerson('f0ad66aaaf1debabb44a');
 
-        $this->assertTrue($result instanceof ArrayCollection);
         $this->assertCount(1, $result);
         $this->assertTrue($result[0] instanceof CheckInAction);
         $this->assertEquals($result[0]->getStartTime(), new \DateTimeImmutable('2020-10-15 12:10:09', new \DateTimeZone('UTC')));
@@ -213,7 +209,6 @@ class CheckinApiTest extends WebTestCase
 
         $result = $this->api->fetchCheckInActionsOfCurrentPerson('wrong');
 
-        $this->assertTrue($result instanceof ArrayCollection);
         $this->assertCount(0, $result);
     }
 
@@ -226,7 +221,6 @@ class CheckinApiTest extends WebTestCase
 
         $result = $this->api->fetchCheckInActionsOfCurrentPerson('f0ad66aaaf1debabb44a', 17);
 
-        $this->assertTrue($result instanceof ArrayCollection);
         $this->assertCount(1, $result);
         $this->assertTrue($result[0] instanceof CheckInAction);
         $this->assertEquals($result[0]->getStartTime(), new \DateTimeImmutable('2020-10-15 12:10:09', new \DateTimeZone('UTC')));
@@ -242,7 +236,6 @@ class CheckinApiTest extends WebTestCase
 
         $result = $this->api->fetchCheckInActionsOfCurrentPerson('f0ad66aaaf1debabb44a', 18);
 
-        $this->assertTrue($result instanceof ArrayCollection);
         $this->assertCount(0, $result);
     }
 
