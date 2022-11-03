@@ -27,12 +27,6 @@
         "symfony/phpunit-bridge": "^5.4.11",
         "vimeo/psalm": "^4.27"
     },
-    "repositories": [
-        {
-            "type": "vcs",
-            "url": "git@gitlab.tugraz.at:dbp/dbp-api/api-base-bundle.git"
-        }
-    ],
     "autoload": {
         "psr-4": {
             "Dbp\\Relay\\CheckinBundle\\": "src/"
