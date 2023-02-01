@@ -1,6 +1,6 @@
 # DbpRelayCheckinBundle
 
-[GitLab](https://gitlab.tugraz.at/dbp/check-in/dbp-relay-checkin-bundle) |
+[GitHub](https://github.com/digital-blueprint/relay-checkin-bundle) |
 [Packagist](https://packagist.org/packages/dbp/relay-checkin-bundle) |
 [Frontend Application](https://gitlab.tugraz.at/dbp/check-in/checkin) |
 [Check-in Website](https://dbp-demo.tugraz.at/site/software/check-in.html)
