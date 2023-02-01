@@ -5,6 +5,8 @@
 [Frontend Application](https://gitlab.tugraz.at/dbp/check-in/checkin) |
 [Check-in Website](https://dbp-demo.tugraz.at/site/software/check-in.html)
 
+[![Test](https://github.com/digital-blueprint/relay-checkin-bundle/actions/workflows/test.yml/badge.svg)](https://github.com/digital-blueprint/relay-checkin-bundle/actions/workflows/test.yml)
+
 This bundle handles check-ins to places and contact tracing for warning about COVID-19 cases.
 
 You will need to install and set up the Digital Blueprint fork of [CampusQR](https://gitlab.tugraz.at/dbp/check-in/campus-qr),
