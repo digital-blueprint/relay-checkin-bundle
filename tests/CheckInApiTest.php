@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Dbp\Relay\CheckinBundle\Tests;
 
 use Dbp\Relay\BasePersonBundle\Entity\Person;
-use Dbp\Relay\BasePersonBundle\TestUtils\DummyPersonProvider;
+use Dbp\Relay\BasePersonBundle\Service\DummyPersonProvider;
 use Dbp\Relay\CheckinBundle\Entity\CheckInAction;
 use Dbp\Relay\CheckinBundle\Entity\CheckOutAction;
 use Dbp\Relay\CheckinBundle\Entity\Place;
@@ -33,7 +33,8 @@ class CheckinApiTest extends WebTestCase
     {
         $person = new Person();
         $person->setEmail('dummy@email.com');
-        $personProvider = new DummyPersonProvider($person);
+        $personProvider = new DummyPersonProvider();
+        $personProvider->setCurrentPerson($person);
 
         /** @var MessageBusInterface $messageBus */
         $messageBus = $this->getMockBuilder(MessageBusInterface::class)
