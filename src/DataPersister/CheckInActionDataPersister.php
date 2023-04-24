@@ -43,7 +43,7 @@ final class CheckInActionDataPersister extends AbstractController implements Dat
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
         $this->denyAccessUnlessGranted('ROLE_SCOPE_LOCATION-CHECK-IN');
 
-        $person = $this->personProvider->getCurrentPerson();
+        $person = $this->api->getCurrentPerson();
         $location = $locationCheckInAction->getLocation();
         $locationCheckInAction->setIdentifier(md5($location->getIdentifier().rand(0, 10000).time()));
         $locationCheckInAction->setStartTime(new \DateTimeImmutable('now', new \DateTimeZone('UTC')));
@@ -52,7 +52,7 @@ final class CheckInActionDataPersister extends AbstractController implements Dat
 
         $this->api->seatCheck($location, $locationCheckInAction->getSeatNumber());
 
-        $lock = $this->api->createLock($person->getEmail(), $location->getIdentifier(), $locationCheckInAction->getSeatNumber());
+        $lock = $this->api->createLock($person->getLocalDataValue(CheckinApi::EMAIL_LOCAL_DATA_ATTRIBUTE), $location->getIdentifier(), $locationCheckInAction->getSeatNumber());
         $lock->acquire(true);
         try {
             $existingCheckins = $this->api->fetchCheckInActionsOfCurrentPerson(

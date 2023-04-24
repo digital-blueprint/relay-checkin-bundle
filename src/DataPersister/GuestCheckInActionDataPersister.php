@@ -47,7 +47,7 @@ final class GuestCheckInActionDataPersister extends AbstractController implement
         $location = $locationGuestCheckInAction->getLocation();
         $locationGuestCheckInAction->setIdentifier(md5($location->getIdentifier().rand(0, 10000).time()));
         $locationGuestCheckInAction->setStartTime(new \DateTimeImmutable('now', new \DateTimeZone('UTC')));
-        $locationGuestCheckInAction->setAgent($this->personProvider->getCurrentPerson());
+        $locationGuestCheckInAction->setAgent($this->api->getCurrentPerson());
 
         $this->api->seatCheck($location, $locationGuestCheckInAction->getSeatNumber());
 

@@ -8,6 +8,7 @@ declare(strict_types=1);
 namespace Dbp\Relay\CheckinBundle\Service;
 
 use Dbp\Relay\BasePersonBundle\API\PersonProviderInterface;
+use Dbp\Relay\BasePersonBundle\Entity\Person;
 use Dbp\Relay\CheckinBundle\Entity\CheckInAction;
 use Dbp\Relay\CheckinBundle\Entity\CheckOutAction;
 use Dbp\Relay\CheckinBundle\Entity\GuestCheckInAction;
@@ -16,6 +17,8 @@ use Dbp\Relay\CheckinBundle\Exceptions\ItemNotLoadedException;
 use Dbp\Relay\CheckinBundle\Exceptions\ItemNotStoredException;
 use Dbp\Relay\CheckinBundle\Helpers\Tools;
 use Dbp\Relay\CheckinBundle\Message\GuestCheckOutMessage;
+use Dbp\Relay\CoreBundle\Exception\ApiError;
+use Dbp\Relay\CoreBundle\LocalData\LocalData;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\HandlerStack;
@@ -37,6 +40,8 @@ use Symfony\Component\Messenger\Stamp\DelayStamp;
 class CheckinApi implements LoggerAwareInterface
 {
     use LoggerAwareTrait;
+
+    public const EMAIL_LOCAL_DATA_ATTRIBUTE = 'email';
 
     private $clientHandler;
 
@@ -187,7 +192,7 @@ class CheckinApi implements LoggerAwareInterface
 
         $client = $this->getClient();
         $options = [
-            'body' => json_encode(['email' => $person->getEmail()]),
+            'body' => json_encode(['email' => $person->getLocalDataValue(CheckinApi::EMAIL_LOCAL_DATA_ATTRIBUTE)]),
         ];
 
         try {
@@ -226,11 +231,11 @@ class CheckinApi implements LoggerAwareInterface
         $location = $locationGuestCheckInAction->getLocation();
         $seatNumber = $locationGuestCheckInAction->getSeatNumber();
         $email = $locationGuestCheckInAction->getEmail();
-        $currentPerson = $this->personProvider->getCurrentPerson();
+        $currentPerson = $this->getCurrentPerson();
 
         $client = $this->getClient();
         $options = [
-            'body' => json_encode(['email' => $email, 'host' => $currentPerson->getEmail()]),
+            'body' => json_encode(['email' => $email, 'host' => $currentPerson->getLocalDataValue(self::EMAIL_LOCAL_DATA_ATTRIBUTE)]),
         ];
 
         try {
@@ -311,7 +316,7 @@ class CheckinApi implements LoggerAwareInterface
     public function sendCampusQRCheckOutRequestForCheckOutAction(CheckOutAction $locationCheckOutAction): bool
     {
         $person = $locationCheckOutAction->getAgent();
-        $currentPerson = $this->personProvider->getCurrentPerson();
+        $currentPerson = $this->getCurrentPerson();
 
         if ($person->getIdentifier() !== $currentPerson->getIdentifier()) {
             throw new AccessDeniedHttpException('You are not allowed to check-out this check-in!');
@@ -320,7 +325,7 @@ class CheckinApi implements LoggerAwareInterface
         $location = $locationCheckOutAction->getLocation();
         $seatNumber = $locationCheckOutAction->getSeatNumber();
 
-        return $this->sendCampusQRCheckOutRequest($person->getEmail(), $location, $seatNumber);
+        return $this->sendCampusQRCheckOutRequest($person->getLocalDataValue(self::EMAIL_LOCAL_DATA_ATTRIBUTE), $location, $seatNumber);
     }
 
     /**
@@ -425,6 +430,17 @@ class CheckinApi implements LoggerAwareInterface
     }
 
     /**
+     * @throws ApiError
+     */
+    public function getCurrentPerson(): ?Person
+    {
+        $options = [];
+        LocalData::requestLocalDataAttributes($options, ['email']);
+
+        return $this->personProvider->getCurrentPerson($options);
+    }
+
+    /**
      * @param ResponseInterface $response
      *
      * @return mixed
@@ -482,9 +498,9 @@ class CheckinApi implements LoggerAwareInterface
      */
     public function fetchCheckInActionsOfCurrentPerson($location = '', $seatNumber = null): array
     {
-        $person = $this->personProvider->getCurrentPerson();
+        $person = $this->getCurrentPerson();
 
-        return $this->fetchCheckInActionsOfEmail($person->getEmail(), $location, $seatNumber);
+        return $this->fetchCheckInActionsOfEmail($person->getLocalDataValue(self::EMAIL_LOCAL_DATA_ATTRIBUTE), $location, $seatNumber);
     }
 
     /**
@@ -534,7 +550,7 @@ class CheckinApi implements LoggerAwareInterface
     public function locationCheckInActionFromJsonItem($jsonData, ?PersonProviderInterface $person = null): CheckInAction
     {
         if ($person === null) {
-            $person = $this->personProvider->getCurrentPerson();
+            $person = $this->getCurrentPerson();
         }
 
         // We don't get any maximumPhysicalAttendeeCapacity, so we are hiding it in the result when fetching the
