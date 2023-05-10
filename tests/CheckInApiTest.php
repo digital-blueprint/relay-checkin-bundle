@@ -19,7 +19,7 @@ use Symfony\Component\Lock\LockFactory;
 use Symfony\Component\Lock\Store\InMemoryStore;
 use Symfony\Component\Messenger\MessageBusInterface;
 
-class CheckinApiTest extends WebTestCase
+class CheckInApiTest extends WebTestCase
 {
     /**
      * @var CheckinApi

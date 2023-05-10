@@ -7,7 +7,7 @@ namespace Dbp\Relay\CheckinBundle\Tests;
 use Dbp\Relay\CheckinBundle\Service\CheckinUrlApi;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
-class CheckinApiUrlTest extends WebTestCase
+class CheckInApiUrlTest extends WebTestCase
 {
     /* @var CheckinUrlApi */
     private $urls;
