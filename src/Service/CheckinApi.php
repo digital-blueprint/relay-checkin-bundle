@@ -671,7 +671,7 @@ class CheckinApi implements LoggerAwareInterface
 
         $autoCheckOutMinutes = $this->autoCheckOutMinutes;
 
-        $newData = $startDate->add(new \DateInterval("PT${autoCheckOutMinutes}M"));
+        $newData = $startDate->add(new \DateInterval("PT{$autoCheckOutMinutes}M"));
 
         return $newData;
     }
