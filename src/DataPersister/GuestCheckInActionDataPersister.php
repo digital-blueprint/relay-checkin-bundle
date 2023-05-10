@@ -60,7 +60,7 @@ final class GuestCheckInActionDataPersister extends AbstractController implement
         $maxCheckinEndTime = $this->api->fetchMaxCheckinEndTime();
         if ($maxCheckinEndTime < $locationGuestCheckInAction->getEndTime()) {
             $maxCheckinEndTimeString = $maxCheckinEndTime->format('c');
-            throw new ItemNotStoredException("The endDate can't be after ${maxCheckinEndTimeString}!");
+            throw new ItemNotStoredException("The endDate can't be after {$maxCheckinEndTimeString}!");
         }
 
         $lock = $this->api->createLock($locationGuestCheckInAction->getEmail(), $location->getIdentifier(), $locationGuestCheckInAction->getSeatNumber());
