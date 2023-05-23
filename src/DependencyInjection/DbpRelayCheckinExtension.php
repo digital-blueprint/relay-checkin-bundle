@@ -18,7 +18,7 @@ class DbpRelayCheckinExtension extends ConfigurableExtension implements PrependE
 
     public function prepend(ContainerBuilder $container)
     {
-        $this->addQueueMessage($container, GuestCheckOutMessage::class);
+        $this->addQueueMessageClass($container, GuestCheckOutMessage::class);
     }
 
     public function loadInternal(array $mergedConfig, ContainerBuilder $container)
