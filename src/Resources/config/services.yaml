@@ -2,6 +2,8 @@ services:
   Dbp\Relay\CheckinBundle\Service\CheckinApi:
     public: false
     autowire: true
+    calls:
+      - setCache: [ '@dbp.relay.checkin.cache.location' ]
 
   Dbp\Relay\CheckinBundle\Service\HealthCheck:
     autowire: true
@@ -22,3 +24,8 @@ services:
     autowire: true
     autoconfigure: true
     tags: ['messenger.message_handler']
+
+  dbp.relay.checkin.cache.location:
+    parent: cache.app
+    tags:
+      - { name: 'cache.pool', default_lifetime: 60 }

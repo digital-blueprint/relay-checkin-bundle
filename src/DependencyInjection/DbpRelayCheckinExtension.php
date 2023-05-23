@@ -6,7 +6,6 @@ namespace Dbp\Relay\CheckinBundle\DependencyInjection;
 
 use Dbp\Relay\CheckinBundle\Message\GuestCheckOutMessage;
 use Dbp\Relay\CoreBundle\Extension\ExtensionTrait;
-use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\PrependExtensionInterface;
@@ -44,13 +43,7 @@ class DbpRelayCheckinExtension extends ConfigurableExtension implements PrependE
         );
         $loader->load('services.yaml');
 
-        $cacheDef = $container->register('dbp_api.cache.check_in.location', FilesystemAdapter::class);
-        $cacheDef->setArguments(['check-in', 60, '%kernel.cache_dir%/dbp/check-in']);
-        $cacheDef->setPublic(true);
-        $cacheDef->addTag('cache.pool');
-
         $definition = $container->getDefinition('Dbp\Relay\CheckinBundle\Service\CheckinApi');
         $definition->addMethodCall('setConfig', [$mergedConfig]);
-        $definition->addMethodCall('setCache', [$cacheDef]);
     }
 }
