@@ -1,3 +1,7 @@
+# v1.2.0
+
+* Port to the new api-platform metadata system. This removes some hidden GET endpoints that were not functional anyway.
+
 # v1.1.7
 
 * Use the global "cache.app" adapter for caching instead of always using the filesystem adapter
