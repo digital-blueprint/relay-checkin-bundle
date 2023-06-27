@@ -9,13 +9,8 @@ services:
     autowire: true
     autoconfigure: true
 
-  Dbp\Relay\CheckinBundle\DataPersister\:
-    resource: '../../DataPersister'
-    autowire: true
-    autoconfigure: true
-
-  Dbp\Relay\CheckinBundle\DataProvider\:
-    resource: '../../DataProvider'
+  Dbp\Relay\CheckinBundle\State\:
+    resource: '../../State'
     autowire: true
     autoconfigure: true
 

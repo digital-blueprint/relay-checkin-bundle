@@ -2,46 +2,37 @@
 
 declare(strict_types=1);
 
-namespace Dbp\Relay\CheckinBundle\DataPersister;
+namespace Dbp\Relay\CheckinBundle\State;
 
-use ApiPlatform\Core\DataPersister\DataPersisterInterface;
-use Dbp\Relay\BasePersonBundle\API\PersonProviderInterface;
+use ApiPlatform\Metadata\Operation;
+use ApiPlatform\State\ProcessorInterface;
 use Dbp\Relay\CheckinBundle\Entity\CheckInAction;
 use Dbp\Relay\CheckinBundle\Exceptions\ItemNotStoredException;
 use Dbp\Relay\CheckinBundle\Service\CheckinApi;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
-final class CheckInActionDataPersister extends AbstractController implements DataPersisterInterface
+class CheckInActionProcessor extends AbstractController implements ProcessorInterface
 {
+    /**
+     * @var CheckinApi
+     */
     private $api;
 
-    /**
-     * @var PersonProviderInterface
-     */
-    private $personProvider;
-
-    public function __construct(CheckinApi $api, PersonProviderInterface $personProvider)
+    public function __construct(CheckinApi $api)
     {
         $this->api = $api;
-        $this->personProvider = $personProvider;
-    }
-
-    public function supports($data): bool
-    {
-        return $data instanceof CheckInAction;
     }
 
     /**
-     * @param mixed $data
-     *
-     * @return CheckInAction
+     * @return mixed
      */
-    public function persist($data)
+    public function process($data, Operation $operation, array $uriVariables = [], array $context = [])
     {
-        $locationCheckInAction = $data;
-        assert($locationCheckInAction instanceof CheckInAction);
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
         $this->denyAccessUnlessGranted('ROLE_SCOPE_LOCATION-CHECK-IN');
+
+        $locationCheckInAction = $data;
+        assert($locationCheckInAction instanceof CheckInAction);
 
         $person = $this->api->getCurrentPerson();
         $location = $locationCheckInAction->getLocation();
@@ -69,12 +60,5 @@ final class CheckInActionDataPersister extends AbstractController implements Dat
         }
 
         return $locationCheckInAction;
-    }
-
-    /**
-     * @param mixed $data
-     */
-    public function remove($data)
-    {
     }
 }

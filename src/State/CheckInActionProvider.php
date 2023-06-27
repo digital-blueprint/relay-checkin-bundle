@@ -2,19 +2,23 @@
 
 declare(strict_types=1);
 
-namespace Dbp\Relay\CheckinBundle\DataProvider;
+namespace Dbp\Relay\CheckinBundle\State;
 
-use ApiPlatform\Core\DataProvider\CollectionDataProviderInterface;
-use ApiPlatform\Core\DataProvider\RestrictedDataProviderInterface;
+use ApiPlatform\Metadata\CollectionOperationInterface;
+use ApiPlatform\Metadata\Operation;
+use ApiPlatform\State\ProviderInterface;
 use Dbp\Relay\CheckinBundle\Entity\CheckInAction;
 use Dbp\Relay\CheckinBundle\Service\CheckinApi;
 use Dbp\Relay\CoreBundle\Helpers\ArrayFullPaginator;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
-final class CheckInActionCollectionDataProvider extends AbstractController implements CollectionDataProviderInterface, RestrictedDataProviderInterface
+class CheckInActionProvider extends AbstractController implements ProviderInterface
 {
     public const ITEMS_PER_PAGE = 100;
 
+    /**
+     * @var CheckinApi
+     */
     private $api;
 
     public function __construct(CheckinApi $api)
@@ -22,15 +26,15 @@ final class CheckInActionCollectionDataProvider extends AbstractController imple
         $this->api = $api;
     }
 
-    public function supports(string $resourceClass, string $operationName = null, array $context = []): bool
-    {
-        return CheckInAction::class === $resourceClass;
-    }
-
-    public function getCollection(string $resourceClass, string $operationName = null, array $context = []): ArrayFullPaginator
+    /**
+     * @return CheckInAction|iterable<CheckInAction>
+     */
+    public function provide(Operation $operation, array $uriVariables = [], array $context = [])
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
         $this->denyAccessUnlessGranted('ROLE_SCOPE_LOCATION-CHECK-IN');
+
+        assert($operation instanceof CollectionOperationInterface);
 
         $api = $this->api;
         $filters = $context['filters'] ?? [];

@@ -2,47 +2,38 @@
 
 declare(strict_types=1);
 
-namespace Dbp\Relay\CheckinBundle\DataPersister;
+namespace Dbp\Relay\CheckinBundle\State;
 
-use ApiPlatform\Core\DataPersister\DataPersisterInterface;
-use Dbp\Relay\BasePersonBundle\API\PersonProviderInterface;
+use ApiPlatform\Metadata\Operation;
+use ApiPlatform\State\ProcessorInterface;
 use Dbp\Relay\CheckinBundle\Entity\GuestCheckInAction;
 use Dbp\Relay\CheckinBundle\Exceptions\ItemNotStoredException;
 use Dbp\Relay\CheckinBundle\Service\CheckinApi;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
-final class GuestCheckInActionDataPersister extends AbstractController implements DataPersisterInterface
+class GuestCheckInActionProcessor extends AbstractController implements ProcessorInterface
 {
+    /**
+     * @var CheckinApi
+     */
     private $api;
 
-    /**
-     * @var PersonProviderInterface
-     */
-    private $personProvider;
-
-    public function __construct(CheckinApi $api, PersonProviderInterface $personProvider)
+    public function __construct(CheckinApi $api)
     {
         $this->api = $api;
-        $this->personProvider = $personProvider;
-    }
-
-    public function supports($data): bool
-    {
-        return $data instanceof GuestCheckInAction;
     }
 
     /**
-     * @param mixed $data
-     *
-     * @return GuestCheckInAction
+     * @return mixed
      */
-    public function persist($data)
+    public function process($data, Operation $operation, array $uriVariables = [], array $context = [])
     {
-        $locationGuestCheckInAction = $data;
-        assert($locationGuestCheckInAction instanceof GuestCheckInAction);
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
         $this->denyAccessUnlessGranted('ROLE_SCOPE_LOCATION-CHECK-IN');
         $this->denyAccessUnlessGranted('ROLE_SCOPE_LOCATION-CHECK-IN-GUEST');
+
+        $locationGuestCheckInAction = $data;
+        assert($locationGuestCheckInAction instanceof GuestCheckInAction);
 
         $location = $locationGuestCheckInAction->getLocation();
         $locationGuestCheckInAction->setIdentifier(md5($location->getIdentifier().rand(0, 10000).time()));
@@ -87,12 +78,5 @@ final class GuestCheckInActionDataPersister extends AbstractController implement
         $this->api->createAndDispatchGuestCheckOutMessage($locationGuestCheckInAction);
 
         return $locationGuestCheckInAction;
-    }
-
-    /**
-     * @param mixed $data
-     */
-    public function remove($data)
-    {
     }
 }

@@ -2,46 +2,37 @@
 
 declare(strict_types=1);
 
-namespace Dbp\Relay\CheckinBundle\DataPersister;
+namespace Dbp\Relay\CheckinBundle\State;
 
-use ApiPlatform\Core\DataPersister\DataPersisterInterface;
-use Dbp\Relay\BasePersonBundle\API\PersonProviderInterface;
+use ApiPlatform\Metadata\Operation;
+use ApiPlatform\State\ProcessorInterface;
 use Dbp\Relay\CheckinBundle\Entity\CheckOutAction;
 use Dbp\Relay\CheckinBundle\Exceptions\ItemNotStoredException;
 use Dbp\Relay\CheckinBundle\Service\CheckinApi;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
-final class CheckOutActionDataPersister extends AbstractController implements DataPersisterInterface
+class CheckOutActionProcessor extends AbstractController implements ProcessorInterface
 {
+    /**
+     * @var CheckinApi
+     */
     private $api;
 
-    /**
-     * @var PersonProviderInterface
-     */
-    private $personProvider;
-
-    public function __construct(CheckinApi $api, PersonProviderInterface $personProvider)
+    public function __construct(CheckinApi $api)
     {
         $this->api = $api;
-        $this->personProvider = $personProvider;
-    }
-
-    public function supports($data): bool
-    {
-        return $data instanceof CheckOutAction;
     }
 
     /**
-     * @param mixed $data
-     *
-     * @return CheckOutAction
+     * @return mixed
      */
-    public function persist($data)
+    public function process($data, Operation $operation, array $uriVariables = [], array $context = [])
     {
-        $locationCheckOutAction = $data;
-        assert($locationCheckOutAction instanceof CheckOutAction);
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
         $this->denyAccessUnlessGranted('ROLE_SCOPE_LOCATION-CHECK-IN');
+
+        $locationCheckOutAction = $data;
+        assert($locationCheckOutAction instanceof CheckOutAction);
 
         $person = $this->api->getCurrentPerson();
         $location = $locationCheckOutAction->getLocation();
@@ -78,12 +69,5 @@ final class CheckOutActionDataPersister extends AbstractController implements Da
         }
 
         return $locationCheckOutAction;
-    }
-
-    /**
-     * @param mixed $data
-     */
-    public function remove($data)
-    {
     }
 }
