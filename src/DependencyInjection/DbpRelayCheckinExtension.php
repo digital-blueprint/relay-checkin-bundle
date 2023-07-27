@@ -23,6 +23,18 @@ class DbpRelayCheckinExtension extends ConfigurableExtension implements PrependE
 
     public function loadInternal(array $mergedConfig, ContainerBuilder $container)
     {
+        $pathsToHide = [
+            '/checkin/check-in-actions/{identifier}',
+            '/checkin/guest-check-in-actions',
+            '/checkin/guest-check-in-actions/{identifier}',
+            '/checkin/check-out-actions',
+            '/checkin/check-out-actions/{identifier}',
+        ];
+
+        foreach ($pathsToHide as $path) {
+            $this->addPathToHide($container, $path);
+        }
+
         $loader = new YamlFileLoader(
             $container,
             new FileLocator(__DIR__.'/../Resources/config')

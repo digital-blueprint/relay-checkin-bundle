@@ -11,6 +11,12 @@ resources:
       groups: ["Checkin:input"]
     operations:
 
+      ApiPlatform\Metadata\Get:
+        provider: Dbp\Relay\CheckinBundle\State\DummyProvider
+        uriTemplate: "/checkin/check-in-actions/{identifier}"
+        openapiContext:
+          tags: ["Checkin"]
+
       ApiPlatform\Metadata\GetCollection:
         provider: Dbp\Relay\CheckinBundle\State\CheckInActionProvider
         uriTemplate: "/checkin/check-in-actions"
@@ -104,6 +110,18 @@ resources:
       groups: ["Checkin:input"]
     operations:
 
+      ApiPlatform\Metadata\Get:
+        provider: Dbp\Relay\CheckinBundle\State\DummyProvider
+        uriTemplate: "/checkin/guest-check-in-actions/{identifier}"
+        openapiContext:
+          tags: ["Checkin"]
+
+      ApiPlatform\Metadata\GetCollection:
+        provider: Dbp\Relay\CheckinBundle\State\DummyProvider
+        uriTemplate: "/checkin/guest-check-in-actions"
+        openapiContext:
+          tags: ["Checkin"]
+
       ApiPlatform\Metadata\Post:
         processor: Dbp\Relay\CheckinBundle\State\GuestCheckInActionProcessor
         uriTemplate: "/checkin/guest-check-in-actions"
@@ -144,6 +162,18 @@ resources:
     denormalizationContext:
       groups: ["CheckOut:input"]
     operations:
+
+      ApiPlatform\Metadata\Get:
+        provider: Dbp\Relay\CheckinBundle\State\DummyProvider
+        uriTemplate: "/checkin/check-out-actions/{identifier}"
+        openapiContext:
+          tags: ["Checkin"]
+
+      ApiPlatform\Metadata\GetCollection:
+        provider: Dbp\Relay\CheckinBundle\State\DummyProvider
+        uriTemplate: "/checkin/check-out-actions"
+        openapiContext:
+          tags: ["Checkin"]
 
       ApiPlatform\Metadata\Post:
         processor: Dbp\Relay\CheckinBundle\State\CheckOutActionProcessor
