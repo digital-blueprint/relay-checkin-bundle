@@ -1,3 +1,7 @@
+# v1.2.1
+
+* Add back dummy GET endpoints for all resources, which were removed with the api-platform transition since api-platform still requires them to be present, even if they are not functional. No functional change for usable endpoints.
+
 # v1.2.0
 
 * Port to the new api-platform metadata system. This removes some hidden GET endpoints that were not functional anyway.
