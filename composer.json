@@ -7,7 +7,7 @@
         "ext-json": "*",
         "api-platform/core": "^2.7.11",
         "dbp/relay-base-person-bundle": "^0.2.15",
-        "dbp/relay-core-bundle": "^0.1.98",
+        "dbp/relay-core-bundle": "^0.1.129",
         "guzzlehttp/guzzle": "^7.0",
         "kevinrob/guzzle-cache-middleware": "^3.3 || ^4.0  || ^5.0",
         "league/uri": "^6.4",

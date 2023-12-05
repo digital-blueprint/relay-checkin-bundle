@@ -9,7 +9,8 @@ use ApiPlatform\Metadata\Operation;
 use ApiPlatform\State\ProviderInterface;
 use Dbp\Relay\CheckinBundle\Entity\CheckInAction;
 use Dbp\Relay\CheckinBundle\Service\CheckinApi;
-use Dbp\Relay\CoreBundle\Helpers\ArrayFullPaginator;
+use Dbp\Relay\CoreBundle\Rest\Query\Pagination\Pagination;
+use Dbp\Relay\CoreBundle\Rest\Query\Pagination\WholeResultPaginator;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class CheckInActionProvider extends AbstractController implements ProviderInterface
@@ -42,16 +43,8 @@ class CheckInActionProvider extends AbstractController implements ProviderInterf
 
         $locationCheckInActions = $api->fetchCheckInActionsOfCurrentPerson($location);
 
-        $perPage = self::ITEMS_PER_PAGE;
-        $page = 1;
-        if (isset($context['filters']['page'])) {
-            $page = (int) $context['filters']['page'];
-        }
-
-        if (isset($context['filters']['perPage'])) {
-            $perPage = (int) $context['filters']['perPage'];
-        }
-
-        return new ArrayFullPaginator($locationCheckInActions, $page, $perPage);
+        return new WholeResultPaginator($locationCheckInActions,
+            Pagination::getCurrentPageNumber($filters),
+            Pagination::getMaxNumItemsPerPage($filters, self::ITEMS_PER_PAGE));
     }
 }

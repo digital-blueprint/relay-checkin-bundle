@@ -9,7 +9,8 @@ use ApiPlatform\Metadata\Operation;
 use ApiPlatform\State\ProviderInterface;
 use Dbp\Relay\CheckinBundle\Entity\Place;
 use Dbp\Relay\CheckinBundle\Service\CheckinApi;
-use Dbp\Relay\CoreBundle\Helpers\ArrayFullPaginator;
+use Dbp\Relay\CoreBundle\Rest\Query\Pagination\Pagination;
+use Dbp\Relay\CoreBundle\Rest\Query\Pagination\WholeResultPaginator;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class PlaceProvider extends AbstractController implements ProviderInterface
@@ -42,17 +43,9 @@ class PlaceProvider extends AbstractController implements ProviderInterface
 
             $checkInPlaces = $api->fetchPlaces($name);
 
-            $perPage = self::ITEMS_PER_PAGE;
-            $page = 1;
-            if (isset($context['filters']['page'])) {
-                $page = (int) $context['filters']['page'];
-            }
-
-            if (isset($context['filters']['perPage'])) {
-                $perPage = (int) $context['filters']['perPage'];
-            }
-
-            return new ArrayFullPaginator($checkInPlaces, $page, $perPage);
+            return new WholeResultPaginator($checkInPlaces,
+                Pagination::getCurrentPageNumber($filters),
+                Pagination::getMaxNumItemsPerPage($filters, self::ITEMS_PER_PAGE));
         } else {
             $id = $uriVariables['identifier'];
             assert(is_string($id));
