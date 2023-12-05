@@ -18,7 +18,7 @@ use Dbp\Relay\CheckinBundle\Exceptions\ItemNotStoredException;
 use Dbp\Relay\CheckinBundle\Helpers\Tools;
 use Dbp\Relay\CheckinBundle\Message\GuestCheckOutMessage;
 use Dbp\Relay\CoreBundle\Exception\ApiError;
-use Dbp\Relay\CoreBundle\LocalData\LocalData;
+use Dbp\Relay\CoreBundle\Rest\Options;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\HandlerStack;
@@ -435,7 +435,7 @@ class CheckinApi implements LoggerAwareInterface
     public function getCurrentPerson(): ?Person
     {
         $options = [];
-        LocalData::requestLocalDataAttributes($options, ['email']);
+        Options::requestLocalDataAttributes($options, ['email']);
 
         return $this->personProvider->getCurrentPerson($options);
     }
