@@ -10,15 +10,9 @@ use League\Uri\UriTemplate;
 class CheckinUrlApi
 {
     /**
-     * @param string $campusQRUrl
-     * @param string $location
-     * @param int|null $seatNumber
-     *
-     * @return string
-     *
      * @throws UriException
      */
-    public function getCheckInRequestUrl(string $campusQRUrl, string $location, ?int $seatNumber = null): string
+    public function getCheckInRequestUrl(string $campusQRUrl, string $location, int $seatNumber = null): string
     {
         $uriTemplate = new UriTemplate(
             $seatNumber === null ?
@@ -32,15 +26,9 @@ class CheckinUrlApi
     }
 
     /**
-     * @param string $campusQRUrl
-     * @param string $location
-     * @param int|null $seatNumber
-     *
-     * @return string
-     *
      * @throws UriException
      */
-    public function getGuestCheckInRequestUrl(string $campusQRUrl, string $location, ?int $seatNumber = null): string
+    public function getGuestCheckInRequestUrl(string $campusQRUrl, string $location, int $seatNumber = null): string
     {
         $uriTemplate = new UriTemplate(
             $seatNumber === null ?
@@ -54,15 +42,9 @@ class CheckinUrlApi
     }
 
     /**
-     * @param string $campusQRUrl
-     * @param string $location
-     * @param int|null $seatNumber
-     *
-     * @return string
-     *
      * @throws UriException
      */
-    public function getCheckOutRequestUrl(string $campusQRUrl, string $location, ?int $seatNumber = null): string
+    public function getCheckOutRequestUrl(string $campusQRUrl, string $location, int $seatNumber = null): string
     {
         $uriTemplate = new UriTemplate(
             $seatNumber === null ?
@@ -76,10 +58,6 @@ class CheckinUrlApi
     }
 
     /**
-     * @param string $campusQRUrl
-     *
-     * @return string
-     *
      * @throws UriException
      */
     public function getLocationListRequestUrl(string $campusQRUrl): string
@@ -90,10 +68,6 @@ class CheckinUrlApi
     }
 
     /**
-     * @param string $campusQRUrl
-     *
-     * @return string
-     *
      * @throws UriException
      */
     public function getCheckInActionListOfCurrentPersonRequestUrl(string $campusQRUrl): string
@@ -104,11 +78,6 @@ class CheckinUrlApi
     }
 
     /**
-     * @param string $campusQRUrl
-     * @param string $configKey
-     *
-     * @return string
-     *
      * @throws UriException
      */
     public function getConfigUrl(string $campusQRUrl, string $configKey): string

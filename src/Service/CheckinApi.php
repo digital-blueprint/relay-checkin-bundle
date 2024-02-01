@@ -89,10 +89,6 @@ class CheckinApi implements LoggerAwareInterface
 
     /**
      * CheckinApi constructor.
-     *
-     * @param PersonProviderInterface $personProvider
-     * @param MessageBusInterface $bus
-     * @param LockFactory $lockFactory
      */
     public function __construct(
         PersonProviderInterface $personProvider,
@@ -122,8 +118,6 @@ class CheckinApi implements LoggerAwareInterface
 
     /**
      * Replace the guzzle client handler for testing.
-     *
-     * @param object|null $handler
      */
     public function setClientHandler(?object $handler)
     {
@@ -177,10 +171,6 @@ class CheckinApi implements LoggerAwareInterface
     }
 
     /**
-     * @param CheckInAction $locationCheckInAction
-     *
-     * @return bool
-     *
      * @throws ItemNotStoredException
      * @throws AccessDeniedHttpException
      */
@@ -219,10 +209,6 @@ class CheckinApi implements LoggerAwareInterface
     }
 
     /**
-     * @param GuestCheckInAction $locationGuestCheckInAction
-     *
-     * @return bool
-     *
      * @throws ItemNotStoredException
      * @throws AccessDeniedHttpException
      */
@@ -266,12 +252,6 @@ class CheckinApi implements LoggerAwareInterface
     }
 
     /**
-     * @param string $email
-     * @param Place $location
-     * @param int|null $seatNumber
-     *
-     * @return bool
-     *
      * @throws ItemNotLoadedException
      * @throws ItemNotStoredException
      */
@@ -306,10 +286,6 @@ class CheckinApi implements LoggerAwareInterface
     }
 
     /**
-     * @param CheckOutAction $locationCheckOutAction
-     *
-     * @return bool
-     *
      * @throws ItemNotLoadedException
      * @throws ItemNotStoredException
      */
@@ -366,10 +342,6 @@ class CheckinApi implements LoggerAwareInterface
     }
 
     /**
-     * @param string $id
-     *
-     * @return Place
-     *
      * @throws ItemNotLoadedException
      * @throws NotFoundHttpException
      */
@@ -413,8 +385,6 @@ class CheckinApi implements LoggerAwareInterface
 
     /**
      * @param mixed $jsonData
-     *
-     * @return Place
      */
     public function checkInPlaceFromJsonItem($jsonData): Place
     {
@@ -441,8 +411,6 @@ class CheckinApi implements LoggerAwareInterface
     }
 
     /**
-     * @param ResponseInterface $response
-     *
      * @return mixed
      *
      * @throws ItemNotLoadedException
@@ -458,9 +426,8 @@ class CheckinApi implements LoggerAwareInterface
     }
 
     /**
-     * @param string $email
      * @param string $location
-     * @param ?int $seatNumber
+     * @param ?int   $seatNumber
      *
      * @return CheckInAction[]
      *
@@ -475,10 +442,10 @@ class CheckinApi implements LoggerAwareInterface
         foreach ($authenticDocumentTypesJsonData as $jsonData) {
             // Search for a location and seat if they were set
             // Search for the location alone if no seat was set
-            if (($location !== '' && $jsonData['locationId'] === $location &&
-                $seatNumber !== null && $jsonData['seat'] === $seatNumber) ||
-                ($location !== '' && $jsonData['locationId'] === $location && $seatNumber === null) ||
-                ($location === '' && $seatNumber === null)) {
+            if (($location !== '' && $jsonData['locationId'] === $location
+                && $seatNumber !== null && $jsonData['seat'] === $seatNumber)
+                || ($location !== '' && $jsonData['locationId'] === $location && $seatNumber === null)
+                || ($location === '' && $seatNumber === null)) {
                 $checkInAction = $this->locationCheckInActionFromJsonItem($jsonData);
                 $checkInAction->setEndTime($this->fetchMaxCheckinEndTime($checkInAction->getStartTime()));
                 $collection[] = $checkInAction;
@@ -490,7 +457,7 @@ class CheckinApi implements LoggerAwareInterface
 
     /**
      * @param string $location
-     * @param ?int $seatNumber
+     * @param ?int   $seatNumber
      *
      * @return CheckInAction[]
      *
@@ -504,10 +471,6 @@ class CheckinApi implements LoggerAwareInterface
     }
 
     /**
-     * @param string $email
-     *
-     * @return array
-     *
      * @throws ItemNotLoadedException
      */
     public function fetchCheckInActionsOfEMailJsonData(string $email): array
@@ -541,13 +504,10 @@ class CheckinApi implements LoggerAwareInterface
 
     /**
      * @param mixed $jsonData
-     * @param PersonProviderInterface|null $person
-     *
-     * @return CheckInAction
      *
      * @throws ItemNotLoadedException
      */
-    public function locationCheckInActionFromJsonItem($jsonData, ?PersonProviderInterface $person = null): CheckInAction
+    public function locationCheckInActionFromJsonItem($jsonData, PersonProviderInterface $person = null): CheckInAction
     {
         if ($person === null) {
             $person = $this->getCurrentPerson();
@@ -573,11 +533,6 @@ class CheckinApi implements LoggerAwareInterface
         return $locationCheckInAction;
     }
 
-    /**
-     * @param string $campusQRUrl
-     *
-     * @return CheckinApi
-     */
     public function setCampusQRUrl(string $campusQRUrl): CheckinApi
     {
         $this->campusQRUrl = $campusQRUrl;
@@ -585,11 +540,6 @@ class CheckinApi implements LoggerAwareInterface
         return $this;
     }
 
-    /**
-     * @param string $campusQRToken
-     *
-     * @return CheckinApi
-     */
     public function setCampusQRToken(string $campusQRToken): CheckinApi
     {
         $this->campusQRToken = $campusQRToken;
@@ -598,9 +548,6 @@ class CheckinApi implements LoggerAwareInterface
     }
 
     /**
-     * @param \Dbp\Relay\CheckinBundle\Entity\Place $location
-     * @param int|null $seatNumber
-     *
      * @throws ItemNotStoredException
      */
     public function seatCheck(Place $location, ?int $seatNumber): void
@@ -619,8 +566,6 @@ class CheckinApi implements LoggerAwareInterface
     }
 
     /**
-     * @param string $configKey
-     *
      * @return mixed
      *
      * @throws ItemNotLoadedException
@@ -651,10 +596,6 @@ class CheckinApi implements LoggerAwareInterface
     }
 
     /**
-     * @param \DateTimeInterface|null $date
-     *
-     * @return \DateTimeInterface
-     *
      * @throws ItemNotLoadedException
      */
     public function fetchMaxCheckinEndTime(\DateTimeInterface $date = null): \DateTimeInterface
@@ -692,11 +633,6 @@ class CheckinApi implements LoggerAwareInterface
         return $message;
     }
 
-    /**
-     * @param GuestCheckInAction $locationGuestCheckInAction
-     *
-     * @return DelayStamp
-     */
     public function getDelayStampFromGuestCheckInAction(GuestCheckInAction $locationGuestCheckInAction): DelayStamp
     {
         $endTime = $locationGuestCheckInAction->getEndTime();
@@ -711,8 +647,6 @@ class CheckinApi implements LoggerAwareInterface
 
     /**
      * Handles the delayed checkout of guests.
-     *
-     * @param GuestCheckOutMessage $message
      */
     public function handleGuestCheckOutMessage(GuestCheckOutMessage $message)
     {
@@ -734,11 +668,11 @@ class CheckinApi implements LoggerAwareInterface
     public function createLock(string $email, string $location, ?int $seatNumber): LockInterface
     {
         $resourceKey = sprintf(
-                'checkin-%s-%s-%s',
-                $location,
-                $seatNumber,
-                $email
-            );
+            'checkin-%s-%s-%s',
+            $location,
+            $seatNumber,
+            $email
+        );
 
         return $this->lockFactory->createLock($resourceKey, 60, true);
     }

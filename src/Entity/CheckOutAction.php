@@ -24,6 +24,7 @@ class CheckOutAction
 
     /**
      * @Groups({"CheckOut:output", "CheckOut:input"})
+     *
      * @Assert\NotBlank
      *
      * @var Place

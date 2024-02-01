@@ -24,6 +24,7 @@ class CheckInAction
 
     /**
      * @Groups({"Checkin:output", "Checkin:input"})
+     *
      * @Assert\NotBlank
      *
      * @var Place

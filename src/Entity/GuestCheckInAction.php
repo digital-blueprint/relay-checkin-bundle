@@ -24,6 +24,7 @@ class GuestCheckInAction
 
     /**
      * @Groups({"Checkin:output", "Checkin:input"})
+     *
      * @Assert\NotBlank
      *
      * @var Place
@@ -46,7 +47,9 @@ class GuestCheckInAction
 
     /**
      * @Groups({"Checkin:output", "Checkin:input"})
+     *
      * @Assert\Type("\DateTimeInterface")
+     *
      * @Assert\NotBlank
      *
      * @var \DateTimeInterface
@@ -55,7 +58,9 @@ class GuestCheckInAction
 
     /**
      * @Groups({"Checkin:output", "Checkin:input"})
+     *
      * @Assert\Email
+     *
      * @Assert\NotBlank
      *
      * @var string
