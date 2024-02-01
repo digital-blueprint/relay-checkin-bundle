@@ -1,3 +1,8 @@
+# v1.2.5
+
+* Drop support for PHP 7.3
+* Make sure to use `application/ld+json` for API docs examples
+
 # v1.2.2
 
 * Support kevinrob/guzzle-cache-middleware v5
