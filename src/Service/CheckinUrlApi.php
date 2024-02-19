@@ -12,7 +12,7 @@ class CheckinUrlApi
     /**
      * @throws UriException
      */
-    public function getCheckInRequestUrl(string $campusQRUrl, string $location, int $seatNumber = null): string
+    public function getCheckInRequestUrl(string $campusQRUrl, string $location, ?int $seatNumber = null): string
     {
         $uriTemplate = new UriTemplate(
             $seatNumber === null ?
@@ -28,7 +28,7 @@ class CheckinUrlApi
     /**
      * @throws UriException
      */
-    public function getGuestCheckInRequestUrl(string $campusQRUrl, string $location, int $seatNumber = null): string
+    public function getGuestCheckInRequestUrl(string $campusQRUrl, string $location, ?int $seatNumber = null): string
     {
         $uriTemplate = new UriTemplate(
             $seatNumber === null ?
@@ -44,7 +44,7 @@ class CheckinUrlApi
     /**
      * @throws UriException
      */
-    public function getCheckOutRequestUrl(string $campusQRUrl, string $location, int $seatNumber = null): string
+    public function getCheckOutRequestUrl(string $campusQRUrl, string $location, ?int $seatNumber = null): string
     {
         $uriTemplate = new UriTemplate(
             $seatNumber === null ?

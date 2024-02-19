@@ -507,7 +507,7 @@ class CheckinApi implements LoggerAwareInterface
      *
      * @throws ItemNotLoadedException
      */
-    public function locationCheckInActionFromJsonItem($jsonData, PersonProviderInterface $person = null): CheckInAction
+    public function locationCheckInActionFromJsonItem($jsonData, ?PersonProviderInterface $person = null): CheckInAction
     {
         if ($person === null) {
             $person = $this->getCurrentPerson();
@@ -598,7 +598,7 @@ class CheckinApi implements LoggerAwareInterface
     /**
      * @throws ItemNotLoadedException
      */
-    public function fetchMaxCheckinEndTime(\DateTimeInterface $date = null): \DateTimeInterface
+    public function fetchMaxCheckinEndTime(?\DateTimeInterface $date = null): \DateTimeInterface
     {
         $startDate = new \DateTimeImmutable('now', new \DateTimeZone('UTC'));
         if ($date !== null) {
