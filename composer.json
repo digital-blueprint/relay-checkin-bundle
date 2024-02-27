@@ -7,10 +7,10 @@
         "ext-json": "*",
         "api-platform/core": "^2.7.11",
         "dbp/relay-base-person-bundle": "^0.2.15",
-        "dbp/relay-core-bundle": "^0.1.129",
+        "dbp/relay-core-bundle": "^0.1.142",
         "guzzlehttp/guzzle": "^7.0",
         "kevinrob/guzzle-cache-middleware": "^3.3 || ^4.0  || ^5.0",
-        "league/uri": "^6.4",
+        "league/uri": "^6.4 || ^7.4",
         "symfony/framework-bundle": "^5.2",
         "symfony/lock": "^5.2",
         "symfony/messenger": "^5.2",
@@ -23,16 +23,17 @@
         "psr/log": "^1.1.4 || ^2.0.0 || ^3.0.0"
     },
     "require-dev": {
-        "friendsofphp/php-cs-fixer": "^3.4",
-        "phpstan/phpstan": "^1.8.5",
-        "phpstan/phpstan-phpunit": "^1.1.1",
-        "phpstan/phpstan-symfony": "^1.2.13",
-        "phpunit/phpunit": "^9.5.24",
-        "symfony/browser-kit": "^5.4.11",
-        "symfony/http-client": "^5.4.12",
-        "symfony/monolog-bundle": "^3.8",
-        "symfony/phpunit-bridge": "^5.4.11",
-        "vimeo/psalm": "^4.27"
+        "friendsofphp/php-cs-fixer": "^3.50",
+        "phpstan/phpstan": "^1.10.59",
+        "phpstan/phpstan-phpunit": "^1.3.16",
+        "phpstan/phpstan-symfony": "^1.3.7",
+        "phpunit/phpunit": "^9.6.17",
+        "symfony/browser-kit": "^5.4.35",
+        "symfony/http-client": "^5.4.36",
+        "symfony/monolog-bundle": "^3.10",
+        "symfony/phpunit-bridge": "^5.4.36",
+        "vimeo/psalm": "^4.30",
+        "symfony/monolog-bridge": "v5.4.35"
     },
     "autoload": {
         "psr-4": {
