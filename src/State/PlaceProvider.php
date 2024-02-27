@@ -13,6 +13,9 @@ use Dbp\Relay\CoreBundle\Rest\Query\Pagination\Pagination;
 use Dbp\Relay\CoreBundle\Rest\Query\Pagination\WholeResultPaginator;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
+/**
+ * @implements ProviderInterface<Place>
+ */
 class PlaceProvider extends AbstractController implements ProviderInterface
 {
     public const ITEMS_PER_PAGE = 100;
