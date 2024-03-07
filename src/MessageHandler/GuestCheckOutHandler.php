@@ -6,9 +6,8 @@ namespace Dbp\Relay\CheckinBundle\MessageHandler;
 
 use Dbp\Relay\CheckinBundle\Message\GuestCheckOutMessage;
 use Dbp\Relay\CheckinBundle\Service\CheckinApi;
-use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
 
-class GuestCheckOutHandler implements MessageHandlerInterface
+class GuestCheckOutHandler
 {
     private $api;
 

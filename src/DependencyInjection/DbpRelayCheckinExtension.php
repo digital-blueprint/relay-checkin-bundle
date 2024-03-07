@@ -16,12 +16,12 @@ class DbpRelayCheckinExtension extends ConfigurableExtension implements PrependE
 {
     use ExtensionTrait;
 
-    public function prepend(ContainerBuilder $container)
+    public function prepend(ContainerBuilder $container): void
     {
         $this->addQueueMessageClass($container, GuestCheckOutMessage::class);
     }
 
-    public function loadInternal(array $mergedConfig, ContainerBuilder $container)
+    public function loadInternal(array $mergedConfig, ContainerBuilder $container): void
     {
         $pathsToHide = [
             '/checkin/check-in-actions/{identifier}',
