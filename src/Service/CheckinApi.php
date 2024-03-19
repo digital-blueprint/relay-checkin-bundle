@@ -627,8 +627,8 @@ class CheckinApi implements LoggerAwareInterface
 
         $this->bus->dispatch(
             $message, [
-            $this->getDelayStampFromGuestCheckInAction($locationGuestCheckInAction),
-        ]);
+                $this->getDelayStampFromGuestCheckInAction($locationGuestCheckInAction),
+            ]);
 
         return $message;
     }

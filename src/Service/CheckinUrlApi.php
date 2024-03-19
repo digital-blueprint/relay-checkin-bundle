@@ -85,7 +85,7 @@ class CheckinUrlApi
         $uriTemplate = new UriTemplate('/config/get?id={configKey}');
 
         return $campusQRUrl.$uriTemplate->expand([
-                'configKey' => $configKey,
-            ]);
+            'configKey' => $configKey,
+        ]);
     }
 }
