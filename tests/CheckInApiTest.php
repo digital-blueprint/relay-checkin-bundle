@@ -33,6 +33,9 @@ class CheckInApiTest extends WebTestCase
     {
         $person = new Person();
         $person->setLocalDataValue(CheckinApi::EMAIL_LOCAL_DATA_ATTRIBUTE, 'dummy@email.com');
+        $person->setIdentifier('someid');
+        $person->setGivenName('somegiven');
+        $person->setFamilyName('somefamily');
         $personProvider = new DummyPersonProvider();
         $personProvider->setCurrentPerson($person);
 
@@ -77,6 +80,7 @@ class CheckInApiTest extends WebTestCase
         $action = new CheckOutAction();
 
         $person = new Person();
+        $person->setIdentifier('someid');
         $person->setLocalDataValue(CheckinApi::EMAIL_LOCAL_DATA_ATTRIBUTE, 'dummy@email.com');
         $action->setAgent($person);
 
