@@ -33,7 +33,7 @@ class CheckInActionProvider extends AbstractController implements ProviderInterf
     /**
      * @return CheckInAction|iterable<CheckInAction>
      */
-    public function provide(Operation $operation, array $uriVariables = [], array $context = [])
+    public function provide(Operation $operation, array $uriVariables = [], array $context = []): object|array|null
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
         $this->denyAccessUnlessGranted('ROLE_SCOPE_LOCATION-CHECK-IN');

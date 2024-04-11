@@ -46,7 +46,12 @@ class Test extends ApiTestCase
         foreach ($endpoints as $ep) {
             [$method, $path, $status] = $ep;
             $client = self::createClient();
-            $response = $client->request($method, $path);
+            $response = $client->request($method, $path, in_array($method, ['POST', 'PATCH', 'PUT'], true) ?
+                [
+                    'headers' => ['Content-Type' => 'application/ld+json'],
+                    'json' => [],
+                ] : []
+            );
             $this->assertEquals($status, $response->getStatusCode(), $path);
         }
     }
