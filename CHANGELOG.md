@@ -1,3 +1,8 @@
+# v1.2.8
+
+* Add support for api-platform 3.2
+* Fix tests with newer base-person bundle
+
 # v1.2.7
 
 * Add support for Symfony 6
