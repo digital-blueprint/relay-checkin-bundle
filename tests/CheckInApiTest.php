@@ -32,7 +32,6 @@ class CheckInApiTest extends WebTestCase
     protected function setUp(): void
     {
         $person = new Person();
-        $person->setLocalDataValue(CheckinApi::EMAIL_LOCAL_DATA_ATTRIBUTE, 'dummy@email.com');
         $person->setIdentifier('someid');
         $person->setGivenName('somegiven');
         $person->setFamilyName('somefamily');
