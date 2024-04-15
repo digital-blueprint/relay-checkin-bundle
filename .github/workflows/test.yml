@@ -13,6 +13,7 @@ jobs:
     name: Tests for php${{ matrix.php-versions }} ${{ matrix.name }}
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         php-versions: ['8.1', '8.2', '8.3']
         composer-command: ['install']
