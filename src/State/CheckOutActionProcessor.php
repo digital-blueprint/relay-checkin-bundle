@@ -11,9 +11,6 @@ use Dbp\Relay\CheckinBundle\Exceptions\ItemNotStoredException;
 use Dbp\Relay\CheckinBundle\Service\CheckinApi;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
-/**
- * @implements ProcessorInterface<CheckOutAction,mixed>
- */
 class CheckOutActionProcessor extends AbstractController implements ProcessorInterface
 {
     /**
