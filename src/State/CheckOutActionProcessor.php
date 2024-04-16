@@ -12,7 +12,7 @@ use Dbp\Relay\CheckinBundle\Service\CheckinApi;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 /**
- * @implements ProcessorInterface<CheckOutAction,mixed>
+ * @psalm-suppress MissingTemplateParam
  */
 class CheckOutActionProcessor extends AbstractController implements ProcessorInterface
 {
