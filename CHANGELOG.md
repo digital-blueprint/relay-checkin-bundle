@@ -1,5 +1,10 @@
 # Changelog
 
+## v1.2.12
+
+* Port to PHPUnit 10
+* Port from doctrine annotations to PHP attributes
+
 ## v1.2.8
 
 * Add support for api-platform 3.2
