@@ -10,61 +10,48 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 class GuestCheckInAction
 {
-    /**
-     * @Groups({"Checkin:output"})
-     */
+    #[Groups(['Checkin:output'])]
     private $identifier;
 
     /**
-     * @Groups({"Checkin:output"})
-     *
      * @var Person
      */
+    #[Groups(['Checkin:output'])]
     private $agent;
 
     /**
-     * @Groups({"Checkin:output", "Checkin:input"})
-     *
-     * @Assert\NotBlank
-     *
      * @var Place
      */
+    #[Groups(['Checkin:output', 'Checkin:input'])]
+    #[Assert\NotBlank]
     private $location;
 
     /**
-     * @Groups({"Checkin:output", "Checkin:input"})
-     *
      * @var ?int
      */
+    #[Groups(['Checkin:output', 'Checkin:input'])]
     private $seatNumber;
 
     /**
-     * @Groups({"Checkin:output"})
-     *
      * @var \DateTimeInterface
      */
+    #[Groups(['Checkin:output'])]
     private $startTime;
 
     /**
-     * @Groups({"Checkin:output", "Checkin:input"})
-     *
-     * @Assert\Type("\DateTimeInterface")
-     *
-     * @Assert\NotBlank
-     *
      * @var \DateTimeInterface
      */
+    #[Groups(['Checkin:output', 'Checkin:input'])]
+    #[Assert\Type('\DateTimeInterface')]
+    #[Assert\NotBlank]
     private $endTime;
 
     /**
-     * @Groups({"Checkin:output", "Checkin:input"})
-     *
-     * @Assert\Email
-     *
-     * @Assert\NotBlank
-     *
      * @var string
      */
+    #[Groups(['Checkin:output', 'Checkin:input'])]
+    #[Assert\Email]
+    #[Assert\NotBlank]
     private $email;
 
     public function setIdentifier(string $identifier): self

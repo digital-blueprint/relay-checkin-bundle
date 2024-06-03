@@ -10,32 +10,26 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 class CheckOutAction
 {
-    /**
-     * @Groups({"CheckOut:output"})
-     */
+    #[Groups(['CheckOut:output'])]
     private $identifier;
 
     /**
-     * @Groups({"CheckOut:output"})
-     *
      * @var Person
      */
+    #[Groups(['CheckOut:output'])]
     private $agent;
 
     /**
-     * @Groups({"CheckOut:output", "CheckOut:input"})
-     *
-     * @Assert\NotBlank
-     *
      * @var Place
      */
+    #[Groups(['CheckOut:output', 'CheckOut:input'])]
+    #[Assert\NotBlank]
     private $location;
 
     /**
-     * @Groups({"CheckOut:output", "CheckOut:input"})
-     *
      * @var ?int
      */
+    #[Groups(['CheckOut:output', 'CheckOut:input'])]
     private $seatNumber;
 
     public function setIdentifier(string $identifier): self

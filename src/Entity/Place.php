@@ -8,23 +8,19 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 class Place
 {
-    /**
-     * @Groups({"Place:output", "Checkin:outputList"})
-     */
+    #[Groups(['Place:output', 'Checkin:outputList'])]
     private $identifier;
 
     /**
-     * @Groups({"Place:output", "Checkin:outputList"})
-     *
      * @var string
      */
+    #[Groups(['Place:output', 'Checkin:outputList'])]
     private $name;
 
     /**
-     * @Groups({"Place:output"})
-     *
      * @var ?int
      */
+    #[Groups(['Place:output'])]
     private $maximumPhysicalAttendeeCapacity;
 
     public function setIdentifier(string $identifier): self
