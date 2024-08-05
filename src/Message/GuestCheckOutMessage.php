@@ -25,8 +25,6 @@ class GuestCheckOutMessage
 
     /**
      * GuestCheckOutMessage constructor.
-     *
-     * @param ?int $seatNumber
      */
     public function __construct(
         string $email,
