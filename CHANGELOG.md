@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+## v1.2.13
+
+* Adapt to updated DummyPersonProvider
+
 ## v1.2.12
 
 * Port to PHPUnit 10

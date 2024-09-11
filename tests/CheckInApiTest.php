@@ -31,12 +31,10 @@ class CheckInApiTest extends WebTestCase
 
     protected function setUp(): void
     {
-        $person = new Person();
-        $person->setIdentifier('someid');
-        $person->setGivenName('somegiven');
-        $person->setFamilyName('somefamily');
         $personProvider = new DummyPersonProvider();
-        $personProvider->setCurrentPerson($person);
+        $personProvider->addPerson('someid', 'somegiven', 'somefamily',
+            ['email' => 'some@email.com']);
+        $personProvider->setCurrentPersonIdentifier('someid');
 
         /** @var MessageBusInterface $messageBus */
         $messageBus = $this->getMockBuilder(MessageBusInterface::class)
@@ -80,7 +78,7 @@ class CheckInApiTest extends WebTestCase
 
         $person = new Person();
         $person->setIdentifier('someid');
-        $person->setLocalDataValue(CheckinApi::EMAIL_LOCAL_DATA_ATTRIBUTE, 'dummy@email.com');
+        $person->setLocalDataValue(CheckinApi::EMAIL_LOCAL_DATA_ATTRIBUTE, 'some@email.com');
         $action->setAgent($person);
 
         $location = new Place();
