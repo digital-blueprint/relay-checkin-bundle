@@ -9,7 +9,7 @@
         "dbp/relay-base-person-bundle": "^0.2.33",
         "dbp/relay-core-bundle": "^0.1.186",
         "guzzlehttp/guzzle": "^7.0",
-        "kevinrob/guzzle-cache-middleware": "^3.3 || ^4.0  || ^5.0",
+        "kevinrob/guzzle-cache-middleware": "^6.0",
         "league/uri": "^6.4 || ^7.4",
         "symfony/framework-bundle": "^5.4 || ^6.4",
         "symfony/lock": "^5.4 || ^6.4",
