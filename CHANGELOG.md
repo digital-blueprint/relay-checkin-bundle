@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+* Add support for kevinrob/guzzle-cache-middleware v6
+
 ## v1.2.13
 
 * Adapt to updated DummyPersonProvider
