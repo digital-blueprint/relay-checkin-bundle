@@ -17,7 +17,7 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Lock\LockFactory;
 use Symfony\Component\Lock\Store\InMemoryStore;
-use Symfony\Component\Messenger\MessageBusInterface;
+use Symfony\Component\Messenger\MessageBus;
 
 class CheckInApiTest extends WebTestCase
 {
@@ -36,11 +36,7 @@ class CheckInApiTest extends WebTestCase
             ['email' => 'some@email.com']);
         $personProvider->setCurrentPersonIdentifier('someid');
 
-        /** @var MessageBusInterface $messageBus */
-        $messageBus = $this->getMockBuilder(MessageBusInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-
+        $messageBus = new MessageBus();
         $lockFactory = new LockFactory(new InMemoryStore());
         $this->api = new CheckinApi($personProvider, $messageBus, $lockFactory);
         $this->api->setCampusQRUrl('http://dummy');
