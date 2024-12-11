@@ -2,7 +2,13 @@
 
 ## Unreleased
 
+## v1.2.14
+
 * Add support for kevinrob/guzzle-cache-middleware v6
+* Drop support for Symfony 5
+* Drop support for api-platform 2
+* Test with PHP 8.4
+* Port to phpstan v2
 
 ## v1.2.13
 
