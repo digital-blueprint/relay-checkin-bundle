@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Dbp\Relay\CheckinBundle\DependencyInjection;
 
+use Dbp\Relay\CheckinBundle\Authorization\AuthorizationService;
 use Dbp\Relay\CheckinBundle\Message\GuestCheckOutMessage;
+use Dbp\Relay\CheckinBundle\Service\CheckinApi;
 use Dbp\Relay\CoreBundle\Extension\ExtensionTrait;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -41,7 +43,10 @@ class DbpRelayCheckinExtension extends ConfigurableExtension implements PrependE
         );
         $loader->load('services.yaml');
 
-        $definition = $container->getDefinition('Dbp\Relay\CheckinBundle\Service\CheckinApi');
+        $definition = $container->getDefinition(CheckinApi::class);
+        $definition->addMethodCall('setConfig', [$mergedConfig]);
+
+        $definition = $container->getDefinition(AuthorizationService::class);
         $definition->addMethodCall('setConfig', [$mergedConfig]);
     }
 }

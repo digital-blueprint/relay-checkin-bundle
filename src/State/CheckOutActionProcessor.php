@@ -4,36 +4,28 @@ declare(strict_types=1);
 
 namespace Dbp\Relay\CheckinBundle\State;
 
-use ApiPlatform\Metadata\Operation;
-use ApiPlatform\State\ProcessorInterface;
+use Dbp\Relay\CheckinBundle\Authorization\AuthorizationService;
+use Dbp\Relay\CheckinBundle\DependencyInjection\Configuration;
 use Dbp\Relay\CheckinBundle\Entity\CheckOutAction;
 use Dbp\Relay\CheckinBundle\Exceptions\ItemNotStoredException;
 use Dbp\Relay\CheckinBundle\Service\CheckinApi;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Dbp\Relay\CoreBundle\Rest\AbstractDataProcessor;
 
-/**
- * @psalm-suppress MissingTemplateParam
- */
-class CheckOutActionProcessor extends AbstractController implements ProcessorInterface
+class CheckOutActionProcessor extends AbstractDataProcessor
 {
-    /**
-     * @var CheckinApi
-     */
-    private $api;
-
-    public function __construct(CheckinApi $api)
+    public function __construct(
+        private readonly CheckinApi $api,
+        private readonly AuthorizationService $authorizationService)
     {
-        $this->api = $api;
     }
 
-    /**
-     * @return mixed
-     */
-    public function process($data, Operation $operation, array $uriVariables = [], array $context = [])
+    protected function isCurrentUserGrantedOperationAccess(int $operation): bool
     {
-        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
-        $this->denyAccessUnlessGranted('ROLE_SCOPE_LOCATION-CHECK-IN');
+        return $this->authorizationService->isGrantedRole(Configuration::ROLE_LOCATION_CHECK_IN);
+    }
 
+    protected function addItem(mixed $data, array $filters): CheckOutAction
+    {
         $locationCheckOutAction = $data;
         assert($locationCheckOutAction instanceof CheckOutAction);
 

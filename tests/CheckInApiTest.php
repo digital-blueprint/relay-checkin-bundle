@@ -14,7 +14,6 @@ use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Response;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Lock\LockFactory;
 use Symfony\Component\Lock\Store\InMemoryStore;
 use Symfony\Component\Messenger\MessageBus;
@@ -160,13 +159,7 @@ class CheckInApiTest extends WebTestCase
             new Response(200, [], self::placesResponse),
         ]);
 
-        try {
-            $this->api->fetchPlace('wrong');
-        } catch (NotFoundHttpException $e) {
-            $this->assertStringContainsString('Location was not found!', $e->getMessage());
-        } catch (\Exception $e) {
-            $this->fail();
-        }
+        $this->assertNull($this->api->fetchPlace('404'));
     }
 
     public function testFetchCheckInActionsOfCurrentPerson()

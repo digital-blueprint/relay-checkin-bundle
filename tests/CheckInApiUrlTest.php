@@ -9,10 +9,9 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class CheckInApiUrlTest extends WebTestCase
 {
-    /* @var CheckinUrlApi */
-    private $urls;
+    private CheckinUrlApi $urls;
 
-    private $campusQRUrl;
+    private string $campusQRUrl = '';
 
     protected function setUp(): void
     {

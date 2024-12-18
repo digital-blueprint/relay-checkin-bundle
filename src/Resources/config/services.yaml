@@ -5,6 +5,10 @@ services:
     calls:
       - setCache: [ '@dbp.relay.checkin.cache.location' ]
 
+  Dbp\Relay\CheckinBundle\Authorization\AuthorizationService:
+    autowire: true
+    autoconfigure: true
+
   Dbp\Relay\CheckinBundle\Service\HealthCheck:
     autowire: true
     autoconfigure: true

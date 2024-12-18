@@ -4,56 +4,35 @@ declare(strict_types=1);
 
 namespace Dbp\Relay\CheckinBundle\State;
 
-use ApiPlatform\Metadata\CollectionOperationInterface;
-use ApiPlatform\Metadata\Operation;
-use ApiPlatform\State\ProviderInterface;
+use Dbp\Relay\CheckinBundle\Authorization\AuthorizationService;
+use Dbp\Relay\CheckinBundle\DependencyInjection\Configuration;
 use Dbp\Relay\CheckinBundle\Entity\Place;
 use Dbp\Relay\CheckinBundle\Service\CheckinApi;
-use Dbp\Relay\CoreBundle\Rest\Query\Pagination\Pagination;
-use Dbp\Relay\CoreBundle\Rest\Query\Pagination\WholeResultPaginator;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Dbp\Relay\CoreBundle\Rest\AbstractDataProvider;
 
 /**
- * @implements ProviderInterface<Place>
+ * @extends  AbstractDataProvider<Place>
  */
-class PlaceProvider extends AbstractController implements ProviderInterface
+class PlaceProvider extends AbstractDataProvider
 {
-    public const ITEMS_PER_PAGE = 100;
-
-    /**
-     * @var CheckinApi
-     */
-    private $api;
-
-    public function __construct(CheckinApi $api)
+    public function __construct(
+        private readonly CheckinApi $api,
+        private readonly AuthorizationService $authorizationService)
     {
-        $this->api = $api;
     }
 
-    /**
-     * @return Place|iterable<Place>
-     */
-    public function provide(Operation $operation, array $uriVariables = [], array $context = []): object|array|null
+    protected function isCurrentUserGrantedOperationAccess(int $operation): bool
     {
-        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
-        $this->denyAccessUnlessGranted('ROLE_SCOPE_LOCATION-CHECK-IN');
+        return $this->authorizationService->isGrantedRole(Configuration::ROLE_LOCATION_CHECK_IN);
+    }
 
-        $api = $this->api;
+    protected function getItemById(string $id, array $filters = [], array $options = []): ?Place
+    {
+        return $this->api->fetchPlace($id);
+    }
 
-        if ($operation instanceof CollectionOperationInterface) {
-            $filters = $context['filters'] ?? [];
-            $name = $filters['search'] ?? '';
-
-            $checkInPlaces = $api->fetchPlaces($name);
-
-            return new WholeResultPaginator($checkInPlaces,
-                Pagination::getCurrentPageNumber($filters),
-                Pagination::getMaxNumItemsPerPage($filters, self::ITEMS_PER_PAGE));
-        } else {
-            $id = $uriVariables['identifier'];
-            assert(is_string($id));
-
-            return $this->api->fetchPlace($id);
-        }
+    protected function getPage(int $currentPageNumber, int $maxNumItemsPerPage, array $filters = [], array $options = []): array
+    {
+        return $this->api->fetchPlaces($filters['search'] ?? '');
     }
 }

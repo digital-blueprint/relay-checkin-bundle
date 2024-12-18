@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+## v1.2.15
+
+* Stop using symfony roles; use our authz policies instead
+* Modernize and refactor
+
 ## v1.2.14
 
 * Add support for kevinrob/guzzle-cache-middleware v6

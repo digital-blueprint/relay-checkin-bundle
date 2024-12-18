@@ -4,31 +4,23 @@ declare(strict_types=1);
 
 namespace Dbp\Relay\CheckinBundle\State;
 
-use ApiPlatform\Metadata\CollectionOperationInterface;
-use ApiPlatform\Metadata\Operation;
-use ApiPlatform\State\Pagination\PartialPaginatorInterface;
-use ApiPlatform\State\ProviderInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Dbp\Relay\CoreBundle\Rest\AbstractDataProvider;
 
 /**
  * For GET endpoints which we don't implement, either return an empty collection
  * or return null which gets translated to 404.
  *
- * @implements ProviderInterface<object>
+ * @extends AbstractDataProvider<object>
  */
-class DummyProvider extends AbstractController implements ProviderInterface
+class DummyProvider extends AbstractDataProvider
 {
-    /**
-     * @return PartialPaginatorInterface<object>|iterable<mixed, object>|object|null
-     */
-    public function provide(Operation $operation, array $uriVariables = [], array $context = []): object|array|null
+    protected function getItemById(string $id, array $filters = [], array $options = []): ?object
     {
-        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+        return null;
+    }
 
-        if ($operation instanceof CollectionOperationInterface) {
-            return [];
-        } else {
-            return null;
-        }
+    protected function getPage(int $currentPageNumber, int $maxNumItemsPerPage, array $filters = [], array $options = []): array
+    {
+        return [];
     }
 }

@@ -42,76 +42,35 @@ class CheckinApi implements LoggerAwareInterface
     use LoggerAwareTrait;
 
     public const EMAIL_LOCAL_DATA_ATTRIBUTE = 'email';
-
-    private $clientHandler;
-
-    private $cachePool;
-
-    /**
-     * @var MessageBusInterface
-     */
-    private $bus;
-
-    /**
-     * @var LockFactory
-     */
-    private $lockFactory;
-
-    /**
-     * @var PersonProviderInterface
-     */
-    private $personProvider;
-
-    /**
-     * @var CheckinUrlApi
-     */
-    private $urls;
-
-    /**
-     * @var string
-     */
-    private $campusQRUrl = '';
-
-    /**
-     * @var string
-     */
-    private $campusQRToken = '';
-
-    /**
-     * @var int
-     */
-    private $autoCheckOutMinutes = 0;
-
     // Caching time of https://campusqr-dev.tugraz.at/location/list and the config
     public const LOCATION_CACHE_TTL = 300;
-
     public const CONFIG_KEY_AUTO_CHECK_OUT_MINUTES = 'autoCheckOutMinutes';
+
+    private ?object $clientHandler = null;
+    private ?CacheItemPoolInterface $cachePool = null;
+    private CheckinUrlApi $urls;
+    private string $campusQRUrl = '';
+    private string $campusQRToken = '';
+    private int $autoCheckOutMinutes = 0;
 
     /**
      * CheckinApi constructor.
      */
     public function __construct(
-        PersonProviderInterface $personProvider,
-        MessageBusInterface $bus,
-        LockFactory $lockFactory
-    ) {
-        $this->clientHandler = null;
-        $this->personProvider = $personProvider;
-        $this->bus = $bus;
-        $this->lockFactory = $lockFactory;
+        private readonly PersonProviderInterface $personProvider,
+        private readonly MessageBusInterface $bus,
+        private readonly LockFactory $lockFactory)
+    {
         $this->urls = new CheckinUrlApi();
-
-        $this->campusQRUrl = '';
-        $this->campusQRToken = '';
     }
 
-    public function setConfig(array $config)
+    public function setConfig(array $config): void
     {
         $this->campusQRUrl = $config['campus_qr_url'] ?? '';
         $this->campusQRToken = $config['campus_qr_token'] ?? '';
     }
 
-    public function setCache(?CacheItemPoolInterface $cachePool)
+    public function setCache(?CacheItemPoolInterface $cachePool): void
     {
         $this->cachePool = $cachePool;
     }
@@ -119,7 +78,7 @@ class CheckinApi implements LoggerAwareInterface
     /**
      * Replace the guzzle client handler for testing.
      */
-    public function setClientHandler(?object $handler)
+    public function setClientHandler(?object $handler): void
     {
         $this->clientHandler = $handler;
     }
@@ -345,7 +304,7 @@ class CheckinApi implements LoggerAwareInterface
      * @throws ItemNotLoadedException
      * @throws NotFoundHttpException
      */
-    public function fetchPlace(string $id): Place
+    public function fetchPlace(string $id): ?Place
     {
         $checkInPlaces = $this->fetchPlaces();
 
@@ -355,7 +314,7 @@ class CheckinApi implements LoggerAwareInterface
             }
         }
 
-        throw new NotFoundHttpException('Location was not found!');
+        return null;
     }
 
     public function fetchPlacesJsonData(): array

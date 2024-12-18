@@ -4,50 +4,35 @@ declare(strict_types=1);
 
 namespace Dbp\Relay\CheckinBundle\State;
 
-use ApiPlatform\Metadata\CollectionOperationInterface;
-use ApiPlatform\Metadata\Operation;
-use ApiPlatform\State\ProviderInterface;
+use Dbp\Relay\CheckinBundle\Authorization\AuthorizationService;
+use Dbp\Relay\CheckinBundle\DependencyInjection\Configuration;
 use Dbp\Relay\CheckinBundle\Entity\CheckInAction;
 use Dbp\Relay\CheckinBundle\Service\CheckinApi;
-use Dbp\Relay\CoreBundle\Rest\Query\Pagination\Pagination;
-use Dbp\Relay\CoreBundle\Rest\Query\Pagination\WholeResultPaginator;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Dbp\Relay\CoreBundle\Rest\AbstractDataProvider;
 
 /**
- * @implements ProviderInterface<CheckInAction>
+ * @extends AbstractDataProvider<CheckInAction>
  */
-class CheckInActionProvider extends AbstractController implements ProviderInterface
+class CheckInActionProvider extends AbstractDataProvider
 {
-    public const ITEMS_PER_PAGE = 100;
-
-    /**
-     * @var CheckinApi
-     */
-    private $api;
-
-    public function __construct(CheckinApi $api)
+    public function __construct(
+        private readonly CheckinApi $api,
+        private readonly AuthorizationService $authorizationService)
     {
-        $this->api = $api;
     }
 
-    /**
-     * @return CheckInAction|iterable<CheckInAction>
-     */
-    public function provide(Operation $operation, array $uriVariables = [], array $context = []): object|array|null
+    protected function isCurrentUserGrantedOperationAccess(int $operation): bool
     {
-        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
-        $this->denyAccessUnlessGranted('ROLE_SCOPE_LOCATION-CHECK-IN');
+        return $this->authorizationService->isGrantedRole(Configuration::ROLE_LOCATION_CHECK_IN);
+    }
 
-        assert($operation instanceof CollectionOperationInterface);
+    protected function getItemById(string $id, array $filters = [], array $options = []): ?object
+    {
+        throw new \RuntimeException('Unexpected get CheckInAction item request');
+    }
 
-        $api = $this->api;
-        $filters = $context['filters'] ?? [];
-        $location = $filters['location'] ?? '';
-
-        $locationCheckInActions = $api->fetchCheckInActionsOfCurrentPerson($location);
-
-        return new WholeResultPaginator($locationCheckInActions,
-            Pagination::getCurrentPageNumber($filters),
-            Pagination::getMaxNumItemsPerPage($filters, self::ITEMS_PER_PAGE));
+    protected function getPage(int $currentPageNumber, int $maxNumItemsPerPage, array $filters = [], array $options = []): array
+    {
+        return $this->api->fetchCheckInActionsOfCurrentPerson($filters['location'] ?? '');
     }
 }
