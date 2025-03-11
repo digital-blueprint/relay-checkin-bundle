@@ -14,6 +14,11 @@ use Dbp\Relay\CoreBundle\Rest\AbstractDataProvider;
  */
 class DummyProvider extends AbstractDataProvider
 {
+    public function __construct()
+    {
+        parent::__construct();
+    }
+
     protected function getItemById(string $id, array $filters = [], array $options = []): ?object
     {
         return null;

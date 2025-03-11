@@ -19,6 +19,7 @@ class CheckInActionProvider extends AbstractDataProvider
         private readonly CheckinApi $api,
         private readonly AuthorizationService $authorizationService)
     {
+        parent::__construct();
     }
 
     protected function isCurrentUserGrantedOperationAccess(int $operation): bool
