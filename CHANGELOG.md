@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## v1.2.16
+
+* Update core: Add missing parent constructor calls for AbstractDataProvider children
+
 ## v1.2.15
 
 * Stop using symfony roles; use our authz policies instead
