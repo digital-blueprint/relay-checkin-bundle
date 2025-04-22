@@ -25,6 +25,8 @@ class DbpRelayCheckinExtension extends ConfigurableExtension implements PrependE
 
     public function loadInternal(array $mergedConfig, ContainerBuilder $container): void
     {
+        $this->addResourceClassDirectory($container, __DIR__.'/../Entity');
+
         $pathsToHide = [
             '/checkin/check-in-actions/{identifier}',
             '/checkin/guest-check-in-actions',

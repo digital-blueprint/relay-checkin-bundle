@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Dbp\Relay\CheckinBundle\Tests;
 
-use ApiPlatform\Symfony\Bundle\Test\ApiTestCase;
 use ApiPlatform\Symfony\Bundle\Test\Client;
+use Dbp\Relay\CoreBundle\TestUtils\AbstractApiTest;
 use Symfony\Component\HttpFoundation\Response;
 
-class Test extends ApiTestCase
+class Test extends AbstractApiTest
 {
     /** @var Client */
     protected $client;
