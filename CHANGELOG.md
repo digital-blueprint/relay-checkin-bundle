@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+## v1.2.17
+
+* Drop support for PHP 8.1
+* Add support for api-platform 4.1 (and drop for <3.4)
+
 ## v1.2.16
 
 * Update core: Add missing parent constructor calls for AbstractDataProvider children
