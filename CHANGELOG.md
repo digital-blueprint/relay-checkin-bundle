@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## v1.2.18
+
+* Add support for kevinrob/guzzle-cache-middleware v7
+
 ## v1.2.17
 
 * Drop support for PHP 8.1
